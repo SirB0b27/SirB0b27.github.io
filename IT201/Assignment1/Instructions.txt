@@ -1,0 +1,63 @@
+The Assignment
+
+Here are your instructions:
+1.Using Notepad or any other text editor, create a .html file . For example, your file could be called MyFirstHTMLhtml.
+
+ 
+
+All of us are proud of our heritage! So I want you to create a webpage about  your ancestors country of origin. You are to create a webpage that highlights special things about your heritage. It should give the user a sense of the following:
+traditions
+history
+inhabitants
+festivals and events
+famous inhabitants
+tourist sites
+ 
+
+ 
+
+3.The HTML file will have the following elements and meet the following specifications:
+
+a.  Your page MUST conform to the www.w3.org XHTML 1.0 standard. You can use the HTML Validator at the w3 website to check your page for conformance. Please include the following code:
+<p>
+<a href="https://validator.w3.org/check/referer"><img
+src="https://www.w3.org/Icons/valid-xhtml10"
+alt="Valid XHTML 1.0!" height="31" width="88" /></a>
+</p>
+b.  Have an appropriate XML declaration
+c.  Have an appropriate DOCTYPE tag
+d.  Have a <meta> tag that correctly indicates which character set you are using
+e.  Have an appropriate title for your page
+f.  Create and link in a style sheet
+g. You should NOT use any formatting tags within your XHTML, e.g. <font>, <center>, etc. and you should not use the formatting attributes of tags, such as bgcolor, etc.
+h.  Please include at least two images in your document. One should have a link to another page; the other does not
+i.  Use an HTML table to organize your page
+j.  Have a bulleted list (unordered)
+k. Have a numbered list (ordered)
+l.  Have ordered list
+m. Have a list within a list
+n. Have a hyperlink that is represented as text
+o.  Have headers of different sizes
+p. Text of different fonts and colors
+q. paragraphs of text 
+
+r. have a title for the page
+
+4. Once you have created this page you must also re-create it using HTML5.  
+
+5. Be sure to test your webpages on more than one browser. (Explorer/Firefox/Safari/Chrome)
+
+6. Upload your files to the public_html folder of your AFS account using whatever FTP client you are comfortable with. I have posted information regarding two clients that I feel are easy to use. This can viewed under Week ONE under FTP Client.  When you are done the URL for your web page will be http://web.njit.edu/~yourUCID/your document name.html. 
+
+7 . ALSO, please upload your files PLUS a file containing the URL where your assignment is located to Canvas. The time stamp recorded by Canvas will be the timestamp that I use to determine if your assignment is on time or not.
+
+8.  I would also like a one page discussion on the differences you see between XHTML and HTML5. Think about the ease of coding between the two, the syntax between and the difference in style (i.e. tags, etc) to name a few things to discuss. This report should also be uploaded to Canvas along with your other files.
+
+Good Luck,
+Maura
+
+ 
+
+The following url will give you step by step instructions on how to submit your assignment files in Canvas.
+
+https://community.canvaslms.com/docs/DOC-10663-421254353

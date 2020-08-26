@@ -1,0 +1,85 @@
+The Assignment:
+
+ 
+
+This assignment will build upon Assignment Two and Three. You will no longer use an
+array to verify data from theform you created in Assignment 2 rather you will use the 
+database your created in Assignment 3.
+
+ 
+
+In this assignment you are to use the form created in Assignment 2 that allows a user 
+to login to the SG using their Patient Name, Patient Password and Patient ID Number. 
+Validation of inputted data should be done.  The form will also need to verify the 
+information (Patient Name, Patient Password and Patient ID Number) against your 
+database table you created in Assignment 3. Once the Patient Name, Patient Password 
+and Patient ID Number are validated/verified the user should be directed to a GUI based 
+upon the option selected in the drop down menu.  
+
+
+========================================================================================
+
+
+The options were as follows:
+- Searching for a patient’s records (no GUI required just a print of the patient’s 
+    appointments needed)
+
+- Schedule an Appointment (GUI that allows scheduling of a new appointment for the 
+    patient)
+
+- Cancelling an Appointment (GUI that allows for the removal of a appointment from 
+    the patient’s schedule)
+
+- Creating an account if the patient does not have one (GUI allowing input of essential
+    information to create an account for a patient)
+ 
+
+========================================================================================
+
+
+Based upon the option chosen one of the following actions occurs:
+
+- If the user chooses the Viewing the given patient’s records/Search Schedule option you
+     will display a table showing the individual’s records which will contain the 
+     Patient’s Name, Patient’s Password, Patient’s ID Number, Patient’s Email, and all 
+     the appointments the patient has scheduled (date/time/dentist/type of appointment).
+
+- If the Patient chooses the Schedule an Appointment option you will allow the user to 
+    schedule an appointment and insert that appointment 
+    (consists of date/time/dentist/type of appointment)
+
+- If the Patient chooses the Remove a Appointment option the system should delete the 
+    appointment from their schedule.
+
+- If the Patient chooses Register/Create an Account the user should be asked to create 
+    a Patient Name, Patient Password, Patient ID Number and Patient Email, which should 
+    be stored in the appropriate DB table.
+
+
+=========================================================================================
+
+
+Your database table should be updated accordingly based upon the option chosen. Once 
+updated the system should display the customer’s account before the change was made 
+and after thus allowing the user to see what changes were made.
+
+ 
+
+Upload your files to the public_html folder of your AFS account. Please include all 
+files (url, code and csv).
+
+ 
+
+ALSO, please upload your files and a url where the files are contained in "Canvas".
+
+ 
+
+Good Luck,
+
+Maura
+
+The following url will give you step by step instructions on how to submit your 
+assignment files.
+
+https://community.canvaslms.com/docs/DOC-10663-421254353 (Links to an external site.)
+

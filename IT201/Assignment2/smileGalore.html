@@ -1,0 +1,63 @@
+<!DOCTYPE.html>
+    <html lang="en">
+
+    <head>
+        <title>Smiles Galore</title>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" type="text/css" href="sg.css" />
+        <script type="text/javascript" src="sg.js"></script>
+    </head>
+
+    <body>
+        <div class="login">
+            <form name="login-form">
+                <h2>Smiles Galore Dental Office User System</h2>
+                <div class="userEnter">
+                    <label for="userInput">Name:</label>
+                    <input type="text" placeholder="Patron Name" id="name" name="name">
+                    <p1>//Required</p1>
+                    <br>
+
+                    <label for="userInput">Patron Password:</label>
+                    <input type="text" placeholder="Patron Password" id="password" name="password">
+                    <p1>//Required</p1>
+                    <br>
+
+                    <label for="userInput">Patron ID:</label>
+                    <input type="number" placeholder="Patron ID" id="ID" name="ID">
+                    <p1>//Required</p1>
+                    <br>
+
+                    <label for="userInput">Patron Email:</label>
+                    <input type="text" placeholder="Patron Email" id="email" name="email">
+                    <span>
+                        <p1 id="emailReq" style="display: none;">//Required</p1>
+                    </span>
+                </div>
+                <br>
+
+
+                <div class="check">
+                    <input type="checkbox" id="check" onclick="showText()">
+                    <label for="needEmail">Email Me a Transaction Confirmation</label>
+                </div>
+                <br>
+
+                <div class="myList">
+                    <label for="dropdown">Select a Transaction:</label>
+                    <select id="list">
+                        <option value="Schedule an Appointment" selected>Schedule an Appointment</option>
+                        <option value="Cancel an Appointment">Cancel an Appointment</option>
+                        <option value="Search for Appointment">Search for Appointment(s)</option>
+                        <option value="Register/Create an Account">Register/Create an Account</option>
+                    </select>
+                </div>
+                <br>
+
+                <button onclick="validate()">continue</button>
+            </form>
+        </div>
+    </body>
+
+
+    </html>

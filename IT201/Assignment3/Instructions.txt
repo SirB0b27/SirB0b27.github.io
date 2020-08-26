@@ -1,0 +1,33 @@
+Assignment 3 - Due: November 1st
+---------------------------------
+Using the NJIT MySQL server you will create a database table(s) that contains 30 dental patient records.
+
+Your records will have the following fields associated with a patient : 
+- Patron Name (First and Last)
+- Patron Password
+- Patron ID Number (8 digit)
+- Patron Email Address
+- Dental Appointment Schedule (Dentist Name, Type of Procedure, Date and Time of Appointment(s))
+
+
+
+====================================================================================================================
+You will also need information about the dentist that contains a list of procedures.
+
+Your records will have the following fields:
+- Name of Dentist
+- Type of Procedure (for example cleaning, filling, root canal, crown, bridge, etc.)
+- Date and Time of Appointment(s)
+
+
+
+===================================================================================================================== 
+Once the database(s) are created you are to design a form (how the form looks is up to you) that will allow the 
+user to access your databases and print out the table(s) containing the patients’ records you created and the list
+of procedures you created. I will need to have access to your original DB file(s) to verify that information printed
+is indeed what is stored within your DB table(s). You should upload the table(s) as a .csv file in Canvas.
+
+
+Upload your file(s) to the public_html folder of your AFS account.
+
+AlSO please upload your files and a url where the files are contained in "Canvas".

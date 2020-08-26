@@ -1,0 +1,55 @@
+body
+{
+    background-color: lightgray;
+    text-align: left;
+}
+h1
+{
+    color: red;
+}
+h2
+{
+    color: green;
+}
+p
+{
+    color: blue;
+}
+
+h3
+{
+    color: rgb(255, 81, 0);
+}
+
+ul
+{
+    list-style-type: circle;
+}
+
+ol
+{
+    list-style-type: upper-roman;
+}
+
+table
+{
+    border-collapse: collapse;
+    border-color: green;
+    width: 35%;
+    height: 200px;
+}
+th
+{
+    color: blue;
+}
+table, th, tr
+{
+    border: 1px solid black;
+    align-self: center;
+    align-items: center;
+}
+caption
+{
+    font-size: 40px;
+    color: green;
+}

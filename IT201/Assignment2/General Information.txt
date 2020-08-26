@@ -1,0 +1,12 @@
+URL: web.njit.edu/~hv72/Assignment2/smileGalore.html
+
+Profiles already registered:
+
+Name:		Password:		ID Number:
+=====		=========		==========
+Bob		z3N6BICs		13039299
+Billy		Yf9yaQL2		34221786
+Jim		v4ubo6E			26887960
+Jerry		5KvLvBR			23473769
+Keith		IAv0ty			23786709
+Klien		wq3YLA			74953431

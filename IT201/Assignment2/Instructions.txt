@@ -1,0 +1,108 @@
+Overview: Create a user login for a dental office called Smiles Galore (SG) that validates user data and verifies the patron’s name, patron’s password and patron’s ID.
+ 
+
+Task Description: Scenario
+ 
+
+Suppose that you have been hired to design the new web based interface for a dental office Smiles Galore (SG). The interface gives patrons access to their accounts.
+
+ 
+
+In order to access SG’s site, a patron must login with a valid patron name, patron password and patron ID. A patron email address is also required if the patron wants 
+email confirmation of any transaction (The user will indicate this by checking a box signifying the user wants email confirmation). Develop the login script that first 
+validatesand then verifiesthe user input.
+
+================================================================================================================================================================================
+
+Program Design and Implementation
+ 
+
+Design the HTML interface. The interface should have two text fields, (for patron name and patron email address), a password field (for the patron password), a numeric field 
+(for patron ID), a checkbox for indicating an email confirmation is requested, a drop-down list allowing the patron to indicate what type of transaction they wish to do, and a 
+button as input elements as shown in the figure below. Be sure to give each input element a unique name attribute.
+
+
+Below is an example to illustrate the HTML form requirements.  You can tasilor to your own style as long as the form has all key elements.
+
+
+Email confirmation wanted
+
+
+Email Confirmation not wanted
+
+
+Dropdown Menu
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Modularize your JavaScript using two functions: validate and verifydescribed below. Your event-driven program should call the validatefunction when the “Continue” button 
+is pressed. If all the data has been entered correctly, the validatefunction then calls the verifyfunction.
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Validate Function:
+
+Validation makes sure that the user has entered all the required data: patron name, patron password, patron ID and patron email address (if requested). 
+
+The patron password should contain a max of 8 characters and have at least 1 capital letter and one numeric character, 
+
+patron ID field should contain a eight-digit number and 
+
+the email address must contain an @ and a period. 
+
+If the input is not valid, alert the user to correct the particular error in the appropriate box.
+
+INPUT:HTML Form that needs to be validated
+
+PROCESS:Validates that all required information exists: Patron Name, Patron Password, Patron ID and Patron Email Address (if required). The Patron Password must contain a max 
+of 8 characters and have at least 1 capital letter and one numeric character, the Patron ID must also be an 8-digit numeric value and the Patron Email Address must contain an 
+@ and a period. Alerts the user about invalid data and its location. If all input is valid, alerts the user as to whether or not the user is found within the HLHC.
+
+
+OUPUT:Alert the user to correct the particular error in the appropriate box if necessary
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Verification Function:
+
+Verification checks that the user has an account, i.e., that the patron name, patron password and patron ID match the name, password and ID for one of SG’s patrons. 
+If the input is not verified, alert the user that an account for them cannot be found. When the input is both validated and verified, alert the user with a simple welcome 
+message that they have entered to system indicating the transaction chosen 
+(Schedule an Appointment, Cancel an Appointment, Search for Appointment(s) or Register/Create an Account).
+
+INPUT: HTML Form with Patron Name, Patron Password and Patron ID
+
+PROCESS:Compares the form's Patron’s Name, Patron Password and Patron ID with the properties of a patron object stored in a global array of patrons (for this exercise create 
+an array of 6 patrons). Returns true if it finds the patron object matches both.
+
+OUPUT:Simple welcome message.
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Make sure to test you program with a variety of valid and invalid input to ensure that your program is properly validating the data, properly verifying the patron and that all 
+alerts are working as described.
+
+ 
+
+Upload your file(s) to the public_html folder of your AFS account.
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ 
+
+Good luck.
+
+ 
+
+ALSO please upload your files and a url where the files are contained in "Canvas".
+
+The following url will give you step by step instructions on how to submit your assignment files.
+
+https://community.canvaslms.com/docs/DOC-10663-421254353

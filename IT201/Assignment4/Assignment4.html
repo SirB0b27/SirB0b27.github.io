@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Smiles Galore</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" type="text/css" href="sg.css" />
+    <script type="text/javascript" src="sg.js"></script>
+</head>
+
+<body>
+    <div class="login">
+        <form action="Assignment4.php" method="POST" name="login-form">
+            <h2>Smiles Galore Dental Office User System</h2>
+
+            <div class="userEnter">
+
+                <div class="myList">
+                    <label for="dropdown">Select a Transaction:</label>
+                    <select id="list" name="list" onchange="extra(this)">
+                        <option value="Search for Patient's Records" selected>Search for Patient's Records</option>
+                        <option value="Schedule an Appointment">Schedule an Appointment</option>
+                        <option value="Cancel an Appointment">Cancel an Appointment</option>
+                        <option value="Register/Create an Account">Register/Create an Account</option>
+                    </select>
+                </div>
+                <br>
+
+                <!--User Name Input-->
+                <label for="userInput">Name:</label>
+                <input type="text" size="30" placeholder="Patron Name" id="PatName" name="username">
+                <p1>//Required</p1>
+                <br>
+
+                <!--User Password Input-->
+                <label for="userInput">Patron Password:</label>
+                <input type="password" size="10" placeholder="Patron Password" id="password" name="password">
+                <p1>//Required</p1>
+                <br>
+
+                <!--User Identification Input-->
+                <label for="userInput">Patron ID:</label>
+                <input type="number" size="8" placeholder="Patron ID" id="identity" name="identity">
+                <p1>//Required</p1>
+                <br>
+
+                <!--User Email Input-->
+                <label for="userInput">Patron Email:</label>
+                <input type="text" size="100" placeholder="Patron Email" id="email" name="email">
+                <span>
+                    <p1 id="emailReq" style="display: none;">//Required</p1>
+                </span>
+                </br>
+
+                <!--User Dentist Information-->
+                <label for="userInput" id="dentist" style="display: none;">Dentist Name:</label>
+                <input type="text" size="30" placeholder="Dr. Name" id="dentistIn" name="dentistIn"
+                    style="display: none;">
+                <span id="dentistOut" style="display: none;">
+                    <p1>//Required</p1>
+                    </br>
+                </span>
+
+                <!--User Date information-->
+                <label for="userInput" id="date" style="display: none;">Date:</label>
+                <input type="date" size="10" placeholder="mm/dd/yyyy" id="dateIn" name="dateIn" style="display: none;">
+                <span id="dateOut" style="display: none;">
+                    <p1>//Required</p1>
+                    </br>
+                </span>
+
+                <!--User Time information-->
+                <label for="userInput" id="time" style="display: none;">Time:</label>
+                <input type="time" size="10" placeholder="hh:mm(am/pm)" id="timeIn" name="timeIn"
+                    style="display: none;">
+                <span id="timeOut" style="display: none;">
+                    <p1>//Required</p1>
+                    </br>
+                </span>
+
+                <!--User Application information-->
+                <label for="userInput" id="app" style="display: none;">App. Type:</label>
+                <input type="text" placeholder="Appointment type" id="appIn" name="appIn" style="display: none;">
+                <span id="appOut" style="display: none;">
+                    <p1>//Required</p1>
+                    </br>
+                </span>
+
+            </div>
+            <br>
+
+            <div class="check">
+                <input type="checkbox" id="check" onclick="showText()">
+                <label for="needEmail">Email Me a Transaction Confirmation</label>
+            </div>
+            <br>
+
+            <button>Submit</button>
+        </form>
+    </div>
+</body>
+
+
+</html>
