@@ -2,17 +2,16 @@
   const d = window.PORTFOLIO_DATA;
   const qs=(s,r=document)=>r.querySelector(s), qsa=(s,r=document)=>[...r.querySelectorAll(s)];
   let zoom=Number(localStorage.getItem('portfolioZoom')||1);
-  let resumeZoom=Number(localStorage.getItem('resumeZoom')||1);
   let scrollTick=false;
-  const routes=['overview','experience','projects','skills','education','resume'];
-  const routeLabels={overview:'Overview',experience:'Experience',projects:'Projects',skills:'Skills & Technologies',education:'Education',resume:'Resume'};
+  const routes=['overview','experience','projects','skills','education'];
+  const routeLabels={overview:'Overview',experience:'Experience',projects:'Projects',skills:'Skills & Technologies',education:'Education'};
   const tags=arr=>'<div class="tag-row">'+arr.map(x=>'<span class="tag">'+x+'</span>').join('')+'</div>';
   const pageHead=(eyebrow,title,desc,actions='')=>'<div class="page-head"><div><div class="eyebrow">'+eyebrow+'</div><h1>'+title+'</h1><p>'+desc+'</p></div>'+(actions?'<div class="page-actions">'+actions+'</div>':'')+'</div>';
 
   function renderOverview(){
     const max=Math.max(...d.activityMonthly.map(x=>x[1]));
     qs('[data-view="overview"]').innerHTML=
-      pageHead('Professional CV',d.profile.name,d.profile.summary,'<button class="primary-btn" data-scroll="resume">Open resume</button><a class="secondary-btn" href="college-projects/">College projects</a>')+
+      pageHead('Professional CV',d.profile.name,d.profile.summary,'<a class="primary-btn" href="resume/">Open resume</a><a class="secondary-btn" href="college-projects/">College projects</a>')+
       '<div class="grid kpi-grid">'+d.metrics.map(m=>'<div class="kpi"><div class="kpi-label">'+m.label+'</div><div class="kpi-value">'+m.value+'</div><div class="kpi-note">'+m.note+'</div></div>').join('')+'</div>'+
       '<div class="grid dashboard-grid">'+
         '<div class="panel"><div class="panel-head"><div><div class="panel-title">Documented work activity</div><div class="panel-subtitle">Work items captured by month</div></div><span class="tag">2023–2026</span></div><div class="panel-body"><div class="chart-wrap">'+d.activityMonthly.map(([m,v])=>'<div class="bar" style="height:'+Math.max(8,v/max*100)+'%" data-label="'+m+': '+v+'"></div>').join('')+'</div><div class="chart-axis"><span>Dec 2023</span><span>Sep 2026</span></div></div></div>'+
@@ -68,26 +67,6 @@
       '<div class="panel"><div class="panel-head"><div><div class="panel-title">Coursework by subject</div><div class="panel-subtitle">Grouped from completed undergraduate and graduate coursework</div></div></div><div class="panel-body subject-bars">'+d.courseSubjects.map(([s,v])=>'<div class="subject-row"><span>'+s+'</span><div class="subject-track"><div class="subject-fill" style="width:'+(v/max*100)+'%"></div></div><strong>'+v+'</strong></div>').join('')+'</div></div>';
   }
 
-  function renderResume(){
-    const resumeExperience=d.experience.slice(0,3).map(x=>'<div class="resume-entry"><div class="resume-entry-top"><span>'+x.role+' — '+x.org+'</span><span>'+x.period+'</span></div><ul>'+x.bullets.slice(0,3).map(b=>'<li>'+b+'</li>').join('')+'</ul></div>').join('');
-    const resumeProjects=d.projects.slice(0,3).map(p=>'<div class="resume-entry"><div class="resume-entry-top"><span>'+p.name+'</span><span>'+p.period+'</span></div><div class="resume-entry-sub">'+p.technologies.slice(0,6).join(' • ')+'</div><ul><li>'+p.summary+'</li></ul></div>').join('');
-    const resumeEducation=d.education.map(x=>'<div class="resume-entry"><div class="resume-entry-top"><span>'+x.degree+', '+x.program+' — '+x.school+'</span><span>'+x.period+'</span></div>'+(x.secondary?'<div class="resume-entry-sub">'+x.secondary+'</div>':'')+(x.honors?'<div class="resume-entry-sub">'+x.honors+'</div>':'')+'</div>').join('');
-    const resumeSkills=d.resume.skills.map(x=>'<div class="resume-skillline"><strong>'+x.label+':</strong> '+x.value+'</div>').join('');
-    qs('[data-view="resume"]').innerHTML=
-      pageHead('Resume','One-page resume','The site itself is a long-form CV. This section is the condensed one-page version for printing or saving as a Letter-size PDF.')+
-      '<div class="resume-controls"><button class="secondary-btn" id="resumeZoomOut">−</button><button class="secondary-btn" id="resumeFit">Fit page</button><button class="secondary-btn" id="resumeZoomIn">+</button><button class="primary-btn" id="printResume">Print / Save PDF</button></div>'+
-      '<div class="resume-stage" id="resumeStage"><article class="resume-sheet" id="resumeSheet">'+
-        '<header class="resume-head"><div class="resume-name">'+d.profile.name+'</div><div class="resume-headline">'+d.resume.headline+' • '+d.profile.location+'</div><div class="resume-links">github.com/SirB0b27 • linkedin.com/in/hemanthvelan27</div></header>'+
-        '<section class="resume-section"><div class="resume-section-title">Summary</div><div class="resume-summary">'+d.resume.summary+'</div></section>'+
-        '<section class="resume-section"><div class="resume-section-title">Experience</div>'+resumeExperience+'</section>'+
-        '<section class="resume-section"><div class="resume-section-title">Selected Projects</div>'+resumeProjects+'</section>'+
-        '<section class="resume-section"><div class="resume-section-title">Education</div>'+resumeEducation+'</section>'+
-        '<section class="resume-section"><div class="resume-section-title">Technical Skills</div>'+resumeSkills+'</section>'+
-        '<section class="resume-section"><div class="resume-section-title">Certifications</div><div class="resume-skillline">'+d.certifications.join(' • ')+'</div></section>'+
-      '</article></div>';
-    applyResumeZoom();
-  }
-
   function openProject(id){
     const p=d.projects.find(x=>x.id===id); if(!p)return;
     qs('#drawerTitle').textContent=p.name;
@@ -112,7 +91,6 @@
     window.scrollTo({top:y,behavior:smooth?'smooth':'auto'});
     setActive(route,true);
     if(innerWidth<760)qs('#sidebar').classList.remove('mobile-open');
-    if(route==='resume')setTimeout(fitResume,120);
   }
 
   function updateActiveFromScroll(){
@@ -132,26 +110,11 @@
     localStorage.setItem('portfolioZoom',zoom);
   }
 
-  function applyResumeZoom(){
-    const sheet=qs('#resumeSheet'); if(!sheet)return;
-    sheet.style.transform='scale('+resumeZoom+')';
-    sheet.style.marginBottom=((resumeZoom-1)*11)+'in';
-    localStorage.setItem('resumeZoom',resumeZoom);
-  }
-
-  function fitResume(){
-    const stage=qs('#resumeStage'),sheet=qs('#resumeSheet'); if(!stage||!sheet)return;
-    const available=stage.clientWidth-24,natural=816;
-    resumeZoom=Math.min(1,Math.max(.55,available/natural));
-    applyResumeZoom();
-  }
-
   renderOverview();
   renderExperience();
   renderProjects();
   renderSkills();
   renderEducation();
-  renderResume();
 
   qsa('.view').forEach(v=>{v.id=v.dataset.view;});
   qs('#projectCountBadge').textContent=d.projects.length;
@@ -176,16 +139,11 @@
       document.documentElement.dataset.theme=next;
       localStorage.setItem('portfolioTheme',next);
     }
-    if(e.target.id==='resumeZoomOut'){resumeZoom=Math.max(.55,+(resumeZoom-.05).toFixed(2));applyResumeZoom()}
-    if(e.target.id==='resumeZoomIn'){resumeZoom=Math.min(1.2,+(resumeZoom+.05).toFixed(2));applyResumeZoom()}
-    if(e.target.id==='resumeFit')fitResume();
-    if(e.target.id==='printResume')window.print();
   });
 
   document.addEventListener('input',e=>{if(e.target.id==='projectSearch')drawProjectRows()});
   document.addEventListener('change',e=>{if(e.target.id==='projectCategory')drawProjectRows()});
   window.addEventListener('scroll',()=>{if(!scrollTick){scrollTick=true;requestAnimationFrame(updateActiveFromScroll)}},{passive:true});
-  window.addEventListener('resize',()=>{if(qs('#resume')?.getBoundingClientRect().top<innerHeight)fitResume()});
 
   const savedTheme=localStorage.getItem('portfolioTheme');
   document.documentElement.dataset.theme=savedTheme||'dark';
