@@ -577,3 +577,79 @@ html[data-theme="light"] .project-row:hover .tag{
 html[data-theme="light"] .experience-project:hover strong{
   color:color-mix(in srgb,var(--org-accent,var(--accent)) 84%,black);
 }
+
+
+/* High-visibility hover accents */
+.experience-expandable:hover{
+  border-color:var(--line)!important;
+  box-shadow:
+    0 0 0 2px color-mix(in srgb,var(--org-accent,var(--accent)) 72%,white),
+    0 8px 24px color-mix(in srgb,var(--org-accent,var(--accent)) 18%,transparent)!important;
+}
+html[data-theme="light"] .experience-expandable:hover{
+  box-shadow:
+    0 0 0 2px color-mix(in srgb,var(--org-accent,var(--accent)) 86%,black),
+    0 8px 24px color-mix(in srgb,var(--org-accent,var(--accent)) 14%,transparent)!important;
+}
+.experience-expandable:hover .experience-card-header,
+.experience-expandable:hover .experience-card-summary{
+  background:color-mix(in srgb,var(--panel) 68%,var(--org-accent,var(--accent)) 32%)!important;
+}
+.experience-expandable:hover .experience-card-header{
+  box-shadow:inset 5px 0 0 color-mix(in srgb,var(--org-accent,var(--accent)) 72%,white)!important;
+}
+html[data-theme="light"] .experience-expandable:hover .experience-card-header{
+  box-shadow:inset 5px 0 0 color-mix(in srgb,var(--org-accent,var(--accent)) 86%,black)!important;
+}
+.experience-expandable:hover .experience-card h3{
+  color:color-mix(in srgb,var(--org-accent,var(--accent)) 52%,white)!important;
+}
+html[data-theme="light"] .experience-expandable:hover .experience-card h3{
+  color:color-mix(in srgb,var(--org-accent,var(--accent)) 82%,black)!important;
+}
+.experience-expandable:hover .experience-meta,
+.experience-expandable:hover .experience-period,
+.experience-expandable:hover .experience-caret{
+  color:color-mix(in srgb,var(--org-accent,var(--accent)) 46%,white)!important;
+}
+html[data-theme="light"] .experience-expandable:hover .experience-meta,
+html[data-theme="light"] .experience-expandable:hover .experience-period,
+html[data-theme="light"] .experience-expandable:hover .experience-caret{
+  color:color-mix(in srgb,var(--org-accent,var(--accent)) 78%,black)!important;
+}
+.experience-expandable:hover .tag{
+  border-color:color-mix(in srgb,var(--org-accent,var(--accent)) 72%,white)!important;
+  background:color-mix(in srgb,var(--panel) 70%,var(--org-accent,var(--accent)) 30%)!important;
+}
+
+/* Matching hover treatment for project and coursework dropdown rows */
+.project-row:hover,
+.course-row:hover{
+  position:relative;
+  z-index:1;
+  box-shadow:
+    inset 0 0 0 2px color-mix(in srgb,var(--item-accent,var(--accent)) 72%,white),
+    0 6px 18px color-mix(in srgb,var(--item-accent,var(--accent)) 16%,transparent);
+}
+html[data-theme="light"] .project-row:hover,
+html[data-theme="light"] .course-row:hover{
+  box-shadow:
+    inset 0 0 0 2px color-mix(in srgb,var(--item-accent,var(--accent)) 86%,black),
+    0 6px 18px color-mix(in srgb,var(--item-accent,var(--accent)) 12%,transparent);
+}
+.project-row:hover td,
+.course-row:hover td{
+  background:color-mix(in srgb,var(--panel-2) 68%,var(--item-accent,var(--accent)) 32%)!important;
+}
+.project-row:hover td:first-child,
+.course-row:hover td:first-child{
+  box-shadow:inset 5px 0 0 color-mix(in srgb,var(--item-accent,var(--accent)) 72%,white)!important;
+}
+.project-row:hover strong,
+.course-row:hover strong{
+  color:color-mix(in srgb,var(--item-accent,var(--accent)) 52%,white)!important;
+}
+html[data-theme="light"] .project-row:hover strong,
+html[data-theme="light"] .course-row:hover strong{
+  color:color-mix(in srgb,var(--item-accent,var(--accent)) 82%,black)!important;
+}
