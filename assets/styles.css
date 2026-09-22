@@ -400,3 +400,126 @@ html[data-theme="light"] .experience-year-label{
   border-color:var(--org-accent,var(--accent));
   background:color-mix(in srgb,var(--panel-2) 88%,var(--org-accent,var(--accent)) 12%);
 }
+
+
+/* Strong expandable accent pass */
+.experience-expandable{
+  border-color:var(--line)!important;
+  box-shadow:none!important;
+}
+.experience-expandable:hover,
+.experience-expandable.expanded{
+  border-color:var(--line)!important;
+  box-shadow:none!important;
+}
+.experience-expandable:focus-visible{
+  outline:2px solid color-mix(in srgb,var(--org-accent,var(--accent)) 72%,white);
+  outline-offset:2px;
+}
+.experience-card h3{
+  color:color-mix(in srgb,var(--org-accent,var(--text)) 72%,white)!important;
+}
+html[data-theme="light"] .experience-card h3{
+  color:color-mix(in srgb,var(--org-accent,var(--text)) 88%,black)!important;
+}
+.experience-expandable:hover .experience-card-header,
+.experience-expandable:hover .experience-card-summary{
+  background:color-mix(in srgb,var(--panel) 88%,var(--org-accent,var(--accent)) 12%)!important;
+}
+.experience-expandable.expanded .experience-card-header,
+.experience-expandable.expanded .experience-card-summary{
+  background:color-mix(in srgb,var(--panel) 82%,var(--org-accent,var(--accent)) 18%)!important;
+}
+.experience-detail{
+  border-top:0!important;
+  background:color-mix(in srgb,var(--panel-2) 76%,var(--org-accent,var(--accent)) 24%)!important;
+}
+.experience-subsection,
+.overview-subsection,
+.business-subsection,
+.stakeholder-subsection,
+.timeline-subsection,
+.responsibilities-subsection,
+.focus-subsection,
+.projects-subsection{
+  border-color:color-mix(in srgb,var(--org-accent,var(--accent)) 46%,var(--line))!important;
+  border-left:4px solid var(--org-accent,var(--accent))!important;
+  background:color-mix(in srgb,var(--panel) 84%,var(--org-accent,var(--accent)) 16%)!important;
+}
+.experience-subsection .inline-detail-title,
+.experience-year-label{
+  color:color-mix(in srgb,var(--org-accent,var(--accent)) 72%,white)!important;
+}
+html[data-theme="light"] .experience-subsection .inline-detail-title,
+html[data-theme="light"] .experience-year-label{
+  color:color-mix(in srgb,var(--org-accent,var(--accent)) 88%,black)!important;
+}
+.experience-year{
+  background:color-mix(in srgb,var(--panel-2) 84%,var(--org-accent,var(--accent)) 16%)!important;
+  border-color:color-mix(in srgb,var(--org-accent,var(--accent)) 38%,var(--line))!important;
+}
+.experience-project{
+  background:color-mix(in srgb,var(--panel-2) 88%,var(--org-accent,var(--accent)) 12%)!important;
+  border-color:color-mix(in srgb,var(--org-accent,var(--accent)) 34%,var(--line))!important;
+}
+.experience-project:hover{
+  background:color-mix(in srgb,var(--panel-2) 72%,var(--org-accent,var(--accent)) 28%)!important;
+  border-color:var(--org-accent,var(--accent))!important;
+}
+
+/* Project and course expanders use the same stronger accent treatment */
+.project-row:hover td,
+.course-row:hover td{
+  background:color-mix(in srgb,var(--panel-2) 88%,var(--item-accent,var(--accent)) 12%)!important;
+}
+.project-row.expanded td,
+.course-row.expanded td{
+  background:color-mix(in srgb,var(--panel) 76%,var(--item-accent,var(--accent)) 24%)!important;
+}
+.project-row.expanded strong,
+.course-row.expanded strong{
+  color:color-mix(in srgb,var(--item-accent,var(--accent)) 72%,white);
+}
+html[data-theme="light"] .project-row.expanded strong,
+html[data-theme="light"] .course-row.expanded strong{
+  color:color-mix(in srgb,var(--item-accent,var(--accent)) 88%,black);
+}
+.project-detail-row td,
+.course-detail-row td{
+  background:color-mix(in srgb,var(--panel-2) 76%,var(--item-accent,var(--accent)) 24%)!important;
+}
+.project-inline-detail,
+.course-detail-row .inline-detail{
+  background:transparent!important;
+}
+.project-detail-row .inline-detail-panel,
+.course-detail-row .inline-detail-grid>div{
+  border:1px solid color-mix(in srgb,var(--item-accent,var(--accent)) 42%,var(--line))!important;
+  border-left:4px solid var(--item-accent,var(--accent))!important;
+  background:color-mix(in srgb,var(--panel) 84%,var(--item-accent,var(--accent)) 16%)!important;
+  border-radius:8px;
+}
+.course-detail-row .inline-detail-grid>div{
+  padding:11px 12px;
+}
+.project-detail-row .inline-detail-title,
+.course-detail-row .inline-detail-title{
+  color:color-mix(in srgb,var(--item-accent,var(--accent)) 72%,white)!important;
+}
+html[data-theme="light"] .project-detail-row .inline-detail-title,
+html[data-theme="light"] .course-detail-row .inline-detail-title{
+  color:color-mix(in srgb,var(--item-accent,var(--accent)) 88%,black)!important;
+}
+.project-detail-row .business-context-panel,
+.project-detail-row .stakeholder-context-panel,
+.project-detail-row .technologies-panel,
+.project-detail-row .highlights-panel,
+.project-detail-row .project-overview-panel,
+.project-detail-row .project-period-panel{
+  border-left-color:var(--item-accent,var(--accent))!important;
+  background:color-mix(in srgb,var(--panel) 84%,var(--item-accent,var(--accent)) 16%)!important;
+}
+.course-detail-row .notice{
+  border-color:color-mix(in srgb,var(--item-accent,var(--accent)) 42%,var(--line));
+  background:color-mix(in srgb,var(--panel) 84%,var(--item-accent,var(--accent)) 16%);
+}
