@@ -17,21 +17,28 @@
   });
 
   function renderOverview(){
-    const max=Math.max(...d.activityMonthly.map(x=>x[1]));
     qs('[data-view="overview"]').innerHTML=
-      pageHead('Professional CV',d.profile.name,d.profile.summary,'<a class="primary-btn" href="resume/">Open resume</a><a class="secondary-btn" href="college-projects/">College projects</a>')+
+      pageHead('Professional CV',d.profile.name,d.profile.summary,'<a class="primary-btn" href="resume/">Open Resume</a><a class="secondary-btn" href="college-projects/">College Projects</a>')+
       '<div class="grid kpi-grid">'+d.metrics.map(m=>'<div class="kpi"><div class="kpi-label">'+m.label+'</div><div class="kpi-value">'+m.value+'</div><div class="kpi-note">'+m.note+'</div></div>').join('')+'</div>'+
       '<div class="grid dashboard-grid">'+
-        '<div class="panel"><div class="panel-head"><div><div class="panel-title">Documented Work Activity</div><div class="panel-subtitle">Work Items Captured by Month</div></div><span class="tag">2023–2026</span></div><div class="panel-body"><div class="chart-wrap">'+d.activityMonthly.map(([m,v])=>'<div class="bar" style="height:'+Math.max(8,v/max*100)+'%" data-label="'+m+': '+v+'"></div>').join('')+'</div><div class="chart-axis"><span>Dec 2023</span><span>Sep 2026</span></div></div></div>'+
-        '<div class="panel"><div class="panel-head"><div><div class="panel-title">Professional Profile</div><div class="panel-subtitle">Current Focus and Technical Background</div></div></div><div class="panel-body"><div class="stack"><div class="mini-card"><strong>Business Intelligence & Analytics</strong><p>Production reporting, financial analytics, operational dashboards, data modeling, QA, and stakeholder-facing delivery.</p></div><div class="mini-card"><strong>Automation & Engineering</strong><p>Python, REST APIs, browser automation, Snowflake, SQL procedures, scheduled processes, snapshots, and repeatable validation workflows.</p></div><div class="mini-card"><strong>Technical Breadth</strong><p>Background spanning data science, machine learning, software development, web technologies, databases, and technical instruction.</p></div></div></div></div>'+
+        '<div class="panel"><div class="panel-head"><div><div class="panel-title">Professional Scope</div><div class="panel-subtitle">Business Intelligence, Analytics Engineering, Financial Analytics, and Decision Support</div></div></div><div class="panel-body"><div class="stack">'+
+          '<div class="mini-card"><strong>Business Intelligence & Decision Support</strong><p>Translate operational and financial questions into KPIs, segmentation, drilldowns, trend analysis, exception views, and management-ready decisions.</p></div>'+
+          '<div class="mini-card"><strong>Analytics Engineering & Financial Controls</strong><p>Build reusable Snowflake/Sigma data products, commission workflows, forecasting logic, snapshots, reconciliation controls, and validation processes.</p></div>'+
+          '<div class="mini-card"><strong>Cross-Functional Delivery</strong><p>Work across executive leadership, finance, operations, shared services, technology, LTL, marketing, legal, and agent-facing teams.</p></div>'+
+        '</div></div></div>'+
+        '<div class="panel"><div class="panel-head"><div><div class="panel-title">Current Focus</div><div class="panel-subtitle">How Technical Work Connects to Business Outcomes</div></div></div><div class="panel-body"><div class="stack">'+
+          '<div class="mini-card"><strong>Operational Intelligence</strong><p>Performance dashboards, workflow monitoring, growth analytics, service metrics, and exception-driven reporting.</p></div>'+
+          '<div class="mini-card"><strong>Financial Analytics</strong><p>Commission systems, payout controls, cash forecasting, settlement analytics, currency logic, and reconciliation.</p></div>'+
+          '<div class="mini-card"><strong>Maintainability & Governance</strong><p>Process maps, documentation, data lineage, reusable modeling patterns, QA, and long-term production support.</p></div>'+
+        '</div></div></div>'+
       '</div>'+
-      '<div class="panel focus-panel"><div class="panel-head"><div><div class="panel-title">Project Highlights</div><div class="panel-subtitle">Click a Project to Open Its Detail Panel</div></div><button class="secondary-btn" data-scroll="projects">View all projects</button></div><div class="panel-body focus-grid">'+sortProjectsByPeriod(d.projects).slice(0,6).map(p=>'<button class="mini-card project-jump" data-project="'+p.id+'" style="text-align:left;cursor:pointer;color:inherit"><strong>'+p.name+'</strong><p>'+p.summary+'</p>'+tags(p.technologies.slice(0,4))+'</button>').join('')+'</div></div>';
+      '<div class="panel focus-panel"><div class="panel-head"><div><div class="panel-title">Project Highlights</div><div class="panel-subtitle">Click a Project to Expand Its Full Business and Technical Context</div></div><button class="secondary-btn" data-scroll="projects">View All Projects</button></div><div class="panel-body focus-grid">'+sortProjectsByPeriod(d.projects).slice(0,6).map(p=>'<button class="mini-card project-jump" data-project="'+p.id+'" style="text-align:left;cursor:pointer;color:inherit"><strong>'+p.name+'</strong><p>'+p.summary+'</p>'+tags(p.technologies.slice(0,4))+'</button>').join('')+'</div></div>';
   }
 
   function renderExperience(){
     const details=d.experienceDetails||{};
     qs('[data-view="experience"]').innerHTML=
-      pageHead('Experience','Professional Experience','Click any role to expand a deeper view with year-by-year work, major projects, technologies, and additional responsibilities.')+
+      pageHead('Experience','Professional Experience','Click anywhere on a role card to expand a deeper view of the business context, year-by-year growth, stakeholder scope, major projects, and additional responsibilities.')+
       '<div class="experience-list">'+d.experience.map((e,i)=>{
         const detail=details[e.org]||{};
         const timeline=(detail.timeline||[]).map(t=>
@@ -50,18 +57,24 @@
         ).join('');
         const visibleBullets=e.bullets.slice(0,3);
         const additionalBullets=e.bullets.slice(3);
-        return '<article class="experience-card experience-expandable" data-experience-card="'+i+'">'+
-          '<button class="experience-toggle" data-experience-toggle="'+i+'" aria-expanded="false">'+
-            '<div class="experience-top"><div><h3>'+e.role+'</h3><div class="experience-meta">'+e.org+' • '+e.location+'</div></div><div class="experience-period-wrap"><div class="experience-period">'+e.period+'</div><span class="experience-caret">⌄</span></div></div>'+
-          '</button>'+
-          tags(e.tags)+
-          '<ul class="experience-summary-bullets">'+visibleBullets.map(b=>'<li>'+b+'</li>').join('')+'</ul>'+
+        const businessSense=(detail.businessIntelligence||[]).map(x=>'<li>'+x+'</li>').join('');
+        const stakeholder=detail.stakeholderScope||{};
+        return '<article class="experience-card experience-expandable" data-experience-card="'+i+'" tabindex="0" role="button" aria-expanded="false">'+
+          '<div class="experience-card-header">'+
+            '<div class="experience-top"><div><h3>'+e.role+'</h3><div class="experience-meta">'+e.org+' • '+e.location+'</div></div><div class="experience-period">'+e.period+'</div></div>'+
+          '</div>'+
+          '<div class="experience-card-summary">'+
+            tags(e.tags)+
+            '<ul class="experience-summary-bullets">'+visibleBullets.map(b=>'<li>'+b+'</li>').join('')+'</ul>'+
+          '</div>'+
           '<div class="experience-detail" data-experience-detail="'+i+'" hidden>'+
-            (detail.overview?'<div class="experience-detail-section"><div class="inline-detail-title">Role Overview</div><p>'+detail.overview+'</p></div>':'')+
-            (timeline?'<div class="experience-detail-section"><div class="inline-detail-title">Year-by-Year</div><div class="experience-timeline">'+timeline+'</div></div>':'')+
-            (additionalBullets.length?'<div class="experience-detail-section"><div class="inline-detail-title">Additional Responsibilities</div><ul>'+additionalBullets.map(b=>'<li>'+b+'</li>').join('')+'</ul></div>':'')+
-            ((detail.focus||[]).length?'<div class="experience-detail-section"><div class="inline-detail-title">Focus Areas</div>'+tags(detail.focus)+'</div>':'')+
-            (projectCards?'<div class="experience-detail-section"><div class="inline-detail-title">Projects & Initiatives</div><div class="experience-project-grid">'+projectCards+'</div></div>':'')+
+            (detail.overview?'<div class="experience-detail-section experience-subsection overview-subsection"><div class="inline-detail-title">Role Overview</div><p>'+detail.overview+'</p></div>':'')+
+            (businessSense?'<div class="experience-detail-section experience-subsection business-subsection"><div class="inline-detail-title">Business Intelligence & Business Context</div><ul>'+businessSense+'</ul></div>':'')+
+            (((stakeholder.levels||[]).length||(stakeholder.functions||[]).length)?'<div class="experience-detail-section experience-subsection stakeholder-subsection"><div class="inline-detail-title">Stakeholder Scope</div>'+(stakeholder.levels?.length?'<div class="subsection-label">Seniority Levels</div>'+tags(stakeholder.levels):'')+(stakeholder.functions?.length?'<div class="subsection-label subsection-label-spaced">Business Functions</div>'+tags(stakeholder.functions):'')+'</div>':'')+
+            (timeline?'<div class="experience-detail-section experience-subsection timeline-subsection"><div class="inline-detail-title">Year-by-Year</div><div class="experience-timeline">'+timeline+'</div></div>':'')+
+            (additionalBullets.length?'<div class="experience-detail-section experience-subsection responsibilities-subsection"><div class="inline-detail-title">Additional Responsibilities</div><ul>'+additionalBullets.map(b=>'<li>'+b+'</li>').join('')+'</ul></div>':'')+
+            ((detail.focus||[]).length?'<div class="experience-detail-section experience-subsection focus-subsection"><div class="inline-detail-title">Focus Areas</div>'+tags(detail.focus)+'</div>':'')+
+            (projectCards?'<div class="experience-detail-section experience-subsection projects-subsection"><div class="inline-detail-title">Projects & Initiatives</div><div class="experience-project-grid">'+projectCards+'</div></div>':'')+
           '</div>'+
         '</article>';
       }).join('')+'</div>';
@@ -71,7 +84,7 @@
     qs('[data-view="projects"]').innerHTML=
       pageHead('Project Explorer','Projects','Professional analytics work plus earlier software and data projects. Internal links, credentials, customer names, and confidential implementation details are excluded from the public site.')+
       '<div class="filterbar"><input id="projectSearch" placeholder="Search projects, tools, or topics"><select id="projectCategory"><option value="">All categories</option>'+[...new Set(d.projects.map(p=>p.category))].map(c=>'<option>'+c+'</option>').join('')+'</select></div>'+
-      '<div class="panel"><div class="table-wrap"><table class="data-table"><thead><tr><th>Project</th><th>Category</th><th>Period</th><th>Technologies</th><th class="detail-column">Details</th></tr></thead><tbody id="projectRows"></tbody></table></div></div>';
+      '<div class="panel"><div class="table-wrap"><table class="data-table"><thead><tr><th>Project</th><th>Category</th><th>Period</th><th>Technologies</th></tr></thead><tbody id="projectRows"></tbody></table></div></div>';
     drawProjectRows();
   }
 
@@ -86,19 +99,20 @@
         '<td>'+p.category+'</td>'+
         '<td>'+p.period+'</td>'+
         '<td>'+p.technologies.slice(0,6).join(' • ')+'</td>'+
-        '<td class="detail-column"><span class="row-caret">⌄</span></td>'+
       '</tr>'+
       '<tr class="inline-detail-row project-detail-row" data-project-detail="'+p.id+'" hidden>'+
-        '<td colspan="5"><div class="inline-detail">'+
+        '<td colspan="4"><div class="inline-detail project-inline-detail">'+
           '<div class="inline-detail-grid">'+
-            '<div><div class="inline-detail-title">Project Overview</div><p>'+p.summary+'</p></div>'+
-            '<div><div class="inline-detail-title">Time Period</div><p>'+p.period+'</p></div>'+
+            '<div class="inline-detail-panel project-overview-panel"><div class="inline-detail-title">Project Overview</div><p>'+p.summary+'</p></div>'+
+            '<div class="inline-detail-panel project-period-panel"><div class="inline-detail-title">Time Period</div><p>'+p.period+'</p></div>'+
           '</div>'+
-          '<div class="inline-detail-title">Technologies</div>'+tags(p.technologies)+
-          '<div class="inline-detail-title inline-detail-title-spaced">Highlights</div><ul>'+p.highlights.map(x=>'<li>'+x+'</li>').join('')+'</ul>'+
+          (p.businessContext?'<div class="inline-detail-panel business-context-panel"><div class="inline-detail-title">Business Intelligence & Decision Context</div><p>'+p.businessContext+'</p></div>':'')+
+          ((p.stakeholderScope||[]).length?'<div class="inline-detail-panel stakeholder-context-panel"><div class="inline-detail-title">Stakeholder Scope</div>'+tags(p.stakeholderScope)+'</div>':'')+
+          '<div class="inline-detail-panel technologies-panel"><div class="inline-detail-title">Technologies</div>'+tags(p.technologies)+'</div>'+
+          '<div class="inline-detail-panel highlights-panel"><div class="inline-detail-title">Highlights</div><ul>'+p.highlights.map(x=>'<li>'+x+'</li>').join('')+'</ul></div>'+
         '</div></td>'+
       '</tr>'
-    ).join('')||'<tr><td colspan="5">No Matching Projects.</td></tr>';
+    ).join('')||'<tr><td colspan="4">No Matching Projects.</td></tr>';
   }
 
   function renderSkills(){
@@ -209,14 +223,13 @@
   }
 
   function toggleExperienceDetail(index){
-    const toggle=qs('[data-experience-toggle="'+index+'"]');
     const detail=qs('[data-experience-detail="'+index+'"]');
     const card=qs('[data-experience-card="'+index+'"]');
-    if(!detail)return;
+    if(!detail||!card)return;
     const willOpen=detail.hidden;
     detail.hidden=!willOpen;
-    toggle?.setAttribute('aria-expanded',String(willOpen));
-    card?.classList.toggle('expanded',willOpen);
+    card.setAttribute('aria-expanded',String(willOpen));
+    card.classList.toggle('expanded',willOpen);
   }
 
   function toggleProjectDetail(id){
@@ -290,8 +303,11 @@
     if(nav){scrollToSection(nav.dataset.route);return}
     const scroll=e.target.closest('[data-scroll]');
     if(scroll){scrollToSection(scroll.dataset.scroll);return}
-    const experienceToggle=e.target.closest('[data-experience-toggle]');
-    if(experienceToggle){toggleExperienceDetail(experienceToggle.dataset.experienceToggle);return}
+    const experienceCard=e.target.closest('[data-experience-card]');
+    if(experienceCard && !e.target.closest('a,button,.project-jump')){
+      toggleExperienceDetail(experienceCard.dataset.experienceCard);
+      return;
+    }
     const course=e.target.closest('[data-course-toggle]');
     if(course){toggleCourseDetail(course.dataset.courseToggle);return}
     const projectRow=e.target.closest('[data-project-toggle]');
@@ -309,6 +325,14 @@
       const next=document.documentElement.dataset.theme==='dark'?'light':'dark';
       document.documentElement.dataset.theme=next;
       localStorage.setItem('portfolioTheme',next);
+    }
+  });
+
+  document.addEventListener('keydown',e=>{
+    const experienceCard=e.target.closest?.('[data-experience-card]');
+    if(experienceCard && (e.key==='Enter'||e.key===' ')){
+      e.preventDefault();
+      toggleExperienceDetail(experienceCard.dataset.experienceCard);
     }
   });
 
