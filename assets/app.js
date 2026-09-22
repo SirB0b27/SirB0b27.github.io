@@ -49,7 +49,6 @@
     if(overlay)overlay.hidden=true;
     if(input)input.value='';
     if(error)error.hidden=true;
-    if(location.hash==='#personal')history.replaceState(null,'','#overview');
   }
 
   function openPersonalGate(){
@@ -361,8 +360,8 @@
 
   document.addEventListener('click',e=>{
     if(e.target.closest('#personalNavTrigger')){openPersonalGate();return}
-    if(e.target.id==='personalAccessOverlay'){resetPersonalNav();return}
-    if(e.target.closest('#personalNavCancel')){resetPersonalNav();return}
+    if(e.target.id==='personalAccessOverlay'){resetPersonalNav();if(location.hash==='#personal')history.replaceState(null,'','#overview');return}
+    if(e.target.closest('#personalNavCancel')){resetPersonalNav();if(location.hash==='#personal')history.replaceState(null,'','#overview');return}
     if(e.target.closest('#personalNavUnlock')){unlockPersonalNav();return}
     const personalAnalyticsLink=e.target.closest('#personalAnalyticsLink');
     if(personalAnalyticsLink){sessionStorage.setItem('personalAnalyticsEntryGrant','1');return}
