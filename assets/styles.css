@@ -245,3 +245,15 @@ html{scroll-behavior:smooth;scroll-padding-top:74px}
 }
 .nav-subitem{padding-left:20px}
 .sidebar.collapsed .nav-sublabel{display:none}
+
+/* Match Archived heading to the Personal section heading */
+.nav-sublabel{
+  font-size:10px!important;
+  font-weight:700!important;
+  letter-spacing:.08em!important;
+  text-transform:uppercase!important;
+  color:var(--muted)!important;
+  padding:12px 10px 6px!important;
+  opacity:1!important
+}
+.nav-subitem{padding-left:10px!important}
