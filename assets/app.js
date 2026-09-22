@@ -10,6 +10,12 @@
   const routeLabels={overview:'Overview',experience:'Experience',projects:'Projects',skills:'Skills & Technologies',education:'Education'};
   const tags=arr=>'<div class="tag-row">'+arr.map(x=>'<span class="tag">'+x+'</span>').join('')+'</div>';
   const pageHead=(eyebrow,title,desc,actions='')=>'<div class="page-head"><div><div class="eyebrow">'+eyebrow+'</div><h1>'+title+'</h1><p>'+desc+'</p></div>'+(actions?'<div class="page-actions">'+actions+'</div>':'')+'</div>';
+  const experienceOrgAccent=(org)=>({
+    "Armstrong Transport Group, Inc.":"#D6A62C",
+    "Cooper University Hospital":"#C8102E",
+    "2U, Inc.":"#2F75B5",
+    "UNC Charlotte":"#007A53"
+  }[org]||"#9C8CFF");
   const sortProjectsByPeriod=(projects)=>[...projects].sort((a,b)=>{
     const years=(value)=>String(value||'').match(/\b(19|20)\d{2}\b/g)?.map(Number)||[];
     const ay=years(a.period), by=years(b.period);
@@ -116,7 +122,7 @@
         const additionalBullets=e.bullets.slice(3);
         const businessSense=(detail.businessIntelligence||[]).map(x=>'<li>'+x+'</li>').join('');
         const stakeholder=detail.stakeholderScope||{};
-        return '<article class="experience-card experience-expandable" data-experience-card="'+i+'" tabindex="0" role="button" aria-expanded="false">'+
+        return '<article class="experience-card experience-expandable" data-experience-card="'+i+'" tabindex="0" role="button" aria-expanded="false" style="--org-accent:'+experienceOrgAccent(e.org)+'">'+
           '<div class="experience-card-header">'+
             '<div class="experience-top"><div><h3>'+e.role+'</h3><div class="experience-meta">'+e.org+' • '+e.location+'</div></div><div class="experience-period">'+e.period+'</div></div>'+
           '</div>'+
