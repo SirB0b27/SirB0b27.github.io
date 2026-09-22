@@ -11,7 +11,7 @@
   const tags=arr=>'<div class="tag-row">'+arr.map(x=>'<span class="tag">'+x+'</span>').join('')+'</div>';
   const pageHead=(eyebrow,title,desc,actions='')=>'<div class="page-head"><div><div class="eyebrow">'+eyebrow+'</div><h1>'+title+'</h1><p>'+desc+'</p></div>'+(actions?'<div class="page-actions">'+actions+'</div>':'')+'</div>';
   const experienceOrgAccent=(org)=>({
-    "Armstrong Transport Group, Inc.":"#D6A62C",
+    "Armstrong Transport Group, Inc.":"#0F4C5C",
     "Cooper University Hospital":"#C8102E",
     "2U, Inc.":"#2F75B5",
     "UNC Charlotte":"#007A53"
