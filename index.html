@@ -36,11 +36,23 @@
       <a class="nav-item" href="resume/"><span class="nav-icon">▣</span><span class="nav-text">Resume</span></a>
     </div>
     <div class="nav-separator"></div>
-    <div class="nav-section">
-      <div class="nav-label">Personal</div>
-      <a class="nav-item" href="personal-analytics/"><span class="nav-icon">▦</span><span class="nav-text">Personal Analytics</span><span class="nav-badge">🔒</span></a>
-      <div class="nav-sublabel">Archived</div>
-      <a class="nav-item nav-subitem" href="college-projects/"><span class="nav-icon">◧</span><span class="nav-text">College Projects</span><span class="nav-badge">🔒</span></a>
+    <div class="nav-section personal-nav-section" id="personalNavSection">
+      <button class="nav-label personal-nav-trigger" id="personalNavTrigger" type="button" aria-expanded="false">
+        <span>Personal</span><span class="personal-lock">🔒</span>
+      </button>
+      <div class="personal-nav-gate" id="personalNavGate" hidden>
+        <label for="personalNavPassword">Password</label>
+        <input id="personalNavPassword" type="password" autocomplete="current-password">
+        <div class="personal-nav-gate-actions">
+          <button class="secondary-btn" id="personalNavCancel" type="button">Cancel</button>
+          <button class="primary-btn" id="personalNavUnlock" type="button">Unlock</button>
+        </div>
+        <div class="personal-nav-error" id="personalNavError" hidden>Incorrect password.</div>
+      </div>
+      <div class="personal-nav-links" id="personalNavLinks" hidden>
+        <a class="nav-item" href="personal-analytics/" id="personalAnalyticsLink"><span class="nav-icon">▦</span><span class="nav-text">Personal Analytics</span></a>
+        <a class="nav-item" href="college-projects/" id="collegeProjectsLink"><span class="nav-icon">◧</span><span class="nav-text">College Projects</span></a>
+      </div>
     </div>
     <div class="nav-separator"></div>
     <div class="nav-section">
