@@ -26,7 +26,7 @@ window.PRIVATE_ANALYTICS = {
     ["2026-01",26],["2026-02",19],["2026-03",13],["2026-04",18],["2026-05",18],["2026-06",22],["2026-07",27],["2026-08",24],["2026-09",21]
   ],
   stakeholderTicketCounts:[
-    {level:"C-Suite / Executive",value:22},
+    {level:"C-Suite / Executive (CEO/CFO-Level)",value:22},
     {level:"Vice President / SVP",value:10},
     {level:"Director",value:45},
     {level:"Manager / Lead",value:121},
@@ -34,7 +34,7 @@ window.PRIVATE_ANALYTICS = {
     {level:"Unmatched / Historical",value:70}
   ],
   uniqueMatchedStakeholders:[
-    {level:"C-Suite / Executive",value:2},
+    {level:"C-Suite / Executive (CEO/CFO-Level)",value:2},
     {level:"Vice President / SVP",value:2},
     {level:"Director",value:9},
     {level:"Manager / Lead",value:15},
