@@ -6,6 +6,7 @@
   let scrollTick=false;
   let personalMenuUnlocked=false;
   const personalExpectedHash='d0f1e3c007d7e9411923d1922fb8364004ca9eaf7b8aee6cb1955104e35f2dca';
+  sessionStorage.removeItem('personalSpaceAuth');
   const routes=['overview','experience','projects','skills','education'];
   const routeLabels={overview:'Overview',experience:'Experience',projects:'Projects',skills:'Skills & Technologies',education:'Education'};
   const tags=arr=>'<div class="tag-row">'+arr.map(x=>'<span class="tag">'+x+'</span>').join('')+'</div>';
@@ -42,32 +43,21 @@
   }
 
   function resetPersonalNav(){
-    personalMenuUnlocked=false;
-    const gate=qs('#personalNavGate');
-    const links=qs('#personalNavLinks');
-    const trigger=qs('#personalNavTrigger');
+    const overlay=qs('#personalAccessOverlay');
     const input=qs('#personalNavPassword');
     const error=qs('#personalNavError');
-    if(gate)gate.hidden=true;
-    if(links)links.hidden=true;
-    if(trigger)trigger.setAttribute('aria-expanded','false');
+    if(overlay)overlay.hidden=true;
     if(input)input.value='';
     if(error)error.hidden=true;
+    if(location.hash==='#personal')history.replaceState(null,'','#overview');
   }
 
   function openPersonalGate(){
-    const gate=qs('#personalNavGate');
-    const links=qs('#personalNavLinks');
-    const trigger=qs('#personalNavTrigger');
+    const overlay=qs('#personalAccessOverlay');
     const input=qs('#personalNavPassword');
     const error=qs('#personalNavError');
-    if(personalMenuUnlocked){
-      resetPersonalNav();
-      return;
-    }
-    if(gate)gate.hidden=false;
-    if(links)links.hidden=true;
-    if(trigger)trigger.setAttribute('aria-expanded','true');
+    if(!overlay)return;
+    overlay.hidden=false;
     if(error)error.hidden=true;
     setTimeout(()=>input?.focus(),0);
   }
@@ -77,12 +67,10 @@
     const error=qs('#personalNavError');
     if(!input)return;
     if(await sha256(input.value)===personalExpectedHash){
-      personalMenuUnlocked=true;
-      qs('#personalNavGate').hidden=true;
-      qs('#personalNavLinks').hidden=false;
-      qs('#personalNavTrigger')?.setAttribute('aria-expanded','true');
+      sessionStorage.setItem('personalSpaceAuth','1');
       input.value='';
       if(error)error.hidden=true;
+      location.href='personal/#home';
     }else{
       if(error)error.hidden=false;
       input.select();
@@ -373,6 +361,7 @@
 
   document.addEventListener('click',e=>{
     if(e.target.closest('#personalNavTrigger')){openPersonalGate();return}
+    if(e.target.id==='personalAccessOverlay'){resetPersonalNav();return}
     if(e.target.closest('#personalNavCancel')){resetPersonalNav();return}
     if(e.target.closest('#personalNavUnlock')){unlockPersonalNav();return}
     const personalAnalyticsLink=e.target.closest('#personalAnalyticsLink');
@@ -431,7 +420,7 @@
   });
   window.addEventListener('scroll',()=>{if(!scrollTick){scrollTick=true;requestAnimationFrame(updateActiveFromScroll)}},{passive:true});
   window.addEventListener('pagehide',resetPersonalNav);
-  window.addEventListener('pageshow',e=>{if(e.persisted)resetPersonalNav()});
+  window.addEventListener('pageshow',e=>{sessionStorage.removeItem('personalSpaceAuth');if(e.persisted)resetPersonalNav()});
 
   const savedTheme=localStorage.getItem('portfolioTheme');
   document.documentElement.dataset.theme=savedTheme||'dark';
@@ -439,6 +428,7 @@
   resetPersonalNav();
 
   const initial=location.hash.replace('#','');
-  if(routes.includes(initial)) setTimeout(()=>scrollToSection(initial,false),0);
+  if(initial==='personal') setTimeout(openPersonalGate,0);
+  else if(routes.includes(initial)) setTimeout(()=>scrollToSection(initial,false),0);
   else setActive('overview',false);
 })();

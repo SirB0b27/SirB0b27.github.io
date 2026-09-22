@@ -2,10 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="refresh" content="0; url=../personal-analytics/">
   <meta name="robots" content="noindex">
   <title>Personal Analytics</title>
-  <script>location.replace('../personal-analytics/');</script>
+  <script>
+    const authorized=sessionStorage.getItem('personalSpaceAuth')==='1';
+    location.replace(authorized?'../personal/#analytics':'../#personal');
+  </script>
 </head>
 <body></body>
 </html>

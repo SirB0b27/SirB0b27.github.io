@@ -36,23 +36,12 @@
       <a class="nav-item" href="resume/"><span class="nav-icon">▣</span><span class="nav-text">Resume</span></a>
     </div>
     <div class="nav-separator"></div>
-    <div class="nav-section personal-nav-section" id="personalNavSection">
-      <button class="nav-label personal-nav-trigger" id="personalNavTrigger" type="button" aria-expanded="false">
-        <span>Personal</span><span class="personal-lock">🔒</span>
+    <div class="nav-section" id="personalNavSection">
+      <button class="nav-item portfolio-personal-entry" id="personalNavTrigger" type="button" aria-haspopup="dialog">
+        <span class="nav-icon">▣</span>
+        <span class="nav-text">Personal</span>
+        <span class="personal-lock" aria-hidden="true">🔒</span>
       </button>
-      <div class="personal-nav-gate" id="personalNavGate" hidden>
-        <label for="personalNavPassword">Password</label>
-        <input id="personalNavPassword" type="password" autocomplete="current-password">
-        <div class="personal-nav-gate-actions">
-          <button class="secondary-btn" id="personalNavCancel" type="button">Cancel</button>
-          <button class="primary-btn" id="personalNavUnlock" type="button">Unlock</button>
-        </div>
-        <div class="personal-nav-error" id="personalNavError" hidden>Incorrect password.</div>
-      </div>
-      <div class="personal-nav-links" id="personalNavLinks" hidden>
-        <a class="nav-item" href="personal-analytics/" id="personalAnalyticsLink"><span class="nav-icon">▦</span><span class="nav-text">Personal Analytics</span></a>
-        <a class="nav-item" href="college-projects/" id="collegeProjectsLink"><span class="nav-icon">◧</span><span class="nav-text">College Projects</span></a>
-      </div>
     </div>
     <div class="nav-separator"></div>
     <div class="nav-section">
@@ -70,6 +59,22 @@
     </div>
   </main>
 </div>
+<div class="personal-access-overlay" id="personalAccessOverlay" hidden role="dialog" aria-modal="true" aria-labelledby="personalAccessTitle">
+  <div class="personal-access-card">
+    <div class="personal-access-icon" aria-hidden="true">🔒</div>
+    <div class="eyebrow">Private Workspace</div>
+    <h2 id="personalAccessTitle">Personal</h2>
+    <p>Enter the password to open the Personal workspace.</p>
+    <label for="personalNavPassword">Password</label>
+    <input id="personalNavPassword" type="password" autocomplete="current-password">
+    <div class="personal-access-actions">
+      <button class="secondary-btn" id="personalNavCancel" type="button">Cancel</button>
+      <button class="primary-btn" id="personalNavUnlock" type="button">Continue</button>
+    </div>
+    <div class="personal-nav-error" id="personalNavError" hidden>Incorrect password.</div>
+  </div>
+</div>
+
 <script src="data/portfolio-data.js"></script>
 <script src="data/education-catalog.js"></script>
 <script src="assets/app.js"></script>
