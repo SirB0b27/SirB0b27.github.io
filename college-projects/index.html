@@ -162,7 +162,9 @@
 
   window.addEventListener('pagehide',relock);
   window.addEventListener('pageshow',e=>{if(e.persisted)relock()});
-  setTimeout(()=>q('#collegePassword').focus(),0);
+  const entryGrant=sessionStorage.getItem('collegeProjectsEntryGrant');
+  sessionStorage.removeItem('collegeProjectsEntryGrant');
+  if(entryGrant==='1')unlock(); else setTimeout(()=>q('#collegePassword').focus(),0);
 })();
 </script>
 </body>
