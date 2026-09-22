@@ -74,6 +74,45 @@ window.PORTFOLIO_DATA = {
       ]
     }
   ],
+  experienceDetails: {
+    "Armstrong Transport Group, Inc.": {
+      overview: "Progressed into broad ownership of production analytics, commission systems, financial reporting, automation, and technical documentation. Work spans requirements gathering, source analysis, SQL/Snowflake modeling, Sigma delivery, validation, stakeholder review, deployment, and ongoing support.",
+      timeline: [
+        {year:"2023",title:"Production BI & Reporting Foundation",summary:"Expanded ownership of recurring operational reporting, stakeholder requests, SQL modeling, validation, and production support while building context across the company’s logistics and financial data."},
+        {year:"2024",title:"Commission & Operational Analytics",summary:"Deepened work on internal commission reporting, operational dashboards, Front conversation analytics, source-system validation, and reusable reporting logic."},
+        {year:"2025",title:"Financial Controls, Forecasting & Snapshots",summary:"Built payment-behavior forecasting, settlement controls, currency-conversion logic, snapshot procedures, historical comparisons, and reconciliation workflows."},
+        {year:"2026",title:"Automation, Platform Hardening & Documentation",summary:"Expanded automation, user-activity analytics, data-quality investigations, commission process maps, technical documentation, and the browser-based work-history collector used to structure portfolio evidence."}
+      ],
+      projectIds:["commission-platform","front-analytics","cash-forecasting","cad-controls","user-activity","snapshot-automation","commission-reconciliation","process-docs","work-history-collector"],
+      focus:["Business Intelligence","Analytics Engineering","Financial Analytics","Commission Systems","API Automation","Snowflake","Sigma","Data Quality","Technical Documentation"]
+    },
+    "Cooper University Hospital": {
+      overview: "Worked with operational and administrative stakeholders to turn appointment-access and performance questions into repeatable dashboards and decision-support models.",
+      timeline: [
+        {year:"2023",title:"Enterprise Business Analysis Internship",summary:"Built performance reporting and a partner-hospital capacity model during the summer internship, combining operational analysis with management-facing dashboard delivery."}
+      ],
+      projectIds:["healthcare-performance","hospital-capacity-model"],
+      focus:["Performance Analytics","Dashboarding","Capacity Analysis","Business Modeling","Decision Support"]
+    },
+    "2U, Inc.": {
+      overview: "Supported data and software-development bootcamp cohorts through technical troubleshooting, office hours, capstone mentoring, and substitute instruction across analytics and web-development topics.",
+      timeline: [
+        {year:"2022",title:"Data Bootcamp Support",summary:"Began supporting students with Python, SQL, data analysis, visualization, and project troubleshooting."},
+        {year:"2023",title:"Capstone Mentoring & Broader Technical Support",summary:"Mentored final-project teams and supported more advanced analytics, machine-learning, dashboarding, and software-development workflows."},
+        {year:"2024",title:"Cross-Stack Instructional Support",summary:"Continued technical support across data and web-development topics including JavaScript, React, MERN, ORM, Git, databases, and deployment workflows."}
+      ],
+      projectIds:[],
+      focus:["Python","SQL","Tableau","Power BI","Machine Learning","JavaScript","React","MERN","Mentoring","Technical Support"]
+    },
+    "UNC Charlotte": {
+      overview: "Supported a large interdisciplinary Intro to Data Science and Sociology course through grading, office hours, technical feedback, and coordination with the instructional team.",
+      timeline: [
+        {year:"2022",title:"Undergraduate Teaching Assistant",summary:"Supported approximately 110 students while coordinating with an eight-person instructional team on weekly delivery and student support."}
+      ],
+      projectIds:[],
+      focus:["Data Science","Teaching","Grading","Office Hours","Student Support","Team Coordination"]
+    }
+  },
   projects: [
     {
       id:"commission-platform",
