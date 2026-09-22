@@ -6,15 +6,61 @@
   <title>College Projects | Hemanth Velan</title>
   <link rel="stylesheet" href="../assets/styles.css">
   <style>
-    .project-shell{min-height:100vh;background:var(--bg)}.project-topbar{height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:var(--panel);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30}.project-brand{display:flex;align-items:center;gap:10px}.project-body{padding:20px;max-width:1500px;margin:auto}.course-panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}.course-head{padding:15px 16px;border-bottom:1px solid var(--line)}.course-head h1{font-size:20px;margin:0}.course-head p{font-size:11px;color:var(--muted);margin:5px 0 0}.assignment-tabs{display:flex;gap:2px;overflow:auto;padding:10px 10px 0;background:var(--panel-2);border-bottom:1px solid var(--line)}.assignment-tab{border:1px solid transparent;border-bottom:0;background:transparent;color:var(--muted);padding:9px 13px;border-radius:7px 7px 0 0;cursor:pointer;white-space:nowrap}.assignment-tab.active{background:var(--panel);color:var(--text);border-color:var(--line);font-weight:700}.assignment-meta{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:10px 13px;border-bottom:1px solid var(--line);font-size:10px;color:var(--muted)}.assignment-frame-wrap{height:calc(100vh - 230px);min-height:540px;background:#fff}.assignment-frame{width:100%;height:100%;border:0;background:#fff}.project-tools{display:flex;gap:6px}.project-tools button,.project-tools a{font-size:11px}@media(max-width:700px){.project-body{padding:10px}.assignment-frame-wrap{height:calc(100vh - 210px)}.assignment-meta{align-items:flex-start;flex-direction:column}.desktop-label{display:none}}
+    .project-shell{min-height:100vh;background:var(--bg)}
+    .project-topbar{height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:var(--panel);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30}
+    .project-brand{display:flex;align-items:center;gap:10px}
+    .project-body{padding:20px;max-width:1500px;margin:auto}
+    .course-panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+    .course-head{padding:15px 16px;border-bottom:1px solid var(--line)}
+    .course-head h1{font-size:20px;margin:0}.course-head p{font-size:11px;color:var(--muted);margin:5px 0 0}
+    .assignment-tabs{display:flex;gap:2px;overflow:auto;padding:10px 10px 0;background:var(--panel-2);border-bottom:1px solid var(--line)}
+    .assignment-tab{border:1px solid transparent;border-bottom:0;background:transparent;color:var(--muted);padding:9px 13px;border-radius:7px 7px 0 0;cursor:pointer;white-space:nowrap}
+    .assignment-tab.active{background:var(--panel);color:var(--text);border-color:var(--line);font-weight:700}
+    .assignment-meta{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:10px 13px;border-bottom:1px solid var(--line);font-size:10px;color:var(--muted)}
+    .assignment-frame-wrap{height:calc(100vh - 230px);min-height:540px;background:#fff}.assignment-frame{width:100%;height:100%;border:0;background:#fff}
+    .project-tools{display:flex;gap:6px}.project-tools button,.project-tools a{font-size:11px}
+    .college-locked .project-body{display:none}
+    .access-gate{position:fixed;inset:58px 0 0;z-index:20;display:flex;align-items:center;justify-content:center;padding:24px;background:var(--bg)}
+    .access-gate.hidden{display:none}
+    .gate-card{width:min(440px,100%);background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:24px}
+    .gate-icon{width:42px;height:42px;border:1px solid var(--line);border-radius:11px;display:flex;align-items:center;justify-content:center;background:var(--panel-2);font-size:20px;margin-bottom:14px}
+    .gate-card h1{font-size:20px;margin:0 0 7px}.gate-card p{font-size:12px;line-height:1.5;color:var(--muted);margin:0 0 16px}
+    .gate-card label{display:block;font-size:11px;font-weight:700;margin-bottom:6px}
+    .gate-card input{width:100%;height:40px;border:1px solid var(--line);border-radius:7px;background:var(--panel-2);color:var(--text);padding:0 10px;outline:none}
+    .gate-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}.gate-actions .primary-btn,.gate-actions .secondary-btn{min-width:90px;text-align:center}
+    .gate-error{display:none;margin-top:12px;padding:10px 11px;border:1px solid #a24a4a;background:rgba(162,74,74,.1);border-radius:7px;font-size:11px;line-height:1.4}
+    .gate-error.show{display:block}.gate-retry-actions{display:none;gap:8px;margin-top:10px}.gate-retry-actions.show{display:flex}
+    @media(max-width:700px){.project-body{padding:10px}.assignment-frame-wrap{height:calc(100vh - 210px)}.assignment-meta{align-items:flex-start;flex-direction:column}.desktop-label{display:none}}
   </style>
 </head>
-<body>
+<body class="college-locked">
 <div class="project-shell">
   <header class="project-topbar">
     <div class="project-brand"><a class="icon-btn" href="../" aria-label="Back to portfolio">←</a><div><div class="brand-title">College Projects</div><div class="brand-sub">Coursework archive</div></div></div>
     <div class="project-tools"><a class="tool-btn" href="../">Portfolio</a><button class="icon-btn" id="themeToggle">◐</button></div>
   </header>
+
+  <section class="access-gate" id="accessGate">
+    <div class="gate-card">
+      <div class="gate-icon">🔒</div>
+      <h1>College Projects</h1>
+      <p>This archive is password protected. Enter the password to view the coursework and assignment previews.</p>
+      <div id="gateForm">
+        <label for="collegePassword">Password</label>
+        <input id="collegePassword" type="password" autocomplete="current-password" aria-label="College Projects password">
+        <div class="gate-actions">
+          <a class="secondary-btn" href="../">Go back</a>
+          <button class="primary-btn" id="unlockButton">Continue</button>
+        </div>
+      </div>
+      <div class="gate-error" id="gateError">Incorrect password. You can go back to the Portfolio or try again.</div>
+      <div class="gate-retry-actions" id="retryActions">
+        <a class="secondary-btn" href="../">Go back</a>
+        <button class="primary-btn" id="tryAgainButton">Try again</button>
+      </div>
+    </div>
+  </section>
+
   <main class="project-body">
     <section class="course-panel">
       <div class="course-head"><div class="eyebrow">College coursework</div><h1>IT 201</h1><p>Assignments are rendered in-place so you can move between them without reloading the College Projects workspace. Original source files remain in the repository.</p></div>
@@ -26,25 +72,83 @@
         <button class="assignment-tab" data-assignment="5">Assignment 5</button>
       </div>
       <div class="assignment-meta"><span id="assignmentDescription">HTML/CSS heritage page</span><span><span class="desktop-label">Direct view: </span><a id="openAssignment" target="_blank" rel="noopener">Open assignment ↗</a></span></div>
-      <div class="assignment-frame-wrap"><iframe class="assignment-frame" id="assignmentFrame" title="College assignment preview" src="../IT201/Assignment1/index.html"></iframe></div>
+      <div class="assignment-frame-wrap"><iframe class="assignment-frame" id="assignmentFrame" title="College assignment preview" src="about:blank"></iframe></div>
     </section>
   </main>
 </div>
+
 <script>
 (() => {
- const map={
-  1:{src:'../IT201/Assignment1/index.html',desc:'HTML/CSS heritage page'},
-  2:{src:'../IT201/Assignment2/index.html',desc:'JavaScript validation and account verification interface'},
-  3:{src:'../IT201/Assignment3/index.html',desc:'Database-backed dental records assignment — static GitHub Pages reconstruction'},
-  4:{src:'../IT201/Assignment4/index.html',desc:'Dental account and appointment workflow — browser-based compatibility version'},
-  5:{src:'../IT201/Assignment5/index.html',desc:'Real-time chat assignment — browser-based compatibility recreation'}
- };
- const q=s=>document.querySelector(s), qa=s=>[...document.querySelectorAll(s)];
- function show(n){const item=map[n]||map[1];qa('.assignment-tab').forEach(x=>x.classList.toggle('active',x.dataset.assignment==n));q('#assignmentFrame').src=item.src;q('#assignmentDescription').textContent=item.desc;q('#openAssignment').href=item.src;history.replaceState(null,'','#assignment-'+n)}
- qa('.assignment-tab').forEach(x=>x.addEventListener('click',()=>show(x.dataset.assignment)));
- const saved=localStorage.getItem('portfolioTheme');if(saved)document.documentElement.dataset.theme=saved;
- q('#themeToggle').addEventListener('click',()=>{const next=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=next;localStorage.setItem('portfolioTheme',next)});
- const m=location.hash.match(/assignment-(\d)/);show(m?m[1]:1);
+  const map={
+    1:{src:'../IT201/Assignment1/index.html',desc:'HTML/CSS heritage page'},
+    2:{src:'../IT201/Assignment2/index.html',desc:'JavaScript validation and account verification interface'},
+    3:{src:'../IT201/Assignment3/index.html',desc:'Database-backed dental records assignment — static GitHub Pages reconstruction'},
+    4:{src:'../IT201/Assignment4/index.html',desc:'Dental account and appointment workflow — browser-based compatibility version'},
+    5:{src:'../IT201/Assignment5/index.html',desc:'Real-time chat assignment — browser-based compatibility recreation'}
+  };
+  const expectedHash='d0f1e3c007d7e9411923d1922fb8364004ca9eaf7b8aee6cb1955104e35f2dca';
+  const q=s=>document.querySelector(s), qa=s=>[...document.querySelectorAll(s)];
+  let initialized=false;
+
+  async function sha256(value){
+    const bytes=new TextEncoder().encode(value);
+    const digest=await crypto.subtle.digest('SHA-256',bytes);
+    return [...new Uint8Array(digest)].map(b=>b.toString(16).padStart(2,'0')).join('');
+  }
+
+  function show(n){
+    const item=map[n]||map[1];
+    qa('.assignment-tab').forEach(x=>x.classList.toggle('active',x.dataset.assignment==n));
+    q('#assignmentFrame').src=item.src;
+    q('#assignmentDescription').textContent=item.desc;
+    q('#openAssignment').href=item.src;
+    history.replaceState(null,'','#assignment-'+n);
+  }
+
+  function initializeAssignments(){
+    if(initialized)return;
+    initialized=true;
+    qa('.assignment-tab').forEach(x=>x.addEventListener('click',()=>show(x.dataset.assignment)));
+    const m=location.hash.match(/assignment-(\d)/);
+    show(m?m[1]:1);
+  }
+
+  function unlock(){
+    sessionStorage.setItem('collegeProjectsUnlocked','1');
+    document.body.classList.remove('college-locked');
+    q('#accessGate').classList.add('hidden');
+    initializeAssignments();
+  }
+
+  async function attemptUnlock(){
+    const password=q('#collegePassword').value;
+    const hash=await sha256(password);
+    if(hash===expectedHash){unlock();return}
+    q('#gateForm').style.display='none';
+    q('#gateError').classList.add('show');
+    q('#retryActions').classList.add('show');
+  }
+
+  q('#unlockButton').addEventListener('click',attemptUnlock);
+  q('#collegePassword').addEventListener('keydown',e=>{if(e.key==='Enter')attemptUnlock()});
+  q('#tryAgainButton').addEventListener('click',()=>{
+    q('#gateForm').style.display='block';
+    q('#gateError').classList.remove('show');
+    q('#retryActions').classList.remove('show');
+    q('#collegePassword').value='';
+    q('#collegePassword').focus();
+  });
+
+  const saved=localStorage.getItem('portfolioTheme');
+  document.documentElement.dataset.theme=saved||'dark';
+  q('#themeToggle').addEventListener('click',()=>{
+    const next=document.documentElement.dataset.theme==='dark'?'light':'dark';
+    document.documentElement.dataset.theme=next;
+    localStorage.setItem('portfolioTheme',next);
+  });
+
+  if(sessionStorage.getItem('collegeProjectsUnlocked')==='1') unlock();
+  else setTimeout(()=>q('#collegePassword').focus(),0);
 })();
 </script>
 </body>
