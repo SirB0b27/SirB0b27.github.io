@@ -89,6 +89,7 @@
   const expectedHash='d0f1e3c007d7e9411923d1922fb8364004ca9eaf7b8aee6cb1955104e35f2dca';
   const q=s=>document.querySelector(s), qa=s=>[...document.querySelectorAll(s)];
   let initialized=false;
+  window.__collegeProjectsUnlocked=false;
 
   async function sha256(value){
     const bytes=new TextEncoder().encode(value);
@@ -114,10 +115,22 @@
   }
 
   function unlock(){
-    localStorage.setItem('collegeProjectsUnlockedUntil',String(Date.now()+30*60*1000));
+    window.__collegeProjectsUnlocked=true;
     document.body.classList.remove('college-locked');
     q('#accessGate').classList.add('hidden');
     initializeAssignments();
+  }
+
+  function relock(){
+    window.__collegeProjectsUnlocked=false;
+    document.body.classList.add('college-locked');
+    q('#accessGate').classList.remove('hidden');
+    q('#assignmentFrame').src='about:blank';
+    q('#collegePassword').value='';
+    q('#gateForm').style.display='block';
+    q('#gateError').classList.remove('show');
+    q('#retryActions').classList.remove('show');
+    initialized=false;
   }
 
   async function attemptUnlock(){
@@ -147,9 +160,9 @@
     localStorage.setItem('portfolioTheme',next);
   });
 
-  const unlockedUntil=Number(localStorage.getItem('collegeProjectsUnlockedUntil')||0);
-  if(unlockedUntil>Date.now()) unlock();
-  else { localStorage.removeItem('collegeProjectsUnlockedUntil'); setTimeout(()=>q('#collegePassword').focus(),0); }
+  window.addEventListener('pagehide',relock);
+  window.addEventListener('pageshow',e=>{if(e.persisted)relock()});
+  setTimeout(()=>q('#collegePassword').focus(),0);
 })();
 </script>
 </body>
