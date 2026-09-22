@@ -12,7 +12,7 @@ window.PORTFOLIO_DATA = {
     {label:"Experience", value:"3+ Years", note:"Business Intelligence & Analytics"},
     {label:"Major Projects", value:"30+", note:"Analytics, Automation & Applications"},
     {label:"Capability Areas", value:"8", note:"Analytics, Data, Engineering & Delivery"},
-    {label:"Degrees", value:"2", note:"Computer Science + Data Science & Business Analytics"}
+    {label:"Degrees", value:"2", note:"CS + IT Double Degree • Data Science & Business Analytics"}
   ],
 
   experience: [
@@ -23,10 +23,10 @@ window.PORTFOLIO_DATA = {
       location:"United States",
       tags:["SQL","Snowflake","Sigma","Python","REST APIs","Automation","Financial Analytics","Data Modeling","Business Intelligence"],
       bullets:[
-        "Own end-to-end analytics initiatives from requirements and source analysis through SQL modeling, QA, stakeholder review, rollout, documentation, and long-term maintenance.",
-        "Serve as sole developer or primary technical owner for multiple large reporting, dashboard, automation, and commission initiatives used across finance, operations, agent-facing teams, and executive leadership.",
-        "Build internal commission reporting and payout systems spanning plan logic, historical snapshots, overrides, row-level security, statements, pay-cycle controls, and reconciliation.",
-        "Create financial and operational analytics for settlements, currency conversion, payment behavior, DSO-based cash forecasting, historical comparisons, exception monitoring, and decision support.",
+        "Own end-to-end analytics initiatives from requirements and business-rule discovery through SQL/Snowflake modeling, QA, stakeholder review, rollout, documentation, and long-term maintenance.",
+        "Serve as sole developer or primary technical owner for major dashboards, financial analytics, automation, and commission initiatives supporting stakeholders from managers and directors through VP/SVP and C-suite leadership.",
+        "Build commission reporting and payout systems spanning multiple plan types, business-rule logic, historical snapshots, overrides, row-level security, statements, pay-cycle controls, and reconciliation.",
+        "Create financial and operational analytics that turn settlement, payment, customer, coverage, quote, and usage data into KPIs, forecasts, exception views, opportunity signals, and management decision support.",
         "Automate approved API-based and scheduled data workflows with Python, structured exports, validation controls, historical backfills, and downstream BI reporting.",
         "Develop Sigma dashboards and Snowflake models that translate business questions into measurable KPIs, drilldowns, segmentation, trend analysis, and actionable operational views.",
         "Create process maps and technical documentation that make complex joins, business rules, security logic, snapshots, and downstream calculations maintainable for future developers."
@@ -688,14 +688,14 @@ window.PORTFOLIO_DATA = {
 
   education:[
     {school:"UNC Charlotte",degree:"Master of Science",program:"Data Science & Business Analytics",period:"2022 – 2025",completedCourses:11,credits:33,highlights:["Business Intelligence & Analytics","Applied Machine Learning","Artificial Intelligence & Deep Learning","Big Data Analytics","Cloud Computing for Data Analysis","Visual Analytics & Storytelling","Database Systems for Data Scientists","Strategic Business Analytics"]},
-    {school:"New Jersey Institute of Technology",degree:"Bachelor of Science",program:"Computer Science",secondary:"Information Technology • Applied Physics Minor",period:"2018 – 2022",completedCourses:47,credits:136,honors:"Dean’s List — 7 Terms",highlights:["Algorithms & Data Structures","Operating Systems","Artificial Intelligence","Data Mining","Cybersecurity","Computer Networks","Systems Integration","Database Design","Software Engineering","Linux Programming"]}
+    {school:"New Jersey Institute of Technology",degree:"Bachelor of Science (Double Degree)",program:"Computer Science — Full Stack Developer & Information Technology",secondary:"Applied Physics Minor",period:"2018 – 2022",completedCourses:47,credits:136,honors:"Dean’s List — 7 Terms",highlights:["Full Stack Development","Algorithms & Data Structures","Operating Systems","Artificial Intelligence","Data Mining","Cybersecurity","Computer Networks","Systems Integration","Database Design","Software Engineering"]}
   ],
 
   courseSubjects:[["CS",14],["DSBA",10],["IT",8],["MATH",6],["PHYS",5],["HUM/HSS",5],["IS",3],["Other",7]],
 
   resume:{
     headline:"Business Intelligence Analyst | Data, Analytics Engineering & Automation",
-    summary:"Business intelligence and analytics professional with experience owning production reporting, operational dashboards, commission systems, financial analytics, forecasting, data quality controls, and stakeholder-facing decision support. Strong background in SQL, Snowflake, Sigma, Python, APIs, data modeling, reconciliation, business process analysis, documentation, and cross-functional delivery.",
+    summary:"Business intelligence and analytics professional with experience owning production dashboards, commission systems, financial analytics, forecasting, data quality controls, and decision-support products for stakeholders ranging from operational teams and managers to directors, VP/SVP leaders, and C-suite executives. Strong background in SQL, Snowflake, Sigma, Python, APIs, data modeling, reconciliation, business process analysis, and cross-functional delivery.",
     featuredProjectIds:["commission-platform","cash-forecasting","agent-operations-dashboard","financial-auto-processing"],
     skills:[
       {label:"Analytics & BI",value:"Data Analysis, Business Intelligence, Sigma, Tableau, Power BI, Forecasting, KPI Design, Dashboard Design, Reconciliation, Decision Support"},
