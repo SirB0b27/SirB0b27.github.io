@@ -14,3 +14,47 @@ html{scroll-behavior:smooth;scroll-padding-top:74px}
 @media(max-width:1050px){.skills-kpi-row{grid-template-columns:repeat(2,1fr)}.focus-grid{grid-template-columns:1fr}.skill-footer-grid{grid-template-columns:1fr}}
 @media(max-width:760px){.view{padding-bottom:44px}.view+.view{padding-top:26px}.skills-kpi-row{grid-template-columns:1fr 1fr}}
 @media(max-width:480px){.skills-kpi-row{grid-template-columns:1fr}}
+
+.education-kpi-grid{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:12px}
+.education-program-grid{grid-template-columns:repeat(2,minmax(0,1fr));margin-bottom:12px}
+.education-program-card{min-height:100%}
+.education-program-title{font-size:13px;margin-top:4px}
+.education-secondary{margin-top:0;margin-bottom:8px}
+.education-program-summary{margin:0;color:var(--muted);font-size:11px;line-height:1.55}
+.catalog-note{margin-top:11px;padding:9px 10px;border-left:3px solid var(--accent);background:var(--panel-2);color:var(--muted);font-size:10px;line-height:1.45;border-radius:0 6px 6px 0}
+.catalog-links{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px}
+.catalog-links a{color:var(--accent);font-size:10px;text-decoration:none;font-weight:650}
+.catalog-links a:hover{text-decoration:underline}
+.education-explorer{margin-top:12px}
+.education-filterbar{margin-bottom:9px}
+.education-filterbar select{min-width:170px}
+.education-source-note{font-size:10px;color:var(--muted);line-height:1.45;margin:2px 0 12px;padding:8px 10px;border:1px solid var(--line-2);border-radius:7px;background:var(--panel-2)}
+.education-table-wrap{max-height:690px;border:1px solid var(--line-2);border-radius:8px}
+.education-table th{top:0;z-index:2}
+.education-table td:nth-child(1){min-width:190px}
+.education-table td:nth-child(2){white-space:nowrap}
+.education-table td:nth-child(3){min-width:130px}
+.education-table td:nth-child(4){width:64px;text-align:center}
+.education-table td:nth-child(5){min-width:360px}
+.course-title{font-size:10px;color:var(--muted);margin-top:3px}
+.course-origin{display:inline-flex;margin-top:5px;padding:2px 5px;border-radius:99px;background:var(--accent-soft);color:var(--accent);font-size:8px;font-weight:700}
+.course-summary-cell{font-size:10.5px;color:var(--muted);line-height:1.4}
+.course-topic-list{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
+.course-topic-list span{font-size:8.5px;padding:3px 5px;border-radius:5px;border:1px solid var(--line);background:var(--panel);color:var(--muted)}
+.course-open{cursor:pointer}
+.course-open:hover td{background:var(--panel-2)}
+.empty-state{padding:26px;text-align:center;color:var(--muted);font-size:11px}
+.drawer-source-link{display:inline-flex}
+@media(max-width:1050px){
+  .education-kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .education-program-grid{grid-template-columns:1fr}
+}
+@media(max-width:760px){
+  .education-kpi-grid{grid-template-columns:1fr 1fr}
+  .education-filterbar select{width:100%}
+  .education-table-wrap{max-height:none}
+  .education-table td:nth-child(5){min-width:300px}
+}
+@media(max-width:480px){
+  .education-kpi-grid{grid-template-columns:1fr}
+}
