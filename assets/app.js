@@ -1,5 +1,6 @@
 (() => {
   const d = window.PORTFOLIO_DATA;
+  const edu = window.EDUCATION_CATALOG;
   const qs=(s,r=document)=>r.querySelector(s), qsa=(s,r=document)=>[...r.querySelectorAll(s)];
   let zoom=Number(localStorage.getItem('portfolioZoomV2')||1);
   let scrollTick=false;
@@ -60,11 +61,86 @@
   }
 
   function renderEducation(){
-    const max=Math.max(...d.courseSubjects.map(x=>x[1]));
+    const areas=[...new Set(edu.courses.map(c=>c.area))].sort();
+    const totalCredits=edu.programs.reduce((sum,p)=>sum+p.transcriptCredits,0);
     qs('[data-view="education"]').innerHTML=
-      pageHead('Education','Education & coursework','Degree and coursework view without individual course grades or student identifiers.')+
-      '<div class="grid edu-grid">'+d.education.map(e=>'<article class="panel edu-card"><h3>'+e.school+'</h3><div class="edu-degree">'+e.degree+' — '+e.program+'</div>'+(e.secondary?'<div class="edu-meta">'+e.secondary+'</div>':'')+'<div class="edu-meta">'+e.period+(e.honors?' • '+e.honors:'')+'</div><div class="edu-statline"><div><strong>'+e.completedCourses+'</strong><span>Courses</span></div><div><strong>'+e.credits+'</strong><span>Credits</span></div></div>'+tags(e.highlights)+'</article>').join('')+'</div>'+
-      '<div class="panel"><div class="panel-head"><div><div class="panel-title">Coursework by subject</div><div class="panel-subtitle">Grouped from completed undergraduate and graduate coursework</div></div></div><div class="panel-body subject-bars">'+d.courseSubjects.map(([s,v])=>'<div class="subject-row"><span>'+s+'</span><div class="subject-track"><div class="subject-fill" style="width:'+(v/max*100)+'%"></div></div><strong>'+v+'</strong></div>').join('')+'</div></div>';
+      pageHead('Education','Education & coursework','A catalog-enriched view of completed undergraduate and graduate coursework. Course grades and student identifiers are intentionally excluded.')+
+      '<div class="grid education-kpi-grid">'+
+        '<div class="kpi"><div class="kpi-label">Degrees</div><div class="kpi-value">'+edu.programs.length+'</div><div class="kpi-note">B.S. + M.S.</div></div>'+
+        '<div class="kpi"><div class="kpi-label">Completed courses</div><div class="kpi-value">'+edu.courses.length+'</div><div class="kpi-note">47 undergraduate • 11 graduate</div></div>'+
+        '<div class="kpi"><div class="kpi-label">Academic credits</div><div class="kpi-value">'+totalCredits+'</div><div class="kpi-note">Across undergraduate + graduate records</div></div>'+
+        '<div class="kpi"><div class="kpi-label">Undergraduate honors</div><div class="kpi-value">7</div><div class="kpi-note">Dean’s List terms</div></div>'+
+      '</div>'+
+      '<div class="grid education-program-grid">'+edu.programs.map(p=>
+        '<article class="panel education-program-card">'+
+          '<div class="panel-head"><div><div class="eyebrow">'+p.short+'</div><div class="panel-title education-program-title">'+p.degree+' — '+p.program+'</div></div><span class="tag">'+p.awarded+'</span></div>'+
+          '<div class="panel-body">'+
+            (p.secondary?'<div class="edu-meta education-secondary">'+p.secondary+'</div>':'')+
+            '<p class="education-program-summary">'+p.catalogSummary+'</p>'+
+            '<div class="edu-statline"><div><strong>'+p.completedCourses+'</strong><span>Completed courses</span></div><div><strong>'+p.transcriptCredits+'</strong><span>Transcript credits</span></div>'+(p.honors?'<div><strong>7</strong><span>Dean’s List terms</span></div>':'')+'</div>'+
+            tags(p.focus)+
+            '<div class="catalog-note">'+p.currentCatalogNote+'</div>'+
+            '<div class="catalog-links"><a href="'+p.programUrl+'" target="_blank" rel="noopener">Program catalog ↗</a>'+(p.currentProgramUrl?'<a href="'+p.currentProgramUrl+'" target="_blank" rel="noopener">Current program overview ↗</a>':'')+'</div>'+
+          '</div>'+
+        '</article>'
+      ).join('')+'</div>'+
+      '<div class="panel education-explorer">'+
+        '<div class="panel-head"><div><div class="panel-title">Course catalog explorer</div><div class="panel-subtitle">Every completed course enriched with official catalog or School of Data Science context</div></div><span class="tag" id="educationResultCount">'+edu.courses.length+' courses</span></div>'+
+        '<div class="panel-body">'+
+          '<div class="filterbar education-filterbar">'+
+            '<input id="educationSearch" placeholder="Search course, code, topic, or skill">'+
+            '<select id="educationInstitution"><option value="">All institutions</option><option value="NJIT">NJIT</option><option value="UNC Charlotte">UNC Charlotte</option></select>'+
+            '<select id="educationArea"><option value="">All subject areas</option>'+areas.map(a=>'<option>'+a+'</option>').join('')+'</select>'+
+          '</div>'+
+          '<div class="education-source-note">Catalog summaries are paraphrased from official university catalog, archived catalog, program, and syllabus pages. Historical course titles are kept when the current catalog has changed.</div>'+
+          '<div class="table-wrap education-table-wrap"><table class="data-table education-table"><thead><tr><th>Course</th><th>Institution</th><th>Area</th><th>Credits</th><th>Catalog focus</th></tr></thead><tbody id="educationRows"></tbody></table></div>'+
+        '</div>'+
+      '</div>';
+    drawEducationRows();
+  }
+
+  function filteredEducationCourses(){
+    const search=(qs('#educationSearch')?.value||'').trim().toLowerCase();
+    const institution=qs('#educationInstitution')?.value||'';
+    const area=qs('#educationArea')?.value||'';
+    return edu.courses.filter(c=>{
+      if(institution && c.institution!==institution)return false;
+      if(area && c.area!==area)return false;
+      if(!search)return true;
+      return [c.code,c.title,c.area,c.summary,(c.topics||[]).join(' '),c.status||''].join(' ').toLowerCase().includes(search);
+    });
+  }
+
+  function drawEducationRows(){
+    const body=qs('#educationRows'); if(!body)return;
+    const rows=filteredEducationCourses();
+    const count=qs('#educationResultCount'); if(count)count.textContent=rows.length+' course'+(rows.length===1?'':'s');
+    body.innerHTML=rows.map(c=>
+      '<tr class="course-open" data-course="'+c.institution+'|'+c.code+'">'+
+        '<td><strong>'+c.code+'</strong><div class="course-title">'+c.title+'</div>'+(c.origin?'<div class="course-origin">'+c.origin+'</div>':'')+'</td>'+
+        '<td>'+c.institution+'</td>'+
+        '<td>'+c.area+'</td>'+
+        '<td>'+c.credits+'</td>'+
+        '<td><div class="course-summary-cell">'+c.summary+'</div><div class="course-topic-list">'+(c.topics||[]).slice(0,4).map(t=>'<span>'+t+'</span>').join('')+'</div></td>'+
+      '</tr>'
+    ).join('')||'<tr><td colspan="5"><div class="empty-state">No courses match the current filters.</div></td></tr>';
+  }
+
+  function openCourse(key){
+    const [institution,code]=key.split('|');
+    const c=edu.courses.find(x=>x.institution===institution&&x.code===code);
+    if(!c)return;
+    qs('#drawerTitle').textContent=c.code+' — '+c.title;
+    qs('#drawerBody').innerHTML=
+      '<div class="eyebrow">'+c.institution+' • '+c.area+'</div>'+
+      '<p><strong>'+c.credits+' credit'+(c.credits===1?'':'s')+'</strong>'+(c.origin?' • '+c.origin:'')+'</p>'+
+      '<p>'+c.summary+'</p>'+
+      '<h3>Catalog topics</h3>'+tags(c.topics||[])+
+      (c.status?'<div class="notice" style="margin-top:14px">'+c.status+'</div>':'')+
+      '<h3>Official source</h3><p><a class="secondary-btn drawer-source-link" href="'+c.source+'" target="_blank" rel="noopener">Open university source ↗</a></p>'+
+      '<div class="notice">This portfolio intentionally omits individual course grades, student IDs, transcript identifiers, and other private academic information.</div>';
+    qs('#drawer').classList.add('open');
+    qs('#drawerBackdrop').classList.add('open');
   }
 
   function openProject(id){
@@ -125,6 +201,8 @@
     if(nav){scrollToSection(nav.dataset.route);return}
     const scroll=e.target.closest('[data-scroll]');
     if(scroll){scrollToSection(scroll.dataset.scroll);return}
+    const course=e.target.closest('.course-open');
+    if(course){openCourse(course.dataset.course);return}
     const project=e.target.closest('.project-open');
     if(project){openProject(project.dataset.project);return}
     if(e.target.id==='drawerClose'||e.target.id==='drawerBackdrop')closeDrawer();
@@ -142,8 +220,14 @@
     }
   });
 
-  document.addEventListener('input',e=>{if(e.target.id==='projectSearch')drawProjectRows()});
-  document.addEventListener('change',e=>{if(e.target.id==='projectCategory')drawProjectRows()});
+  document.addEventListener('input',e=>{
+    if(e.target.id==='projectSearch')drawProjectRows();
+    if(e.target.id==='educationSearch')drawEducationRows();
+  });
+  document.addEventListener('change',e=>{
+    if(e.target.id==='projectCategory')drawProjectRows();
+    if(e.target.id==='educationInstitution'||e.target.id==='educationArea')drawEducationRows();
+  });
   window.addEventListener('scroll',()=>{if(!scrollTick){scrollTick=true;requestAnimationFrame(updateActiveFromScroll)}},{passive:true});
 
   const savedTheme=localStorage.getItem('portfolioTheme');
