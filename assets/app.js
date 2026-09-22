@@ -25,20 +25,53 @@
         '<div class="panel"><div class="panel-head"><div><div class="panel-title">Documented Work Activity</div><div class="panel-subtitle">Work Items Captured by Month</div></div><span class="tag">2023–2026</span></div><div class="panel-body"><div class="chart-wrap">'+d.activityMonthly.map(([m,v])=>'<div class="bar" style="height:'+Math.max(8,v/max*100)+'%" data-label="'+m+': '+v+'"></div>').join('')+'</div><div class="chart-axis"><span>Dec 2023</span><span>Sep 2026</span></div></div></div>'+
         '<div class="panel"><div class="panel-head"><div><div class="panel-title">Professional Profile</div><div class="panel-subtitle">Current Focus and Technical Background</div></div></div><div class="panel-body"><div class="stack"><div class="mini-card"><strong>Business Intelligence & Analytics</strong><p>Production reporting, financial analytics, operational dashboards, data modeling, QA, and stakeholder-facing delivery.</p></div><div class="mini-card"><strong>Automation & Engineering</strong><p>Python, REST APIs, browser automation, Snowflake, SQL procedures, scheduled processes, snapshots, and repeatable validation workflows.</p></div><div class="mini-card"><strong>Technical Breadth</strong><p>Background spanning data science, machine learning, software development, web technologies, databases, and technical instruction.</p></div></div></div></div>'+
       '</div>'+
-      '<div class="panel focus-panel"><div class="panel-head"><div><div class="panel-title">Project Highlights</div><div class="panel-subtitle">Click a Project to Open Its Detail Panel</div></div><button class="secondary-btn" data-scroll="projects">View all projects</button></div><div class="panel-body focus-grid">'+sortProjectsByPeriod(d.projects).slice(0,6).map(p=>'<button class="mini-card project-open" data-project="'+p.id+'" style="text-align:left;cursor:pointer;color:inherit"><strong>'+p.name+'</strong><p>'+p.summary+'</p>'+tags(p.technologies.slice(0,4))+'</button>').join('')+'</div></div>';
+      '<div class="panel focus-panel"><div class="panel-head"><div><div class="panel-title">Project Highlights</div><div class="panel-subtitle">Click a Project to Open Its Detail Panel</div></div><button class="secondary-btn" data-scroll="projects">View all projects</button></div><div class="panel-body focus-grid">'+sortProjectsByPeriod(d.projects).slice(0,6).map(p=>'<button class="mini-card project-jump" data-project="'+p.id+'" style="text-align:left;cursor:pointer;color:inherit"><strong>'+p.name+'</strong><p>'+p.summary+'</p>'+tags(p.technologies.slice(0,4))+'</button>').join('')+'</div></div>';
   }
 
   function renderExperience(){
+    const details=d.experienceDetails||{};
     qs('[data-view="experience"]').innerHTML=
-      pageHead('Experience','Professional Experience','Roles across business intelligence, logistics, healthcare, analytics education, and technical support.')+
-      '<div class="experience-list">'+d.experience.map(e=>'<article class="experience-card"><div class="experience-top"><div><h3>'+e.role+'</h3><div class="experience-meta">'+e.org+' • '+e.location+'</div></div><div class="experience-period">'+e.period+'</div></div>'+tags(e.tags)+'<ul>'+e.bullets.map(b=>'<li>'+b+'</li>').join('')+'</ul></article>').join('')+'</div>';
+      pageHead('Experience','Professional Experience','Click any role to expand a deeper view with year-by-year work, major projects, technologies, and additional responsibilities.')+
+      '<div class="experience-list">'+d.experience.map((e,i)=>{
+        const detail=details[e.org]||{};
+        const timeline=(detail.timeline||[]).map(t=>
+          '<div class="experience-year">'+
+            '<div class="experience-year-label">'+t.year+'</div>'+
+            '<div><div class="experience-year-title">'+t.title+'</div><p>'+t.summary+'</p></div>'+
+          '</div>'
+        ).join('');
+        const projects=(detail.projectIds||[]).map(id=>d.projects.find(p=>p.id===id)).filter(Boolean);
+        const projectCards=sortProjectsByPeriod(projects).map(p=>
+          '<button class="experience-project project-jump" data-project="'+p.id+'">'+
+            '<div><strong>'+p.name+'</strong><span>'+p.period+'</span></div>'+
+            '<p>'+p.summary+'</p>'+
+            '<div class="experience-project-tech">'+p.technologies.slice(0,5).join(' • ')+'</div>'+
+          '</button>'
+        ).join('');
+        const visibleBullets=e.bullets.slice(0,3);
+        const additionalBullets=e.bullets.slice(3);
+        return '<article class="experience-card experience-expandable" data-experience-card="'+i+'">'+
+          '<button class="experience-toggle" data-experience-toggle="'+i+'" aria-expanded="false">'+
+            '<div class="experience-top"><div><h3>'+e.role+'</h3><div class="experience-meta">'+e.org+' • '+e.location+'</div></div><div class="experience-period-wrap"><div class="experience-period">'+e.period+'</div><span class="experience-caret">⌄</span></div></div>'+
+          '</button>'+
+          tags(e.tags)+
+          '<ul class="experience-summary-bullets">'+visibleBullets.map(b=>'<li>'+b+'</li>').join('')+'</ul>'+
+          '<div class="experience-detail" data-experience-detail="'+i+'" hidden>'+
+            (detail.overview?'<div class="experience-detail-section"><div class="inline-detail-title">Role Overview</div><p>'+detail.overview+'</p></div>':'')+
+            (timeline?'<div class="experience-detail-section"><div class="inline-detail-title">Year-by-Year</div><div class="experience-timeline">'+timeline+'</div></div>':'')+
+            (additionalBullets.length?'<div class="experience-detail-section"><div class="inline-detail-title">Additional Responsibilities</div><ul>'+additionalBullets.map(b=>'<li>'+b+'</li>').join('')+'</ul></div>':'')+
+            ((detail.focus||[]).length?'<div class="experience-detail-section"><div class="inline-detail-title">Focus Areas</div>'+tags(detail.focus)+'</div>':'')+
+            (projectCards?'<div class="experience-detail-section"><div class="inline-detail-title">Projects & Initiatives</div><div class="experience-project-grid">'+projectCards+'</div></div>':'')+
+          '</div>'+
+        '</article>';
+      }).join('')+'</div>';
   }
 
   function renderProjects(){
     qs('[data-view="projects"]').innerHTML=
       pageHead('Project Explorer','Projects','Professional analytics work plus earlier software and data projects. Internal links, credentials, customer names, and confidential implementation details are excluded from the public site.')+
       '<div class="filterbar"><input id="projectSearch" placeholder="Search projects, tools, or topics"><select id="projectCategory"><option value="">All categories</option>'+[...new Set(d.projects.map(p=>p.category))].map(c=>'<option>'+c+'</option>').join('')+'</select></div>'+
-      '<div class="panel"><div class="table-wrap"><table class="data-table"><thead><tr><th>Project</th><th>Category</th><th>Period</th><th>Technologies</th></tr></thead><tbody id="projectRows"></tbody></table></div></div>';
+      '<div class="panel"><div class="table-wrap"><table class="data-table"><thead><tr><th>Project</th><th>Category</th><th>Period</th><th>Technologies</th><th class="detail-column">Details</th></tr></thead><tbody id="projectRows"></tbody></table></div></div>';
     drawProjectRows();
   }
 
@@ -47,7 +80,25 @@
     const cat=qs('#projectCategory')?.value||'';
     const rows=sortProjectsByPeriod(d.projects).filter(p=>(!cat||p.category===cat)&&(!search||JSON.stringify(p).toLowerCase().includes(search)));
     const body=qs('#projectRows'); if(!body)return;
-    body.innerHTML=rows.map(p=>'<tr class="project-open" data-project="'+p.id+'"><td><strong>'+p.name+'</strong><div class="panel-subtitle" style="margin-top:3px">'+p.summary+'</div></td><td>'+p.category+'</td><td>'+p.period+'</td><td>'+p.technologies.slice(0,6).join(' • ')+'</td></tr>').join('')||'<tr><td colspan="4">No matching projects.</td></tr>';
+    body.innerHTML=rows.map(p=>
+      '<tr class="project-row" data-project-toggle="'+p.id+'" aria-expanded="false">'+
+        '<td><strong>'+p.name+'</strong><div class="panel-subtitle" style="margin-top:3px">'+p.summary+'</div></td>'+
+        '<td>'+p.category+'</td>'+
+        '<td>'+p.period+'</td>'+
+        '<td>'+p.technologies.slice(0,6).join(' • ')+'</td>'+
+        '<td class="detail-column"><span class="row-caret">⌄</span></td>'+
+      '</tr>'+
+      '<tr class="inline-detail-row project-detail-row" data-project-detail="'+p.id+'" hidden>'+
+        '<td colspan="5"><div class="inline-detail">'+
+          '<div class="inline-detail-grid">'+
+            '<div><div class="inline-detail-title">Project Overview</div><p>'+p.summary+'</p></div>'+
+            '<div><div class="inline-detail-title">Time Period</div><p>'+p.period+'</p></div>'+
+          '</div>'+
+          '<div class="inline-detail-title">Technologies</div>'+tags(p.technologies)+
+          '<div class="inline-detail-title inline-detail-title-spaced">Highlights</div><ul>'+p.highlights.map(x=>'<li>'+x+'</li>').join('')+'</ul>'+
+        '</div></td>'+
+      '</tr>'
+    ).join('')||'<tr><td colspan="5">No Matching Projects.</td></tr>';
   }
 
   function renderSkills(){
@@ -122,42 +173,73 @@
     const body=qs('#educationRows'); if(!body)return;
     const rows=filteredEducationCourses();
     const count=qs('#educationResultCount'); if(count)count.textContent=rows.length+' course'+(rows.length===1?'':'s');
-    body.innerHTML=rows.map(c=>
-      '<tr class="course-open" data-course="'+c.institution+'|'+c.code+'">'+
+    body.innerHTML=rows.map(c=>{
+      const key=c.institution+'|'+c.code;
+      return '<tr class="course-row" data-course-toggle="'+key+'" aria-expanded="false">'+
         '<td><strong>'+c.code+'</strong><div class="course-title">'+c.title+'</div>'+(c.origin?'<div class="course-origin">'+c.origin+'</div>':'')+'</td>'+
         '<td>'+c.institution+'</td>'+
         '<td>'+c.area+'</td>'+
         '<td>'+c.credits+'</td>'+
         '<td><div class="course-summary-cell">'+c.summary+'</div><div class="course-topic-list">'+(c.topics||[]).slice(0,4).map(t=>'<span>'+t+'</span>').join('')+'</div></td>'+
-      '</tr>'
-    ).join('')||'<tr><td colspan="5"><div class="empty-state">No courses match the current filters.</div></td></tr>';
+      '</tr>'+
+      '<tr class="inline-detail-row course-detail-row" data-course-detail="'+key+'" hidden>'+
+        '<td colspan="5"><div class="inline-detail">'+
+          '<div class="inline-detail-grid">'+
+            '<div><div class="inline-detail-title">Course Overview</div><p>'+c.summary+'</p></div>'+
+            '<div><div class="inline-detail-title">Academic Context</div><p><strong>'+c.credits+' Credit'+(c.credits===1?'':'s')+'</strong>'+(c.origin?' • '+c.origin:'')+'</p></div>'+
+          '</div>'+
+          '<div class="inline-detail-title">Catalog Topics</div>'+tags(c.topics||[])+
+          (c.status?'<div class="notice inline-notice">'+c.status+'</div>':'')+
+          '<div class="inline-detail-actions"><a class="secondary-btn" href="'+c.source+'" target="_blank" rel="noopener">Open University Source ↗</a></div>'+
+        '</div></td>'+
+      '</tr>';
+    }).join('')||'<tr><td colspan="5"><div class="empty-state">No Courses Match the Current Filters.</div></td></tr>';
   }
 
-  function openCourse(key){
-    const [institution,code]=key.split('|');
-    const c=edu.courses.find(x=>x.institution===institution&&x.code===code);
-    if(!c)return;
-    qs('#drawerTitle').textContent=c.code+' — '+c.title;
-    qs('#drawerBody').innerHTML=
-      '<div class="eyebrow">'+c.institution+' • '+c.area+'</div>'+
-      '<p><strong>'+c.credits+' credit'+(c.credits===1?'':'s')+'</strong>'+(c.origin?' • '+c.origin:'')+'</p>'+
-      '<p>'+c.summary+'</p>'+
-      '<h3>Catalog Topics</h3>'+tags(c.topics||[])+
-      (c.status?'<div class="notice" style="margin-top:14px">'+c.status+'</div>':'')+
-      '<h3>Official Source</h3><p><a class="secondary-btn drawer-source-link" href="'+c.source+'" target="_blank" rel="noopener">Open university source ↗</a></p>'+
-      '<div class="notice">This portfolio intentionally omits individual course grades, student IDs, transcript identifiers, and other private academic information.</div>';
-    qs('#drawer').classList.add('open');
-    qs('#drawerBackdrop').classList.add('open');
+  function toggleInlineDetail(toggleSelector,detailSelector,key){
+    const toggle=qs('['+toggleSelector+'="'+CSS.escape(key)+'"]');
+    const detail=qs('['+detailSelector+'="'+CSS.escape(key)+'"]');
+    if(!detail)return;
+    const willOpen=detail.hidden;
+    detail.hidden=!willOpen;
+    if(toggle){
+      toggle.setAttribute('aria-expanded',String(willOpen));
+      toggle.classList.toggle('expanded',willOpen);
+    }
   }
 
-  function openProject(id){
-    const p=d.projects.find(x=>x.id===id); if(!p)return;
-    qs('#drawerTitle').textContent=p.name;
-    qs('#drawerBody').innerHTML='<div class="eyebrow">'+p.category+'</div><p><strong>'+p.period+'</strong></p><p>'+p.summary+'</p>'+tags(p.technologies)+'<h3>Highlights</h3><ul>'+p.highlights.map(x=>'<li>'+x+'</li>').join('')+'</ul><div class="notice">This public view intentionally excludes internal ticket links, customer names, credentials, and confidential implementation details.</div>';
-    qs('#drawer').classList.add('open'); qs('#drawerBackdrop').classList.add('open');
+  function toggleExperienceDetail(index){
+    const toggle=qs('[data-experience-toggle="'+index+'"]');
+    const detail=qs('[data-experience-detail="'+index+'"]');
+    const card=qs('[data-experience-card="'+index+'"]');
+    if(!detail)return;
+    const willOpen=detail.hidden;
+    detail.hidden=!willOpen;
+    toggle?.setAttribute('aria-expanded',String(willOpen));
+    card?.classList.toggle('expanded',willOpen);
   }
 
-  function closeDrawer(){qs('#drawer').classList.remove('open');qs('#drawerBackdrop').classList.remove('open')}
+  function toggleProjectDetail(id){
+    toggleInlineDetail('data-project-toggle','data-project-detail',id);
+  }
+
+  function toggleCourseDetail(key){
+    toggleInlineDetail('data-course-toggle','data-course-detail',key);
+  }
+
+  function jumpToProject(id){
+    scrollToSection('projects');
+    setTimeout(()=>{
+      const detail=qs('[data-project-detail="'+CSS.escape(id)+'"]');
+      const toggle=qs('[data-project-toggle="'+CSS.escape(id)+'"]');
+      if(detail && detail.hidden){
+        detail.hidden=false;
+        toggle?.setAttribute('aria-expanded','true');
+        toggle?.classList.add('expanded');
+      }
+      toggle?.scrollIntoView({behavior:'smooth',block:'center'});
+    },350);
+  }
 
   function setActive(route,updateHash=false){
     if(!routes.includes(route))return;
@@ -208,11 +290,14 @@
     if(nav){scrollToSection(nav.dataset.route);return}
     const scroll=e.target.closest('[data-scroll]');
     if(scroll){scrollToSection(scroll.dataset.scroll);return}
-    const course=e.target.closest('.course-open');
-    if(course){openCourse(course.dataset.course);return}
-    const project=e.target.closest('.project-open');
-    if(project){openProject(project.dataset.project);return}
-    if(e.target.id==='drawerClose'||e.target.id==='drawerBackdrop')closeDrawer();
+    const experienceToggle=e.target.closest('[data-experience-toggle]');
+    if(experienceToggle){toggleExperienceDetail(experienceToggle.dataset.experienceToggle);return}
+    const course=e.target.closest('[data-course-toggle]');
+    if(course){toggleCourseDetail(course.dataset.courseToggle);return}
+    const projectRow=e.target.closest('[data-project-toggle]');
+    if(projectRow){toggleProjectDetail(projectRow.dataset.projectToggle);return}
+    const projectJump=e.target.closest('.project-jump');
+    if(projectJump){jumpToProject(projectJump.dataset.project);return}
     if(e.target.id==='menuToggle'){
       if(innerWidth<760)qs('#sidebar').classList.toggle('mobile-open');
       else qs('#sidebar').classList.toggle('collapsed');
