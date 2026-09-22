@@ -16,6 +16,16 @@
     "2U, Inc.":"#2F75B5",
     "UNC Charlotte":"#007A53"
   }[org]||"#9C8CFF");
+  const educationAccent=(institution)=>({
+    "NJIT":"#C8102E",
+    "UNC Charlotte":"#007A53"
+  }[institution]||"#9C8CFF");
+  const projectAccent=(project)=>{
+    if(["healthcare-performance","hospital-capacity-model"].includes(project.id))return "#C8102E";
+    if(["get-that-recipe","social-fitness","spotify-api","tic-tac-toe","academic-success"].includes(project.id))return "#C8102E";
+    if(project.id==="dnd-character-vault")return "#7C5CFC";
+    return "#0F4C5C";
+  };
   const sortProjectsByPeriod=(projects)=>[...projects].sort((a,b)=>{
     const years=(value)=>String(value||'').match(/\b(19|20)\d{2}\b/g)?.map(Number)||[];
     const ay=years(a.period), by=years(b.period);
@@ -157,13 +167,13 @@
     const rows=sortProjectsByPeriod(d.projects).filter(p=>(!cat||p.category===cat)&&(!search||JSON.stringify(p).toLowerCase().includes(search)));
     const body=qs('#projectRows'); if(!body)return;
     body.innerHTML=rows.map(p=>
-      '<tr class="project-row" data-project-toggle="'+p.id+'" aria-expanded="false">'+
+      '<tr class="project-row" data-project-toggle="'+p.id+'" aria-expanded="false" style="--item-accent:'+projectAccent(p)+'">'+
         '<td><strong>'+p.name+'</strong><div class="panel-subtitle" style="margin-top:3px">'+p.summary+'</div></td>'+
         '<td>'+p.category+'</td>'+
         '<td>'+p.period+'</td>'+
         '<td>'+p.technologies.slice(0,6).join(' • ')+'</td>'+
       '</tr>'+
-      '<tr class="inline-detail-row project-detail-row" data-project-detail="'+p.id+'" hidden>'+
+      '<tr class="inline-detail-row project-detail-row" data-project-detail="'+p.id+'" hidden style="--item-accent:'+projectAccent(p)+'">'+
         '<td colspan="4"><div class="inline-detail project-inline-detail">'+
           '<div class="inline-detail-grid">'+
             '<div class="inline-detail-panel project-overview-panel"><div class="inline-detail-title">Project Overview</div><p>'+p.summary+'</p></div>'+
@@ -252,14 +262,14 @@
     const count=qs('#educationResultCount'); if(count)count.textContent=rows.length+' course'+(rows.length===1?'':'s');
     body.innerHTML=rows.map(c=>{
       const key=c.institution+'|'+c.code;
-      return '<tr class="course-row" data-course-toggle="'+key+'" aria-expanded="false">'+
+      return '<tr class="course-row" data-course-toggle="'+key+'" aria-expanded="false" style="--item-accent:'+educationAccent(c.institution)+'">'+
         '<td><strong>'+c.code+'</strong><div class="course-title">'+c.title+'</div>'+(c.origin?'<div class="course-origin">'+c.origin+'</div>':'')+'</td>'+
         '<td>'+c.institution+'</td>'+
         '<td>'+c.area+'</td>'+
         '<td>'+c.credits+'</td>'+
         '<td><div class="course-summary-cell">'+c.summary+'</div><div class="course-topic-list">'+(c.topics||[]).slice(0,4).map(t=>'<span>'+t+'</span>').join('')+'</div></td>'+
       '</tr>'+
-      '<tr class="inline-detail-row course-detail-row" data-course-detail="'+key+'" hidden>'+
+      '<tr class="inline-detail-row course-detail-row" data-course-detail="'+key+'" hidden style="--item-accent:'+educationAccent(c.institution)+'">'+
         '<td colspan="5"><div class="inline-detail">'+
           '<div class="inline-detail-grid">'+
             '<div><div class="inline-detail-title">Course Overview</div><p>'+c.summary+'</p></div>'+
