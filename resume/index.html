@@ -62,44 +62,43 @@
       -webkit-print-color-adjust:exact;print-color-adjust:exact
     }
     .resume-layout{
-      --base-font:9.35pt;
-      --section-title:10.2pt;
-      --name-size:25pt;
-      font-size:calc(var(--base-font)*var(--resume-content-scale));
-      line-height:1.27;
+      --name-size:26pt;
+      --section-title:13pt;
+      font-size:12pt;
+      line-height:1.08;
       width:100%;min-height:100%;
     }
     .resume-section{break-inside:avoid}
     .resume-section-title{
-      font-size:calc(var(--section-title)*var(--resume-content-scale));
+      font-size:var(--section-title);
       line-height:1.1;font-weight:800;text-transform:uppercase;letter-spacing:.07em;
-      margin:0 0 .055in
+      margin:0 0 .025in
     }
     .resume-header-name{
-      font-size:calc(var(--name-size)*var(--resume-content-scale));
+      font-size:var(--name-size);
       line-height:1;font-weight:800;letter-spacing:.025em
     }
-    .resume-headline{font-size:.94em;font-weight:700;margin-top:.04in}
-    .resume-contact{font-size:.82em;color:#424750;margin-top:.045in}
-    .resume-summary{font-size:.91em;line-height:1.34}
-    .resume-item{margin-bottom:.075in;break-inside:avoid}
+    .resume-headline{font-size:12pt;font-weight:700;margin-top:.025in}
+    .resume-contact{font-size:12pt;color:#424750;margin-top:.025in;line-height:1.08}
+    .resume-summary{font-size:12pt;line-height:1.08}
+    .resume-item{margin-bottom:.04in;break-inside:avoid}
     .resume-item:last-child{margin-bottom:0}
     .resume-item-head{display:flex;justify-content:space-between;gap:.15in;font-weight:800;line-height:1.18}
-    .resume-item-sub{display:flex;justify-content:space-between;gap:.15in;color:#4d535c;font-size:.86em;margin-top:.015in}
-    .resume-item ul{margin:.035in 0 0 .16in;padding:0}
-    .resume-item li{margin:0 0 .018in}
-    .resume-project{margin-bottom:.07in;break-inside:avoid}
+    .resume-item-sub{display:flex;justify-content:space-between;gap:.12in;color:#4d535c;font-size:12pt;margin-top:.008in}
+    .resume-item ul{margin:.015in 0 0 .15in;padding:0}
+    .resume-item li{margin:0 0 .005in}
+    .resume-project{margin-bottom:.035in;break-inside:avoid}
     .resume-project:last-child{margin-bottom:0}
     .resume-project-title{font-weight:800;line-height:1.16}
     .resume-project-tech{font-size:.79em;color:#59606b;margin-top:.012in}
     .resume-project-text{font-size:.88em;line-height:1.3;margin-top:.02in}
     .resume-project-highlight{font-size:.84em;line-height:1.28;margin-top:.018in;color:#343941}
-    .resume-education-item{margin-bottom:.06in}
+    .resume-education-item{margin-bottom:.03in}
     .resume-education-item:last-child{margin-bottom:0}
     .resume-education-head{display:flex;justify-content:space-between;gap:.12in;font-weight:800}
-    .resume-education-sub{font-size:.84em;color:#4d535c;margin-top:.018in;line-height:1.3}
-    .resume-skill-line{font-size:.86em;line-height:1.32;margin:.016in 0}
-    .resume-small{font-size:.82em;line-height:1.3}
+    .resume-education-sub{font-size:12pt;color:#4d535c;margin-top:.006in;line-height:1.06}
+    .resume-skill-line{font-size:12pt;line-height:1.06;margin:.006in 0}
+    .resume-small{font-size:12pt;line-height:1.06}
     .resume-link{color:inherit;text-decoration:none}
 
     /* ONYX — traditional single-column */
@@ -116,7 +115,7 @@
     /* SCIZOR — linear modern layout with strong top rule */
     .template-scizor .resume-layout{padding:.3in .44in .33in;border-top:.07in solid var(--resume-accent)}
     .template-scizor .resume-header{padding-bottom:.1in}
-    .template-scizor .resume-header-name{font-size:calc(29pt*var(--resume-content-scale));max-width:70%}
+    .template-scizor .resume-header-name{font-size:29pt;max-width:70%}
     .template-scizor .resume-name-rule{width:64%;border-bottom:3px solid #d8dce2;margin:.065in 0}
     .template-scizor .resume-contact{display:flex;gap:.12in;flex-wrap:wrap;margin-top:.055in}
     .template-scizor .resume-section{border-top:1px solid #d8dce2;padding-top:.085in;margin-top:.085in}
@@ -190,6 +189,83 @@
       color:var(--resume-accent);border-bottom:1px solid var(--resume-accent);padding-bottom:.03in
     }
 
+
+    /* BRONZOR — centered header with section labels in a left rail */
+    .template-bronzor .resume-layout{padding:.2in .3in}
+    .template-bronzor .resume-header{text-align:center;margin-bottom:.035in}
+    .template-bronzor .resume-contact{display:flex;justify-content:center;gap:.08in;flex-wrap:wrap}
+    .template-bronzor .resume-section{display:grid;grid-template-columns:21% 1fr;gap:.12in;border-top:1px solid var(--resume-accent);padding-top:.035in;margin-top:.045in}
+    .template-bronzor .resume-section-title{text-align:right;color:var(--resume-accent);margin:0}
+    .template-bronzor .resume-section-body{min-width:0}
+
+    /* DITGAR — colored identity/sidebar plus featured summary */
+    .template-ditgar .resume-layout{display:grid;grid-template-columns:30% 70%;padding:0;min-height:100%;background:linear-gradient(to right,#eeecff 0,#eeecff 30%,#fff 30%,#fff 100%)}
+    .template-ditgar .resume-side-panel{padding:0}
+    .template-ditgar .resume-side-header{background:var(--resume-accent);color:#fff;padding:.24in .18in .16in}
+    .template-ditgar .resume-side-header .resume-contact{color:#fff}
+    .template-ditgar .resume-side-content{padding:.14in .16in .2in}
+    .template-ditgar .resume-main-panel{padding:.2in .28in .2in .2in}
+    .template-ditgar .resume-featured-summary{background:#eeecff;margin:-.2in -.28in .06in -.2in;padding:.14in .28in .12in .2in}
+    .template-ditgar .resume-section-title{color:var(--resume-accent);border-bottom:1px solid var(--resume-accent);padding-bottom:.012in}
+    .template-ditgar .resume-main-panel .resume-item-head{border-left:3px solid var(--resume-accent);padding-left:.04in}
+
+    /* GLALIE — soft tinted sidebar with centered identity */
+    .template-glalie .resume-layout{display:grid;grid-template-columns:30% 70%;padding:0;min-height:100%;background:linear-gradient(to right,#efeff8 0,#efeff8 30%,#fff 30%,#fff 100%)}
+    .template-glalie .resume-side-panel{padding:.2in .16in;text-align:left}
+    .template-glalie .resume-side-header{text-align:center;margin-bottom:.05in}
+    .template-glalie .resume-side-header .resume-contact{border:1px solid var(--resume-accent);padding:.04in;margin-top:.04in;text-align:left}
+    .template-glalie .resume-main-panel{padding:.2in .26in .18in .18in}
+    .template-glalie .resume-section-title{border-bottom:1px solid var(--resume-accent);padding-bottom:.012in;color:var(--resume-accent)}
+
+    /* KAKUNA — centered identity and centered section headings */
+    .template-kakuna .resume-layout{padding:.2in .28in}
+    .template-kakuna .resume-header{text-align:center;margin-bottom:.03in}
+    .template-kakuna .resume-contact{display:flex;justify-content:center;gap:.08in;flex-wrap:wrap}
+    .template-kakuna .resume-section-title{text-align:center;color:var(--resume-accent);border-bottom:1px solid var(--resume-accent);padding-bottom:.012in}
+
+    /* LAPRAS — rounded card sections */
+    .template-lapras .resume-layout{padding:.17in .22in}
+    .template-lapras .resume-header,.template-lapras .resume-section{border:1px solid #cfd3da;border-radius:9px;background:#fff;padding:.055in .075in}
+    .template-lapras .resume-header{display:flex;justify-content:space-between;gap:.1in;align-items:center;margin-bottom:.055in}
+    .template-lapras .resume-contact{text-align:right;max-width:2.5in}
+    .template-lapras .resume-section{margin-top:.065in;position:relative}
+    .template-lapras .resume-section-title{display:inline-block;background:#fff;margin-top:-.12in;padding:0 .04in;color:var(--resume-accent)}
+
+    /* LEAFISH — tinted intro/header contact band plus two columns */
+    .template-leafish .resume-layout{padding:0}
+    .template-leafish .resume-header-intro{background:#f0efff;padding:.15in .25in .09in}
+    .template-leafish .resume-header{display:flex;justify-content:space-between;gap:.12in;align-items:flex-start}
+    .template-leafish .resume-header-summary{margin-top:.04in}
+    .template-leafish .resume-contact-band{background:#ddd9ff;padding:.05in .25in;display:flex;gap:.08in;flex-wrap:wrap}
+    .template-leafish .resume-columns{grid-template-columns:1fr 28%;gap:.12in;padding:.12in .25in .18in}
+    .template-leafish .resume-section-title{color:var(--resume-accent);border-bottom:1px solid var(--resume-accent);padding-bottom:.012in}
+
+    /* MEOWTH — clean single column with inline item headers */
+    .template-meowth .resume-layout{padding:.2in .28in}
+    .template-meowth .resume-header{display:flex;justify-content:space-between;gap:.12in;align-items:flex-start;margin-bottom:.03in}
+    .template-meowth .resume-contact{text-align:right;max-width:2.65in}
+    .template-meowth .resume-section-title{color:var(--resume-accent);border-bottom:1px solid var(--resume-accent);padding-bottom:.012in}
+
+    /* PIKACHU — left sidebar plus rounded accent identity card */
+    .template-pikachu .resume-layout{padding:.17in .22in}
+    .template-pikachu .resume-columns{grid-template-columns:28% 1fr;gap:.12in}
+    .template-pikachu .resume-main-header{background:var(--resume-accent);color:#fff;border-radius:9px;padding:.1in .12in;margin-bottom:.05in}
+    .template-pikachu .resume-main-header .resume-contact{color:#fff;border-top:1px solid rgba(255,255,255,.6);padding-top:.03in}
+    .template-pikachu .resume-section-title{color:var(--resume-accent);border-bottom:1px solid var(--resume-accent);padding-bottom:.012in}
+
+    /* RHYHORN — traditional header with visible contact separators */
+    .template-rhyhorn .resume-layout{padding:.2in .28in}
+    .template-rhyhorn .resume-header{display:flex;justify-content:space-between;gap:.12in;align-items:center;margin-bottom:.03in}
+    .template-rhyhorn .resume-contact{display:flex;gap:.07in;flex-wrap:wrap;justify-content:flex-end;max-width:3.2in}
+    .template-rhyhorn .resume-section-title{color:var(--resume-accent);border-bottom:1px solid var(--resume-accent);padding-bottom:.012in}
+
+    .resume-document.tight .resume-section{margin-top:.035in}
+    .resume-document.tight .resume-item{margin-bottom:.02in}
+    .resume-document.tight .resume-item ul{margin-top:.005in}
+    .resume-document.tight .resume-project{margin-bottom:.018in}
+    .resume-document.tight .resume-section-title{margin-bottom:.012in}
+    .resume-document.tight .resume-layout{line-height:1.02}
+
     @media(max-width:980px){
       .resume-page-body{padding:8px 8px 35px}
       .resume-page-tools .desktop-label,.rr-credit{display:none}
@@ -221,26 +297,35 @@
   <header class="resume-page-topbar">
     <div class="resume-page-brand">
       <a class="icon-btn" href="../" aria-label="Back to portfolio">←</a>
-      <div class="brand-copy-small"><div class="brand-title">Resume</div><div class="brand-sub">One-page resume builder</div></div>
+      <div class="brand-copy-small"><div class="brand-title">Resume</div><div class="brand-sub">One-Page Resume Builder</div></div>
     </div>
     <div class="resume-page-tools">
-      <span class="rr-credit">Reactive Resume–inspired layouts</span>
-      <select id="resumeStyle" aria-label="Resume template">
-        <option value="onyx">Onyx — Traditional</option>
-        <option value="scizor">Scizor — Modern Linear</option>
+      <span class="rr-credit">Reactive Resume–Inspired Layouts</span>
+      <select id="resumeStyle" aria-label="Resume Template">
         <option value="azurill">Azurill — Two Column</option>
+        <option value="bronzor">Bronzor — Labeled Sections</option>
         <option value="chikorita">Chikorita — Accent Sidebar</option>
+        <option value="ditgar">Ditgar — Profile Sidebar</option>
         <option value="ditto">Ditto — Header Band</option>
         <option value="gengar">Gengar — Profile Sidebar</option>
+        <option value="glalie">Glalie — Soft Sidebar</option>
+        <option value="kakuna">Kakuna — Centered</option>
+        <option value="lapras">Lapras — Card Layout</option>
+        <option value="leafish">Leafish — Intro Band</option>
+        <option value="meowth">Meowth — Inline</option>
+        <option value="onyx">Onyx — Traditional</option>
+        <option value="pikachu">Pikachu — Header Card</option>
+        <option value="rhyhorn">Rhyhorn — Contact Separators</option>
+        <option value="scizor">Scizor — Modern Linear</option>
       </select>
-      <button class="tool-btn" id="summaryToggle">Edit summary</button>
+      <button class="tool-btn" id="summaryToggle">Edit Summary</button>
       <button class="icon-btn" id="zoomOut" title="Zoom out">−</button>
       <span class="resume-zoom-readout" id="zoomReadout">100%</span>
       <button class="icon-btn" id="zoomIn" title="Zoom in">+</button>
-      <button class="tool-btn desktop-label" id="fitPage">Fit page</button>
-      <button class="tool-btn desktop-label" id="fitWidth">Fit width</button>
+      <button class="tool-btn desktop-label" id="fitPage">Fit Page</button>
+      <button class="tool-btn desktop-label" id="fitWidth">Fit Width</button>
       <button class="primary-btn" id="printResume">Print / Save PDF</button>
-      <button class="icon-btn" id="themeToggle" title="Toggle light/dark mode">◐</button>
+      <button class="icon-btn" id="themeToggle" title="Toggle Light/Dark Mode">◐</button>
     </div>
   </header>
 
@@ -281,8 +366,8 @@
   const panel=document.getElementById('summaryPanel');
   const summaryInput=document.getElementById('summaryInput');
   const defaultSummary=d.resume.summary;
-  const allowedTemplates=['onyx','scizor','azurill','chikorita','ditto','gengar'];
-  let template=localStorage.getItem('resumeStyleV3')||'onyx';
+  const allowedTemplates=['azurill','bronzor','chikorita','ditgar','ditto','gengar','glalie','kakuna','lapras','leafish','meowth','onyx','pikachu','rhyhorn','scizor'];
+  let template=localStorage.getItem('resumeStyleV4')||'onyx';
   let zoom=Number(localStorage.getItem('resumeDisplayZoomV3')||1);
   let customSummary=localStorage.getItem('resumeCustomSummary')||defaultSummary;
 
@@ -303,14 +388,14 @@
     return '<header class="resume-header"><div class="resume-header-main"><div class="resume-header-name">'+escapeHTML(d.profile.name.toUpperCase())+'</div><div class="resume-headline">'+escapeHTML(d.resume.headline)+'</div></div><div class="resume-contact">'+contactHTML()+'</div></header>';
   };
 
-  const section=(title,body,cls='')=>'<section class="resume-section '+cls+'"><h2 class="resume-section-title">'+title+'</h2>'+body+'</section>';
+  const section=(title,body,cls='')=>'<section class="resume-section '+cls+'"><h2 class="resume-section-title">'+title+'</h2><div class="resume-section-body">'+body+'</div></section>';
 
   const summaryHTML=(showHeading=true)=>showHeading
     ? section('Summary','<div class="resume-summary">'+escapeHTML(customSummary)+'</div>','resume-summary-section')
     : '<div class="resume-featured-summary"><div class="resume-summary">'+escapeHTML(customSummary)+'</div></div>';
 
   const experienceHTML=()=>{
-    const limits=[5,3,3,2];
+    const limits=[4,2,2,1];
     return section('Professional Experience',d.experience.map((x,i)=>
       '<div class="resume-item">'+
         '<div class="resume-item-head"><span>'+escapeHTML(x.role)+' — '+escapeHTML(x.org)+'</span><span>'+escapeHTML(x.period)+'</span></div>'+
@@ -321,13 +406,16 @@
   };
 
   const projectsHTML=()=>{
-    const projects=d.resume.featuredProjectIds.map(id=>d.projects.find(p=>p.id===id)).filter(Boolean);
+    const projectYears=(value)=>String(value||'').match(/\b(19|20)\d{2}\b/g)?.map(Number)||[];
+    const projects=d.resume.featuredProjectIds.map(id=>d.projects.find(p=>p.id===id)).filter(Boolean).sort((a,b)=>{
+      const ay=projectYears(a.period),by=projectYears(b.period);
+      return (Math.max(...by,0)-Math.max(...ay,0))||(Math.min(...by,0)-Math.min(...ay,0));
+    }).slice(0,3);
     return section('Projects',projects.map(p=>
       '<div class="resume-project">'+
         '<div class="resume-project-title">'+escapeHTML(p.name)+'</div>'+
         '<div class="resume-project-tech">'+escapeHTML(p.technologies.slice(0,6).join(' • '))+'</div>'+
         '<div class="resume-project-text">'+escapeHTML(p.summary)+'</div>'+
-        '<div class="resume-project-highlight">'+escapeHTML(p.highlights[0]||'')+'</div>'+
       '</div>'
     ).join(''),'resume-projects-section');
   };
@@ -338,7 +426,7 @@
       '<div class="resume-education-sub">'+
         (x.secondary?escapeHTML(x.secondary)+' • ':'')+
         (x.honors?escapeHTML(x.honors)+' • ':'')+
-        escapeHTML('Coursework: '+x.highlights.slice(0,6).join(', '))+
+        escapeHTML('Coursework: '+x.highlights.slice(0,3).join(', '))+
       '</div>'+
     '</div>'
   ).join(''),'resume-education-section');
@@ -357,34 +445,21 @@
     doc.className='resume-document template-'+template;
 
     if(template==='onyx'){
-      layout.innerHTML=
-        headerHTML()+
-        summaryHTML()+
-        experienceHTML()+
-        projectsHTML()+
-        educationHTML()+
-        skillsHTML()+
-        additionalHTML();
+      layout.innerHTML=headerHTML()+summaryHTML()+experienceHTML()+projectsHTML()+educationHTML()+skillsHTML()+additionalHTML();
     }
 
     if(template==='scizor'){
-      layout.innerHTML=
-        headerHTML('scizor')+
-        summaryHTML()+
-        experienceHTML()+
-        projectsHTML()+
-        educationHTML()+
-        skillsHTML()+
-        additionalHTML();
+      layout.innerHTML=headerHTML('scizor')+summaryHTML()+experienceHTML()+projectsHTML()+educationHTML()+skillsHTML()+additionalHTML();
     }
 
     if(template==='azurill'){
-      layout.innerHTML=
-        headerHTML()+
-        '<div class="resume-columns">'+
-          '<aside class="resume-sidebar">'+skillsHTML()+educationHTML()+additionalHTML()+'</aside>'+
-          '<main class="resume-main">'+summaryHTML()+experienceHTML()+projectsHTML()+'</main>'+
-        '</div>';
+      layout.innerHTML=headerHTML()+
+        '<div class="resume-columns"><aside class="resume-sidebar">'+skillsHTML()+educationHTML()+additionalHTML()+'</aside>'+
+        '<main class="resume-main">'+summaryHTML()+experienceHTML()+projectsHTML()+'</main></div>';
+    }
+
+    if(template==='bronzor'){
+      layout.innerHTML=headerHTML()+summaryHTML()+experienceHTML()+projectsHTML()+educationHTML()+skillsHTML()+additionalHTML();
     }
 
     if(template==='chikorita'){
@@ -393,49 +468,76 @@
         '<aside class="resume-side-panel">'+skillsHTML()+educationHTML()+additionalHTML()+'</aside>';
     }
 
-    if(template==='ditto'){
+    if(template==='ditgar'){
       layout.innerHTML=
-        headerHTML()+
-        '<div class="resume-columns">'+
-          '<aside class="resume-sidebar">'+educationHTML()+skillsHTML()+additionalHTML()+'</aside>'+
-          '<main class="resume-main">'+summaryHTML()+experienceHTML()+projectsHTML()+'</main>'+
-        '</div>';
+        '<aside class="resume-side-panel"><div class="resume-side-header">'+headerHTML()+'</div><div class="resume-side-content">'+skillsHTML()+educationHTML()+additionalHTML()+'</div></aside>'+
+        '<main class="resume-main-panel">'+summaryHTML(false)+experienceHTML()+projectsHTML()+'</main>';
+    }
+
+    if(template==='ditto'){
+      layout.innerHTML=headerHTML()+
+        '<div class="resume-columns"><aside class="resume-sidebar">'+educationHTML()+skillsHTML()+additionalHTML()+'</aside>'+
+        '<main class="resume-main">'+summaryHTML()+experienceHTML()+projectsHTML()+'</main></div>';
     }
 
     if(template==='gengar'){
       layout.innerHTML=
-        '<aside class="resume-side-panel">'+
-          '<div class="resume-side-header">'+headerHTML()+'</div>'+
-          '<div class="resume-side-content">'+skillsHTML()+educationHTML()+additionalHTML()+'</div>'+
-        '</aside>'+
+        '<aside class="resume-side-panel"><div class="resume-side-header">'+headerHTML()+'</div><div class="resume-side-content">'+skillsHTML()+educationHTML()+additionalHTML()+'</div></aside>'+
         '<main class="resume-main-panel">'+summaryHTML(false)+experienceHTML()+projectsHTML()+'</main>';
     }
 
+    if(template==='glalie'){
+      layout.innerHTML=
+        '<aside class="resume-side-panel"><div class="resume-side-header">'+headerHTML()+'</div>'+skillsHTML()+educationHTML()+additionalHTML()+'</aside>'+
+        '<main class="resume-main-panel">'+summaryHTML()+experienceHTML()+projectsHTML()+'</main>';
+    }
+
+    if(template==='kakuna'){
+      layout.innerHTML=headerHTML()+summaryHTML()+experienceHTML()+projectsHTML()+educationHTML()+skillsHTML()+additionalHTML();
+    }
+
+    if(template==='lapras'){
+      layout.innerHTML=headerHTML()+summaryHTML()+experienceHTML()+projectsHTML()+educationHTML()+skillsHTML()+additionalHTML();
+    }
+
+    if(template==='leafish'){
+      layout.innerHTML=
+        '<div class="resume-header-intro"><div class="resume-header">'+
+          '<div class="resume-header-main"><div class="resume-header-name">'+escapeHTML(d.profile.name.toUpperCase())+'</div><div class="resume-headline">'+escapeHTML(d.resume.headline)+'</div></div>'+
+          '<div class="resume-header-summary resume-summary">'+escapeHTML(customSummary)+'</div>'+
+        '</div></div>'+
+        '<div class="resume-contact-band">'+contactHTML()+'</div>'+
+        '<div class="resume-columns"><main class="resume-main">'+experienceHTML()+projectsHTML()+'</main><aside class="resume-sidebar">'+skillsHTML()+educationHTML()+additionalHTML()+'</aside></div>';
+    }
+
+    if(template==='meowth'){
+      layout.innerHTML=headerHTML()+summaryHTML()+experienceHTML()+projectsHTML()+educationHTML()+skillsHTML()+additionalHTML();
+    }
+
+    if(template==='pikachu'){
+      layout.innerHTML=
+        '<div class="resume-columns"><aside class="resume-sidebar">'+skillsHTML()+educationHTML()+additionalHTML()+'</aside>'+
+        '<main class="resume-main"><div class="resume-main-header">'+headerHTML()+'</div>'+summaryHTML()+experienceHTML()+projectsHTML()+'</main></div>';
+    }
+
+    if(template==='rhyhorn'){
+      layout.innerHTML=headerHTML()+summaryHTML()+experienceHTML()+projectsHTML()+educationHTML()+skillsHTML()+additionalHTML();
+    }
+
     styleSelect.value=template;
-    localStorage.setItem('resumeStyleV3',template);
-    requestAnimationFrame(autoFitContent);
+    localStorage.setItem('resumeStyleV4',template);
+    requestAnimationFrame(fitSpacing);
+  }
+
+  function fitSpacing(){
+    doc.classList.remove('tight');
+    requestAnimationFrame(()=>{
+      if(layout.scrollHeight>doc.clientHeight)doc.classList.add('tight');
+    });
   }
 
   function autoFitContent(){
-    let factor=1;
-    layout.style.setProperty('--resume-content-scale','1');
-    doc.style.setProperty('--resume-content-scale','1');
-
-    const maxHeight=doc.clientHeight-2;
-    let natural=layout.scrollHeight;
-
-    while(natural>maxHeight && factor>.88){
-      factor=+(factor-.01).toFixed(2);
-      doc.style.setProperty('--resume-content-scale',factor);
-      natural=layout.scrollHeight;
-    }
-
-    while(natural<maxHeight*.90 && factor<1.07){
-      factor=+(factor+.01).toFixed(2);
-      doc.style.setProperty('--resume-content-scale',factor);
-      natural=layout.scrollHeight;
-      if(natural>maxHeight){factor=+(factor-.01).toFixed(2);doc.style.setProperty('--resume-content-scale',factor);break}
-    }
+    fitSpacing();
   }
 
   function applyZoom(){
