@@ -8,6 +8,13 @@
   const routeLabels={overview:'Overview',experience:'Experience',projects:'Projects',skills:'Skills & Technologies',education:'Education'};
   const tags=arr=>'<div class="tag-row">'+arr.map(x=>'<span class="tag">'+x+'</span>').join('')+'</div>';
   const pageHead=(eyebrow,title,desc,actions='')=>'<div class="page-head"><div><div class="eyebrow">'+eyebrow+'</div><h1>'+title+'</h1><p>'+desc+'</p></div>'+(actions?'<div class="page-actions">'+actions+'</div>':'')+'</div>';
+  const sortProjectsByPeriod=(projects)=>[...projects].sort((a,b)=>{
+    const years=(value)=>String(value||'').match(/\b(19|20)\d{2}\b/g)?.map(Number)||[];
+    const ay=years(a.period), by=years(b.period);
+    const aEnd=ay.length?Math.max(...ay):0, bEnd=by.length?Math.max(...by):0;
+    const aStart=ay.length?Math.min(...ay):0, bStart=by.length?Math.min(...by):0;
+    return bEnd-aEnd || bStart-aStart || a.name.localeCompare(b.name);
+  });
 
   function renderOverview(){
     const max=Math.max(...d.activityMonthly.map(x=>x[1]));
@@ -18,7 +25,7 @@
         '<div class="panel"><div class="panel-head"><div><div class="panel-title">Documented work activity</div><div class="panel-subtitle">Work items captured by month</div></div><span class="tag">2023–2026</span></div><div class="panel-body"><div class="chart-wrap">'+d.activityMonthly.map(([m,v])=>'<div class="bar" style="height:'+Math.max(8,v/max*100)+'%" data-label="'+m+': '+v+'"></div>').join('')+'</div><div class="chart-axis"><span>Dec 2023</span><span>Sep 2026</span></div></div></div>'+
         '<div class="panel"><div class="panel-head"><div><div class="panel-title">Professional profile</div><div class="panel-subtitle">Current focus and technical background</div></div></div><div class="panel-body"><div class="stack"><div class="mini-card"><strong>Business intelligence & analytics</strong><p>Production reporting, financial analytics, operational dashboards, data modeling, QA, and stakeholder-facing delivery.</p></div><div class="mini-card"><strong>Automation & engineering</strong><p>Python, REST APIs, browser automation, Snowflake, SQL procedures, scheduled processes, snapshots, and repeatable validation workflows.</p></div><div class="mini-card"><strong>Technical breadth</strong><p>Background spanning data science, machine learning, software development, web technologies, databases, and technical instruction.</p></div></div></div></div>'+
       '</div>'+
-      '<div class="panel focus-panel"><div class="panel-head"><div><div class="panel-title">Selected bodies of work</div><div class="panel-subtitle">Click a project to open its detail panel</div></div><button class="secondary-btn" data-scroll="projects">View all projects</button></div><div class="panel-body focus-grid">'+d.projects.slice(0,6).map(p=>'<button class="mini-card project-open" data-project="'+p.id+'" style="text-align:left;cursor:pointer;color:inherit"><strong>'+p.name+'</strong><p>'+p.summary+'</p>'+tags(p.technologies.slice(0,4))+'</button>').join('')+'</div></div>';
+      '<div class="panel focus-panel"><div class="panel-head"><div><div class="panel-title">Selected bodies of work</div><div class="panel-subtitle">Click a project to open its detail panel</div></div><button class="secondary-btn" data-scroll="projects">View all projects</button></div><div class="panel-body focus-grid">'+sortProjectsByPeriod(d.projects).slice(0,6).map(p=>'<button class="mini-card project-open" data-project="'+p.id+'" style="text-align:left;cursor:pointer;color:inherit"><strong>'+p.name+'</strong><p>'+p.summary+'</p>'+tags(p.technologies.slice(0,4))+'</button>').join('')+'</div></div>';
   }
 
   function renderExperience(){
@@ -38,7 +45,7 @@
   function drawProjectRows(){
     const search=(qs('#projectSearch')?.value||'').toLowerCase();
     const cat=qs('#projectCategory')?.value||'';
-    const rows=d.projects.filter(p=>(!cat||p.category===cat)&&(!search||JSON.stringify(p).toLowerCase().includes(search)));
+    const rows=sortProjectsByPeriod(d.projects).filter(p=>(!cat||p.category===cat)&&(!search||JSON.stringify(p).toLowerCase().includes(search)));
     const body=qs('#projectRows'); if(!body)return;
     body.innerHTML=rows.map(p=>'<tr class="project-open" data-project="'+p.id+'"><td><strong>'+p.name+'</strong><div class="panel-subtitle" style="margin-top:3px">'+p.summary+'</div></td><td>'+p.category+'</td><td>'+p.period+'</td><td>'+p.technologies.slice(0,6).join(' • ')+'</td></tr>').join('')||'<tr><td colspan="4">No matching projects.</td></tr>';
   }
