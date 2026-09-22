@@ -21,7 +21,7 @@ window.PORTFOLIO_DATA = {
   experience: [
     {
       role:"Business Intelligence Analyst",
-      org:"Freight Logistics",
+      org:"Armstrong Transport Group, Inc.",
       period:"2023 – Present",
       location:"United States",
       tags:["SQL","Snowflake","Sigma","Python","REST APIs","Playwright","Automation","Financial Analytics","Data Modeling"],
