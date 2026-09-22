@@ -109,3 +109,126 @@ html{scroll-behavior:smooth;scroll-padding-top:74px}
   .experience-year{grid-template-columns:46px 1fr}
   .detail-column{width:42px}
 }
+
+/* Experience Hierarchy & Full-Card Interaction */
+.experience-expandable{
+  padding:0;
+  overflow:hidden;
+  cursor:pointer;
+  transition:border-color .16s ease, box-shadow .16s ease, background .16s ease
+}
+.experience-expandable:hover{
+  border-color:color-mix(in srgb,var(--accent) 52%,var(--line));
+  box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 18%,transparent)
+}
+.experience-expandable:focus-visible{
+  outline:2px solid var(--accent);
+  outline-offset:2px
+}
+.experience-card-header{
+  padding:16px 16px 10px;
+  background:var(--panel)
+}
+.experience-card-summary{
+  padding:0 16px 14px;
+  background:color-mix(in srgb,var(--panel) 88%,var(--panel-2))
+}
+.experience-expandable:hover .experience-card-header,
+.experience-expandable:hover .experience-card-summary{
+  background:color-mix(in srgb,var(--panel) 91%,var(--accent-soft))
+}
+.experience-expandable.expanded{
+  border-color:color-mix(in srgb,var(--accent) 58%,var(--line))
+}
+.experience-expandable.expanded .experience-card-header{
+  background:color-mix(in srgb,var(--panel) 90%,var(--accent-soft))
+}
+.experience-expandable>.tag-row,
+.experience-card-summary>.tag-row{
+  padding:0;
+  margin-top:0
+}
+.experience-summary-bullets{
+  padding:0 0 0 20px!important;
+  margin:10px 0 0!important
+}
+.experience-detail{
+  border-top:2px solid color-mix(in srgb,var(--accent) 42%,var(--line));
+  background:color-mix(in srgb,var(--panel-2) 94%,var(--accent-soft));
+  padding:16px
+}
+.experience-subsection{
+  border:1px solid var(--line);
+  border-radius:9px;
+  padding:12px 13px;
+  background:var(--panel)
+}
+.experience-subsection+.experience-subsection{margin-top:10px}
+.experience-subsection .inline-detail-title{
+  color:var(--accent);
+  margin-bottom:8px
+}
+.overview-subsection{border-left:4px solid #64748b}
+.business-subsection{border-left:4px solid var(--accent);background:color-mix(in srgb,var(--panel) 94%,var(--accent-soft))}
+.stakeholder-subsection{border-left:4px solid #0f8b8d}
+.timeline-subsection{border-left:4px solid #8b5cf6}
+.responsibilities-subsection{border-left:4px solid #b7791f}
+.focus-subsection{border-left:4px solid #3b82f6}
+.projects-subsection{border-left:4px solid #16a34a}
+.subsection-label{
+  font-size:9px;
+  font-weight:800;
+  color:var(--muted);
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  margin-top:2px
+}
+.subsection-label-spaced{margin-top:11px}
+.experience-year{
+  background:var(--panel-2);
+  border-color:color-mix(in srgb,var(--line) 88%,var(--accent))
+}
+.experience-project{
+  background:var(--panel-2);
+  border-color:var(--line)
+}
+.experience-project:hover{
+  background:var(--accent-soft);
+  border-color:var(--accent)
+}
+
+/* Project Inline Details */
+.project-row:hover td,
+.course-row:hover td{
+  background:color-mix(in srgb,var(--panel-2) 88%,var(--accent-soft))
+}
+.project-row.expanded td,
+.course-row.expanded td{
+  background:color-mix(in srgb,var(--accent-soft) 72%,var(--panel))
+}
+.project-inline-detail{
+  display:grid;
+  gap:10px;
+  background:color-mix(in srgb,var(--panel-2) 94%,var(--accent-soft))
+}
+.inline-detail-panel{
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:11px 12px;
+  background:var(--panel)
+}
+.business-context-panel{
+  border-left:4px solid var(--accent);
+  background:color-mix(in srgb,var(--panel) 94%,var(--accent-soft))
+}
+.stakeholder-context-panel{border-left:4px solid #0f8b8d}
+.technologies-panel{border-left:4px solid #3b82f6}
+.highlights-panel{border-left:4px solid #16a34a}
+.project-overview-panel{border-left:4px solid #64748b}
+.project-period-panel{border-left:4px solid #8b5cf6}
+
+@media(max-width:760px){
+  .experience-card-header{padding:13px 13px 9px}
+  .experience-card-summary{padding:0 13px 13px}
+  .experience-detail{padding:12px}
+}
