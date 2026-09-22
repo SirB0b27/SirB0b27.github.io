@@ -89,7 +89,7 @@ window.PORTFOLIO_DATA = {
         "Work across requests originating from manager/lead, director, VP/SVP, and C-suite/executive stakeholder levels while adapting detail and presentation to each audience."
       ],
       stakeholderScope: {
-        levels:["C-Suite / Executive","Vice President / SVP","Director","Manager / Lead","Operational & Technical Users"],
+        levels:["C-Suite / Executive (CEO/CFO-Level)","Vice President / SVP","Director","Manager / Lead","Operational & Technical Users"],
         functions:["Executive","Finance","Brokerage Operations","Shared Services","LTL","Technology","Marketing","Legal","Agent Relations"]
       },
       projectIds:[
@@ -149,7 +149,7 @@ window.PORTFOLIO_DATA = {
       technologies:["SQL","Snowflake","Sigma","Data Modeling","Stored Procedures","Snapshots","Row-Level Security","Reconciliation"],
       summary:"Evolved multiple compensation workflows into a maintainable internal analytics platform with shared data foundations, historical controls, payout logic, security, statements, and reconciliation.",
       businessContext:"Commission reporting directly affects payout accuracy, trust, auditability, and finance operations. The platform work focused on making complex business rules repeatable, explainable, testable, and maintainable across multiple compensation plans.",
-      stakeholderScope:["C-Suite / Executive","Vice President / SVP","Director","Manager / Lead"],
+      stakeholderScope:["C-Suite / Executive (CEO/CFO-Level)","Vice President / SVP","Director","Manager / Lead"],
       highlights:[
         "Built shared patterns for plan logic, historical snapshots, overrides, statements, manual adjustments, and payout-cycle controls.",
         "Implemented live-versus-snapshot comparison and reconciliation logic for retroactive changes, bonuses, currency changes, and settlement corrections.",
@@ -165,7 +165,7 @@ window.PORTFOLIO_DATA = {
       technologies:["SQL","Snowflake","Sigma","Snapshots","Accruals","Statements","Reconciliation"],
       summary:"Automated a complex 1099 commission workflow with settlement datasets, historical views, accrual reporting, bonus logic, statements, imports, and recurring payout controls.",
       businessContext:"The workflow needed to support accurate weekly payouts while giving Finance and agent-facing stakeholders historical context, accrual visibility, month/YTD views, and confidence that late or corrected settlements were handled consistently.",
-      stakeholderScope:["C-Suite / Executive","Vice President / SVP","Manager / Lead"],
+      stakeholderScope:["C-Suite / Executive (CEO/CFO-Level)","Vice President / SVP","Manager / Lead"],
       highlights:[
         "Built settlement datasets and automated commission calculations in Sigma/Snowflake.",
         "Added historical date-range views, accrual reporting, monthly/YTD views, bonus logic, settlement corrections, and payout exports.",
@@ -286,7 +286,7 @@ window.PORTFOLIO_DATA = {
       technologies:["Sigma","Snowflake","Power BI Migration","Operational KPIs","Roster Integration"],
       summary:"Modernized a recurring agent-performance dashboard by migrating legacy logic into Sigma/Snowflake and aligning it to current roster and operational data.",
       businessContext:"The dashboard supports leadership visibility into agent performance and growth. The migration focused on preserving trusted business logic while improving maintainability, roster alignment, and access to operational detail.",
-      stakeholderScope:["C-Suite / Executive","Manager / Lead","Business Operations"],
+      stakeholderScope:["C-Suite / Executive (CEO/CFO-Level)","Manager / Lead","Business Operations"],
       highlights:[
         "Migrated a legacy agent dashboard into Sigma/Snowflake using standardized datasets.",
         "Updated roster logic so metrics followed current organizational structure.",
@@ -331,7 +331,7 @@ window.PORTFOLIO_DATA = {
       technologies:["Sigma","Snowflake","Risk Monitoring","Office Segmentation","Operational KPIs"],
       summary:"Built and evolved office-level monitoring used to identify operational callouts and potentially risky office patterns.",
       businessContext:"The work helped leadership move from a broad office summary to targeted exception monitoring, making it easier to identify offices that warranted follow-up rather than reviewing every location equally.",
-      stakeholderScope:["C-Suite / Executive","Manager / Lead"],
+      stakeholderScope:["C-Suite / Executive (CEO/CFO-Level)","Manager / Lead"],
       highlights:[
         "Migrated office-callout reporting into Sigma/Snowflake.",
         "Updated office categorization logic to better reflect the underlying business entities.",
@@ -346,7 +346,7 @@ window.PORTFOLIO_DATA = {
       technologies:["Sigma","Status History","Audit Analytics","Operational Monitoring"],
       summary:"Built a dashboard to monitor daily carrier-status changes with management-friendly pivot views and more accurate attribution of operational changes.",
       businessContext:"A manual process was producing misleading change attribution. The dashboard was designed to create a more reliable audit view so leadership could regularly review status changes and investigate operational behavior.",
-      stakeholderScope:["C-Suite / Executive"],
+      stakeholderScope:["C-Suite / Executive (CEO/CFO-Level)"],
       highlights:[
         "Replaced a manual comparison process with a recurring status-change dashboard.",
         "Focused the logic on accurate change attribution and daily review.",
@@ -434,7 +434,7 @@ window.PORTFOLIO_DATA = {
       technologies:["SQL","Snowflake","Sigma","Customer Aging","Receivables","Pipeline Design"],
       summary:"Rebuilt customer-aging analytics and supporting pipeline logic to improve receivables visibility and finance reporting.",
       businessContext:"Aging analytics supports cash collection, risk assessment, and prioritization. The work focused on making balances and aging categories more reliable and reusable across financial reporting.",
-      stakeholderScope:["C-Suite / Executive","Finance"],
+      stakeholderScope:["C-Suite / Executive (CEO/CFO-Level)","Finance"],
       highlights:[
         "Rebuilt core customer-aging pipeline logic for more reliable downstream reporting.",
         "Supported finance-facing views of outstanding balances and aging behavior.",
@@ -449,7 +449,7 @@ window.PORTFOLIO_DATA = {
       technologies:["SQL","Sigma","Reconciliation","Accounting Systems","Variance Analysis"],
       summary:"Automated financial variance reporting between operational and accounting data to make mismatches easier to identify and investigate.",
       businessContext:"The work reduced manual comparison effort and created a repeatable control for finding discrepancies between systems before they became harder to reconcile.",
-      stakeholderScope:["C-Suite / Executive","Finance"],
+      stakeholderScope:["C-Suite / Executive (CEO/CFO-Level)","Finance"],
       highlights:[
         "Automated recurring cross-system variance checks.",
         "Added currency-aware comparisons where needed.",
@@ -479,7 +479,7 @@ window.PORTFOLIO_DATA = {
       technologies:["SQL","Forecasting","DSO","Customer Segmentation","Data Modeling","Historical Comparison"],
       summary:"Developed customer-level payment behavior logic to estimate expected payment dates and forecast unpaid invoiced cash using DSO, payment buckets, and historical settlement patterns.",
       businessContext:"The forecasting model helps finance understand when outstanding invoiced cash is likely to arrive and which customer payment patterns create timing risk, supporting more informed cash-planning decisions.",
-      stakeholderScope:["C-Suite / Executive","Finance"],
+      stakeholderScope:["C-Suite / Executive (CEO/CFO-Level)","Finance"],
       highlights:[
         "Created payment-aging buckets and customer-level average/median DSO and volatility metrics.",
         "Combined average DSO with weighted payment-distribution behavior to estimate future cash timing.",
