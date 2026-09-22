@@ -343,3 +343,60 @@ html{scroll-behavior:smooth;scroll-padding-top:74px}
   justify-content:center;
   padding:9px 0;
 }
+
+
+/* Organization-branded experience cards */
+.experience-expandable{
+  border-color:var(--org-accent,var(--line));
+}
+.experience-expandable:hover{
+  border-color:var(--org-accent,var(--accent));
+  box-shadow:0 0 0 1px color-mix(in srgb,var(--org-accent,var(--accent)) 34%,transparent);
+}
+.experience-expandable:focus-visible{
+  outline-color:var(--org-accent,var(--accent));
+}
+.experience-expandable.expanded{
+  border-color:var(--org-accent,var(--accent));
+}
+.experience-card h3{
+  color:color-mix(in srgb,var(--org-accent,var(--text)) 82%,white);
+}
+html[data-theme="light"] .experience-card h3{
+  color:color-mix(in srgb,var(--org-accent,var(--text)) 90%,black);
+}
+.experience-expandable:hover .experience-card-header,
+.experience-expandable:hover .experience-card-summary{
+  background:color-mix(in srgb,var(--panel) 94%,var(--org-accent,var(--accent)) 6%);
+}
+.experience-expandable.expanded .experience-card-header{
+  background:color-mix(in srgb,var(--panel) 92%,var(--org-accent,var(--accent)) 8%);
+}
+.experience-detail{
+  border-top-color:var(--org-accent,var(--accent));
+  background:color-mix(in srgb,var(--panel-2) 90%,var(--org-accent,var(--accent)) 10%);
+}
+.experience-subsection{
+  border-color:color-mix(in srgb,var(--org-accent,var(--accent)) 38%,var(--line));
+  border-left:4px solid var(--org-accent,var(--accent)) !important;
+  background:color-mix(in srgb,var(--panel) 93%,var(--org-accent,var(--accent)) 7%) !important;
+}
+.experience-subsection .inline-detail-title,
+.experience-year-label{
+  color:color-mix(in srgb,var(--org-accent,var(--accent)) 82%,white);
+}
+html[data-theme="light"] .experience-subsection .inline-detail-title,
+html[data-theme="light"] .experience-year-label{
+  color:color-mix(in srgb,var(--org-accent,var(--accent)) 90%,black);
+}
+.experience-year{
+  border-color:color-mix(in srgb,var(--org-accent,var(--accent)) 28%,var(--line));
+  background:color-mix(in srgb,var(--panel-2) 95%,var(--org-accent,var(--accent)) 5%);
+}
+.experience-project{
+  border-color:color-mix(in srgb,var(--org-accent,var(--accent)) 28%,var(--line));
+}
+.experience-project:hover{
+  border-color:var(--org-accent,var(--accent));
+  background:color-mix(in srgb,var(--panel-2) 88%,var(--org-accent,var(--accent)) 12%);
+}
