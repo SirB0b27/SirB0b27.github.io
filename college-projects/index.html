@@ -114,7 +114,7 @@
   }
 
   function unlock(){
-    sessionStorage.setItem('collegeProjectsUnlocked','1');
+    localStorage.setItem('collegeProjectsUnlockedUntil',String(Date.now()+30*60*1000));
     document.body.classList.remove('college-locked');
     q('#accessGate').classList.add('hidden');
     initializeAssignments();
@@ -147,8 +147,9 @@
     localStorage.setItem('portfolioTheme',next);
   });
 
-  if(sessionStorage.getItem('collegeProjectsUnlocked')==='1') unlock();
-  else setTimeout(()=>q('#collegePassword').focus(),0);
+  const unlockedUntil=Number(localStorage.getItem('collegeProjectsUnlockedUntil')||0);
+  if(unlockedUntil>Date.now()) unlock();
+  else { localStorage.removeItem('collegeProjectsUnlockedUntil'); setTimeout(()=>q('#collegePassword').focus(),0); }
 })();
 </script>
 </body>
