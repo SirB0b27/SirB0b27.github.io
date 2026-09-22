@@ -232,3 +232,16 @@ html{scroll-behavior:smooth;scroll-padding-top:74px}
   .experience-card-summary{padding:0 13px 13px}
   .experience-detail{padding:12px}
 }
+
+/* Personal Navigation */
+.nav-sublabel{
+  font-size:9px;
+  font-weight:750;
+  letter-spacing:.07em;
+  text-transform:uppercase;
+  color:var(--muted);
+  padding:10px 10px 5px 38px;
+  opacity:.85
+}
+.nav-subitem{padding-left:20px}
+.sidebar.collapsed .nav-sublabel{display:none}
