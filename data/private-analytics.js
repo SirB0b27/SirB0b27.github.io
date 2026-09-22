@@ -54,7 +54,8 @@ window.PRIVATE_ANALYTICS = {
   projectFamilies:[
     {name:"1099 Commission Automation",count:19,period:"2024–2026"},
     {name:"Commission Platform Governance",count:7,period:"2026"},
-    {name:"Agent Operations Dashboard",count:5,period:"2023–2024"},
+    {name:"Capacity Operations & Coverage Analytics",count:8,period:"2023–2026"},
+    {name:"Agent Dashboard & Growth Analytics",count:5,period:"2023–2024"},
     {name:"Boise Commission Automation",count:5,period:"2025"},
     {name:"LTL Quote Conversion & Growth Analytics",count:5,period:"2024–2026"},
     {name:"Office Callout & Risk Monitoring",count:4,period:"2023–2024"},
