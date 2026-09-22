@@ -4,6 +4,8 @@
   const qs=(s,r=document)=>r.querySelector(s), qsa=(s,r=document)=>[...r.querySelectorAll(s)];
   let zoom=Number(localStorage.getItem('portfolioZoomV2')||1);
   let scrollTick=false;
+  let personalMenuUnlocked=false;
+  const personalExpectedHash='d0f1e3c007d7e9411923d1922fb8364004ca9eaf7b8aee6cb1955104e35f2dca';
   const routes=['overview','experience','projects','skills','education'];
   const routeLabels={overview:'Overview',experience:'Experience',projects:'Projects',skills:'Skills & Technologies',education:'Education'};
   const tags=arr=>'<div class="tag-row">'+arr.map(x=>'<span class="tag">'+x+'</span>').join('')+'</div>';
@@ -16,9 +18,64 @@
     return bEnd-aEnd || bStart-aStart || a.name.localeCompare(b.name);
   });
 
+
+  async function sha256(value){
+    const bytes=new TextEncoder().encode(value);
+    const digest=await crypto.subtle.digest('SHA-256',bytes);
+    return [...new Uint8Array(digest)].map(b=>b.toString(16).padStart(2,'0')).join('');
+  }
+
+  function resetPersonalNav(){
+    personalMenuUnlocked=false;
+    const gate=qs('#personalNavGate');
+    const links=qs('#personalNavLinks');
+    const trigger=qs('#personalNavTrigger');
+    const input=qs('#personalNavPassword');
+    const error=qs('#personalNavError');
+    if(gate)gate.hidden=true;
+    if(links)links.hidden=true;
+    if(trigger)trigger.setAttribute('aria-expanded','false');
+    if(input)input.value='';
+    if(error)error.hidden=true;
+  }
+
+  function openPersonalGate(){
+    const gate=qs('#personalNavGate');
+    const links=qs('#personalNavLinks');
+    const trigger=qs('#personalNavTrigger');
+    const input=qs('#personalNavPassword');
+    const error=qs('#personalNavError');
+    if(personalMenuUnlocked){
+      resetPersonalNav();
+      return;
+    }
+    if(gate)gate.hidden=false;
+    if(links)links.hidden=true;
+    if(trigger)trigger.setAttribute('aria-expanded','true');
+    if(error)error.hidden=true;
+    setTimeout(()=>input?.focus(),0);
+  }
+
+  async function unlockPersonalNav(){
+    const input=qs('#personalNavPassword');
+    const error=qs('#personalNavError');
+    if(!input)return;
+    if(await sha256(input.value)===personalExpectedHash){
+      personalMenuUnlocked=true;
+      qs('#personalNavGate').hidden=true;
+      qs('#personalNavLinks').hidden=false;
+      qs('#personalNavTrigger')?.setAttribute('aria-expanded','true');
+      input.value='';
+      if(error)error.hidden=true;
+    }else{
+      if(error)error.hidden=false;
+      input.select();
+    }
+  }
+
   function renderOverview(){
     qs('[data-view="overview"]').innerHTML=
-      pageHead('Professional CV',d.profile.name,d.profile.summary,'<a class="primary-btn" href="resume/">Open Resume</a><a class="secondary-btn" href="college-projects/">College Projects</a>')+
+      pageHead('Professional CV',d.profile.name,d.profile.summary,'<a class="primary-btn" href="resume/">Open Resume</a>')+
       '<div class="grid kpi-grid">'+d.metrics.map(m=>'<div class="kpi"><div class="kpi-label">'+m.label+'</div><div class="kpi-value">'+m.value+'</div><div class="kpi-note">'+m.note+'</div></div>').join('')+'</div>'+
       '<div class="grid dashboard-grid">'+
         '<div class="panel"><div class="panel-head"><div><div class="panel-title">Professional Scope</div><div class="panel-subtitle">Business Intelligence, Analytics Engineering, Financial Analytics, and Decision Support</div></div></div><div class="panel-body"><div class="stack">'+
@@ -299,6 +356,13 @@
   qs('#projectCountBadge').textContent=d.projects.length;
 
   document.addEventListener('click',e=>{
+    if(e.target.closest('#personalNavTrigger')){openPersonalGate();return}
+    if(e.target.closest('#personalNavCancel')){resetPersonalNav();return}
+    if(e.target.closest('#personalNavUnlock')){unlockPersonalNav();return}
+    const personalAnalyticsLink=e.target.closest('#personalAnalyticsLink');
+    if(personalAnalyticsLink){sessionStorage.setItem('personalAnalyticsEntryGrant','1');return}
+    const collegeProjectsLink=e.target.closest('#collegeProjectsLink');
+    if(collegeProjectsLink){sessionStorage.setItem('collegeProjectsEntryGrant','1');return}
     const nav=e.target.closest('[data-route]');
     if(nav){scrollToSection(nav.dataset.route);return}
     const scroll=e.target.closest('[data-scroll]');
@@ -329,6 +393,11 @@
   });
 
   document.addEventListener('keydown',e=>{
+    if(e.target.id==='personalNavPassword' && e.key==='Enter'){
+      e.preventDefault();
+      unlockPersonalNav();
+      return;
+    }
     const experienceCard=e.target.closest?.('[data-experience-card]');
     if(experienceCard && (e.key==='Enter'||e.key===' ')){
       e.preventDefault();
@@ -345,10 +414,13 @@
     if(e.target.id==='educationInstitution'||e.target.id==='educationArea')drawEducationRows();
   });
   window.addEventListener('scroll',()=>{if(!scrollTick){scrollTick=true;requestAnimationFrame(updateActiveFromScroll)}},{passive:true});
+  window.addEventListener('pagehide',resetPersonalNav);
+  window.addEventListener('pageshow',e=>{if(e.persisted)resetPersonalNav()});
 
   const savedTheme=localStorage.getItem('portfolioTheme');
   document.documentElement.dataset.theme=savedTheme||'dark';
   applyZoom();
+  resetPersonalNav();
 
   const initial=location.hash.replace('#','');
   if(routes.includes(initial)) setTimeout(()=>scrollToSection(initial,false),0);
