@@ -64,7 +64,7 @@
     .resume-layout{
       --name-size:26pt;
       --section-title:13pt;
-      font-size:12pt;
+      font-size:11pt;
       line-height:1.08;
       width:100%;min-height:100%;
     }
@@ -78,13 +78,13 @@
       font-size:var(--name-size);
       line-height:1;font-weight:800;letter-spacing:.025em
     }
-    .resume-headline{font-size:12pt;font-weight:700;margin-top:.025in}
-    .resume-contact{font-size:12pt;color:#424750;margin-top:.025in;line-height:1.08}
-    .resume-summary{font-size:12pt;line-height:1.08}
+    .resume-headline{font-size:11pt;font-weight:700;margin-top:.025in}
+    .resume-contact{font-size:11pt;color:#424750;margin-top:.025in;line-height:1.08}
+    .resume-summary{font-size:11pt;line-height:1.08}
     .resume-item{margin-bottom:.04in;break-inside:avoid}
     .resume-item:last-child{margin-bottom:0}
     .resume-item-head{display:flex;justify-content:space-between;gap:.15in;font-weight:800;line-height:1.18}
-    .resume-item-sub{display:flex;justify-content:space-between;gap:.12in;color:#4d535c;font-size:12pt;margin-top:.008in}
+    .resume-item-sub{display:flex;justify-content:space-between;gap:.12in;color:#4d535c;font-size:11pt;margin-top:.008in}
     .resume-item ul{margin:.015in 0 0 .15in;padding:0}
     .resume-item li{margin:0 0 .005in}
     .resume-project{margin-bottom:.035in;break-inside:avoid}
@@ -96,9 +96,9 @@
     .resume-education-item{margin-bottom:.03in}
     .resume-education-item:last-child{margin-bottom:0}
     .resume-education-head{display:flex;justify-content:space-between;gap:.12in;font-weight:800}
-    .resume-education-sub{font-size:12pt;color:#4d535c;margin-top:.006in;line-height:1.06}
-    .resume-skill-line{font-size:12pt;line-height:1.06;margin:.006in 0}
-    .resume-small{font-size:12pt;line-height:1.06}
+    .resume-education-sub{font-size:11pt;color:#4d535c;margin-top:.006in;line-height:1.06}
+    .resume-skill-line{font-size:11pt;line-height:1.06;margin:.006in 0}
+    .resume-small{font-size:11pt;line-height:1.06}
     .resume-link{color:inherit;text-decoration:none}
 
     /* ONYX — traditional single-column */
@@ -259,12 +259,23 @@
     .template-rhyhorn .resume-contact{display:flex;gap:.07in;flex-wrap:wrap;justify-content:flex-end;max-width:3.2in}
     .template-rhyhorn .resume-section-title{color:var(--resume-accent);border-bottom:1px solid var(--resume-accent);padding-bottom:.012in}
 
-    .resume-document.tight .resume-section{margin-top:.035in}
-    .resume-document.tight .resume-item{margin-bottom:.02in}
-    .resume-document.tight .resume-item ul{margin-top:.005in}
-    .resume-document.tight .resume-project{margin-bottom:.018in}
-    .resume-document.tight .resume-section-title{margin-bottom:.012in}
-    .resume-document.tight .resume-layout{line-height:1.02}
+    .resume-layout,
+    .resume-headline,
+    .resume-contact,
+    .resume-summary,
+    .resume-item-head,
+    .resume-item-sub,
+    .resume-item li,
+    .resume-project-title,
+    .resume-project-tech,
+    .resume-project-text,
+    .resume-project-highlight,
+    .resume-education-head,
+    .resume-education-sub,
+    .resume-skill-line,
+    .resume-small{
+      font-size:11pt!important;
+    }
 
     @media(max-width:980px){
       .resume-page-body{padding:8px 8px 35px}
@@ -394,28 +405,49 @@
     ? section('Summary','<div class="resume-summary">'+escapeHTML(customSummary)+'</div>','resume-summary-section')
     : '<div class="resume-featured-summary"><div class="resume-summary">'+escapeHTML(customSummary)+'</div></div>';
 
-  const experienceHTML=()=>{
-    const limits=[4,2,2,1];
-    return section('Professional Experience',d.experience.map((x,i)=>
-      '<div class="resume-item">'+
-        '<div class="resume-item-head"><span>'+escapeHTML(x.role)+' — '+escapeHTML(x.org)+'</span><span>'+escapeHTML(x.period)+'</span></div>'+
-        '<div class="resume-item-sub"><span>'+escapeHTML(x.tags.slice(0,4).join(' • '))+'</span><span>'+escapeHTML(x.location)+'</span></div>'+
-        '<ul>'+x.bullets.slice(0,limits[i]||2).map(b=>'<li>'+escapeHTML(b)+'</li>').join('')+'</ul>'+
-      '</div>'
-    ).join(''),'resume-experience-section');
+  const resumeImpactBullets={
+    "Armstrong Transport Group, Inc.":[
+      "Own 30+ major BI, analytics-engineering, financial-control, and automation initiatives from requirements through production, supporting managers and directors through VP/SVP and C-suite leadership.",
+      "Built operational dashboards across agent, carrier, office, LTL, capacity, customer, and finance workflows, converting source data into KPIs, drilldowns, growth signals, risk flags, and exception monitoring.",
+      "Engineered multi-plan commission and payout systems spanning 1099, Boise, Mexico, Capacity, Operations Specialist, recruiter, and CAD workflows with snapshots, overrides, security, statements, reconciliation, and payroll controls.",
+      "Developed cash forecasting, customer-aging, financial-variance, currency, and processing analytics to improve visibility into payment timing, payout accuracy, and operational performance."
+    ],
+    "Cooper University Hospital":[
+      "Built an auto-updating company/team/individual performance dashboard; the prior resume documented a 2–3% improvement across teams after deployment.",
+      "Developed a partner-hospital capacity model using appointment availability to support partnership, staffing, and operational decisions."
+    ],
+    "2U, Inc.":[
+      "Mentored data bootcamp cohorts and capstone teams across Python, SQL, Tableau, machine learning, and data applications through office hours and technical troubleshooting.",
+      "Provided substitute instruction across JavaScript, React, MERN, ORM, HTML/CSS/Git, databases, and related development topics."
+    ],
+    "UNC Charlotte":[
+      "Supported approximately 110 students in Intro to Data Science & Sociology through grading, office hours, and technical feedback within an eight-person instructional team."
+    ]
+  };
+
+  const experienceHTML=()=>section('Professional Experience',d.experience.map(x=>{
+    const bullets=resumeImpactBullets[x.org]||x.bullets.slice(0,2);
+    return '<div class="resume-item">'+
+      '<div class="resume-item-head"><span>'+escapeHTML(x.role)+' — '+escapeHTML(x.org)+'</span><span>'+escapeHTML(x.period)+'</span></div>'+
+      '<div class="resume-item-sub"><span>'+escapeHTML(x.tags.slice(0,4).join(' • '))+'</span><span>'+escapeHTML(x.location)+'</span></div>'+
+      '<ul>'+bullets.map(b=>'<li>'+escapeHTML(b)+'</li>').join('')+'</ul>'+
+    '</div>';
+  }).join(''),'resume-experience-section');
+
+  const resumeProjectIds=["commission-platform","agent-operations-dashboard","cash-forecasting"];
+  const resumeProjectImpact={
+    "commission-platform":"Unified multiple compensation workflows into a controlled payout platform with snapshots, security, statements, overrides, reconciliation, and payroll support.",
+    "agent-operations-dashboard":"Modernized legacy agent-performance reporting into Sigma/Snowflake with current roster logic, KPI drilldowns, and growth-oriented operational views.",
+    "cash-forecasting":"Modeled DSO and customer payment behavior to estimate expected payment timing and forecast unpaid invoiced cash for finance planning."
   };
 
   const projectsHTML=()=>{
-    const projectYears=(value)=>String(value||'').match(/\b(19|20)\d{2}\b/g)?.map(Number)||[];
-    const projects=d.resume.featuredProjectIds.map(id=>d.projects.find(p=>p.id===id)).filter(Boolean).sort((a,b)=>{
-      const ay=projectYears(a.period),by=projectYears(b.period);
-      return (Math.max(...by,0)-Math.max(...ay,0))||(Math.min(...by,0)-Math.min(...ay,0));
-    }).slice(0,3);
+    const projects=resumeProjectIds.map(id=>d.projects.find(p=>p.id===id)).filter(Boolean);
     return section('Projects',projects.map(p=>
       '<div class="resume-project">'+
         '<div class="resume-project-title">'+escapeHTML(p.name)+'</div>'+
-        '<div class="resume-project-tech">'+escapeHTML(p.technologies.slice(0,6).join(' • '))+'</div>'+
-        '<div class="resume-project-text">'+escapeHTML(p.summary)+'</div>'+
+        '<div class="resume-project-tech">'+escapeHTML(p.technologies.slice(0,5).join(' • '))+'</div>'+
+        '<div class="resume-project-text">'+escapeHTML(resumeProjectImpact[p.id]||p.summary)+'</div>'+
       '</div>'
     ).join(''),'resume-projects-section');
   };
@@ -426,17 +458,22 @@
       '<div class="resume-education-sub">'+
         (x.secondary?escapeHTML(x.secondary)+' • ':'')+
         (x.honors?escapeHTML(x.honors)+' • ':'')+
-        escapeHTML('Coursework: '+x.highlights.slice(0,3).join(', '))+
+        escapeHTML('Coursework: '+x.highlights.slice(0,2).join(', '))+
       '</div>'+
     '</div>'
   ).join(''),'resume-education-section');
 
-  const skillsHTML=()=>section('Technical Skills',d.resume.skills.map(x=>
+  const resumeSkillLines=[
+    {label:"Analytics & BI",value:"SQL, Snowflake, Sigma, Tableau, Power BI, Forecasting, KPI Design, Dashboard Design, Reconciliation"},
+    {label:"Programming & Data",value:"Python, REST APIs, JavaScript, PostgreSQL, MySQL, MongoDB, Data Modeling, ETL/ELT, Stored Procedures"},
+    {label:"Delivery",value:"Business Process Analysis, Requirements Gathering, Decision Support, QA, Process Mapping, Technical Documentation, Stakeholder Collaboration"}
+  ];
+  const skillsHTML=()=>section('Technical Skills',resumeSkillLines.map(x=>
     '<div class="resume-skill-line"><strong>'+escapeHTML(x.label)+':</strong> '+escapeHTML(x.value)+'</div>'
   ).join(''),'resume-skills-section');
 
   const additionalHTML=()=>section('Certifications & Additional Skills',
-    '<div class="resume-small"><strong>Training:</strong> '+escapeHTML(d.certifications.join(' • '))+'</div>'+
+    '<div class="resume-small"><strong>Training:</strong> SQL • Relational Databases • Tableau</div>'+
     '<div class="resume-small" style="margin-top:.025in"><strong>Languages:</strong> '+escapeHTML(d.languages.join(' • '))+'</div>',
     'resume-additional-section'
   );
@@ -526,18 +563,15 @@
 
     styleSelect.value=template;
     localStorage.setItem('resumeStyleV4',template);
-    requestAnimationFrame(fitSpacing);
+    
   }
 
   function fitSpacing(){
-    doc.classList.remove('tight');
-    requestAnimationFrame(()=>{
-      if(layout.scrollHeight>doc.clientHeight)doc.classList.add('tight');
-    });
+    // Resume spacing is intentionally fixed across templates.
   }
 
   function autoFitContent(){
-    fitSpacing();
+    // Content is curated to fit one page without changing document spacing.
   }
 
   function applyZoom(){
