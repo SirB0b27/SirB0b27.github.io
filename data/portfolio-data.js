@@ -695,7 +695,7 @@ window.PORTFOLIO_DATA = {
 
   resume:{
     headline:"Business Intelligence Analyst | Data, Analytics Engineering & Automation",
-    summary:"Business intelligence and analytics professional with experience owning production dashboards, commission systems, financial analytics, forecasting, data quality controls, and decision-support products for stakeholders ranging from operational teams and managers to directors, VP/SVP leaders, and C-suite executives. Strong background in SQL, Snowflake, Sigma, Python, APIs, data modeling, reconciliation, business process analysis, and cross-functional delivery.",
+    summary:"Business Intelligence Analyst with 3+ years owning analytics, dashboard, financial-control, and automation initiatives from requirements through production. Delivered major data products for managers, directors, VP/SVP leaders, and C-suite executives using SQL, Snowflake, Sigma, and Python, with strengths in business process analysis, financial analytics, data modeling, QA, and decision support.",
     featuredProjectIds:["commission-platform","cash-forecasting","agent-operations-dashboard","financial-auto-processing"],
     skills:[
       {label:"Analytics & BI",value:"Data Analysis, Business Intelligence, Sigma, Tableau, Power BI, Forecasting, KPI Design, Dashboard Design, Reconciliation, Decision Support"},
