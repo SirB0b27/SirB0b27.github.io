@@ -1,4 +1,10 @@
 <!doctype html>
+<!--
+  Resume layout presets are static GitHub Pages adaptations inspired by the MIT-licensed
+  Reactive Resume project (https://github.com/reactive-resume/reactive-resume).
+  The layouts below are original HTML/CSS implementations for this portfolio and are not
+  a bundled copy of Reactive Resume's React application.
+-->
 <html lang="en" data-theme="dark">
 <head>
   <meta charset="utf-8">
@@ -7,78 +13,205 @@
   <title>Resume | Hemanth Velan</title>
   <link rel="stylesheet" href="../assets/styles.css">
   <style>
-    :root{--resume-scale:1.25}
+    :root{
+      --resume-preview-scale:1.25;
+      --resume-content-scale:1;
+      --resume-accent:#4f46e5;
+      --resume-muted:#59606b;
+      --resume-divider:#d7dbe2;
+    }
     body{overflow-x:hidden}
     .resume-page-shell{min-height:100vh;background:var(--bg)}
-    .resume-page-topbar{height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:var(--panel);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30}
-    .resume-page-brand{display:flex;align-items:center;gap:10px}
-    .resume-page-tools{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-    .resume-page-tools select{height:32px;border:1px solid var(--line);border-radius:7px;background:var(--panel);color:var(--text);padding:0 8px;font-size:11px}
-    .resume-page-body{padding:18px 22px 22px;min-height:calc(100vh - 58px)}
-    .resume-customizer{max-width:980px;margin:0 auto 12px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:12px;display:none}
+    .resume-page-topbar{
+      min-height:58px;display:flex;align-items:center;justify-content:space-between;gap:14px;
+      padding:8px 16px;background:var(--panel);border-bottom:1px solid var(--line);
+      position:sticky;top:0;z-index:30
+    }
+    .resume-page-brand{display:flex;align-items:center;gap:10px;min-width:180px}
+    .resume-page-tools{display:flex;align-items:center;justify-content:flex-end;gap:6px;flex-wrap:wrap}
+    .resume-page-tools select{
+      height:32px;border:1px solid var(--line);border-radius:7px;background:var(--panel);
+      color:var(--text);padding:0 9px;font-size:11px;max-width:210px
+    }
+    .resume-zoom-readout{font-size:11px;color:var(--muted);min-width:44px;text-align:center}
+    .rr-credit{font-size:9px;color:var(--muted);white-space:nowrap}
+    .resume-page-body{padding:12px 20px 40px}
+    .resume-customizer{
+      max-width:980px;margin:0 auto 12px;background:var(--panel);border:1px solid var(--line);
+      border-radius:10px;padding:12px;display:none
+    }
     .resume-customizer.open{display:block}
     .resume-customizer-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:8px}
     .resume-customizer-title{font-size:12px;font-weight:750}
-    .resume-customizer textarea{width:100%;min-height:92px;resize:vertical;background:var(--panel-2);color:var(--text);border:1px solid var(--line);border-radius:7px;padding:9px 10px;font-size:11px;line-height:1.45}
+    .resume-customizer textarea{
+      width:100%;min-height:96px;resize:vertical;background:var(--panel-2);color:var(--text);
+      border:1px solid var(--line);border-radius:7px;padding:9px 10px;font-size:11px;line-height:1.45
+    }
     .resume-customizer-actions{display:flex;justify-content:flex-end;gap:7px;margin-top:8px}
-    .resume-page-stage{display:flex;justify-content:center;align-items:flex-start;overflow:auto;padding:22px;border:1px solid var(--line);border-radius:var(--radius);background:var(--panel-2);min-height:calc(100vh - 98px)}
-    .resume-document{width:8.5in;height:11in;min-width:8.5in;min-height:11in;background:#fff;color:#111;box-shadow:0 12px 34px rgba(0,0,0,.22);padding:.34in .42in .31in;transform:scale(var(--resume-scale));transform-origin:top center;font-family:Arial,Helvetica,sans-serif;overflow:hidden}
-    .r-head{text-align:center;border-bottom:1.4px solid #222;padding-bottom:5px}
-    .r-name{font-size:22px;font-weight:800;letter-spacing:.035em;line-height:1}
-    .r-title{font-size:9.2px;font-weight:700;margin-top:3px}
-    .r-links{font-size:7.7px;margin-top:3px;color:#333}
-    .r-summary{font-size:7.7px;line-height:1.28;margin-top:4px;text-align:left}
-    .r-section{margin-top:6px}
-    .r-section-title{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.09em;border-bottom:1px solid #222;padding-bottom:1px;margin-bottom:3px}
-    .r-entry{margin-bottom:4px}
-    .r-entry-head{display:flex;justify-content:space-between;gap:12px;font-size:8.1px;font-weight:800;line-height:1.15}
-    .r-entry-sub{display:flex;justify-content:space-between;gap:12px;font-size:7.5px;color:#333;margin-top:1px}
-    .r-entry ul{margin:2px 0 0 13px;padding:0;font-size:7.35px;line-height:1.22}
-    .r-entry li{margin:0 0 1px}
-    .r-project{margin-bottom:3px}
-    .r-project-head{font-size:7.8px;font-weight:800}
-    .r-project-tech{font-size:7px;color:#444;margin-top:1px}
-    .r-project p{font-size:7.25px;line-height:1.22;margin:1px 0 0}
-    .r-edu{margin-bottom:3px}
-    .r-edu-head{display:flex;justify-content:space-between;gap:8px;font-size:7.8px;font-weight:800}
-    .r-edu-sub{font-size:7.2px;color:#333;margin-top:1px}
-    .r-skill-line{font-size:7.15px;line-height:1.22;margin:1px 0}
-    .r-small{font-size:6.95px;line-height:1.2}
-    .resume-zoom-readout{font-size:11px;color:var(--muted);min-width:44px;text-align:center}
 
-    /* Resume style presets */
-    .resume-document[data-resume-style="professional"] .r-section-title{color:#111}
-    .resume-document[data-resume-style="modern"]{font-family:"Segoe UI",Arial,sans-serif}
-    .resume-document[data-resume-style="modern"] .r-head{border-bottom:2px solid #315a8c}
-    .resume-document[data-resume-style="modern"] .r-name{color:#244a78;letter-spacing:.02em}
-    .resume-document[data-resume-style="modern"] .r-section-title{color:#244a78;border-bottom-color:#8aa6c6}
-    .resume-document[data-resume-style="github"]{font-family:Arial,Helvetica,sans-serif}
-    .resume-document[data-resume-style="github"] .r-name,.resume-document[data-resume-style="github"] .r-section-title{font-family:Consolas,"Courier New",monospace}
-    .resume-document[data-resume-style="github"] .r-head{border-bottom:2px solid #2f6f44}
-    .resume-document[data-resume-style="github"] .r-name{color:#214d30}
-    .resume-document[data-resume-style="github"] .r-section-title{color:#214d30;border-bottom-color:#8bb59a}
-    .resume-document[data-resume-style="minimal"]{font-family:Georgia,"Times New Roman",serif;padding:.38in .48in}
-    .resume-document[data-resume-style="minimal"] .r-head{border-bottom:1px solid #999}
-    .resume-document[data-resume-style="minimal"] .r-name{font-weight:600;letter-spacing:.07em}
-    .resume-document[data-resume-style="minimal"] .r-section-title{font-family:Arial,Helvetica,sans-serif;letter-spacing:.12em;border-bottom-color:#aaa}
-    .resume-document[data-resume-style="minimal"] .r-entry-head,.resume-document[data-resume-style="minimal"] .r-project-head,.resume-document[data-resume-style="minimal"] .r-edu-head{font-weight:700}
+    /* No dashboard cell around the resume: the page sits directly on the site background. */
+    .resume-page-stage{
+      display:flex;justify-content:center;align-items:flex-start;overflow:visible;
+      padding:14px 0 70px;background:transparent;border:0;border-radius:0;min-height:calc(100vh - 70px)
+    }
+    .resume-document{
+      width:8.5in;height:11in;min-width:8.5in;min-height:11in;
+      background:#fff;color:#111;box-shadow:0 10px 34px rgba(0,0,0,.22);
+      transform:scale(var(--resume-preview-scale));transform-origin:top center;
+      font-family:Arial,Helvetica,sans-serif;overflow:hidden;
+      -webkit-print-color-adjust:exact;print-color-adjust:exact
+    }
+    .resume-layout{
+      --base-font:9.35pt;
+      --section-title:10.2pt;
+      --name-size:25pt;
+      font-size:calc(var(--base-font)*var(--resume-content-scale));
+      line-height:1.27;
+      width:100%;min-height:100%;
+    }
+    .resume-section{break-inside:avoid}
+    .resume-section-title{
+      font-size:calc(var(--section-title)*var(--resume-content-scale));
+      line-height:1.1;font-weight:800;text-transform:uppercase;letter-spacing:.07em;
+      margin:0 0 .055in
+    }
+    .resume-header-name{
+      font-size:calc(var(--name-size)*var(--resume-content-scale));
+      line-height:1;font-weight:800;letter-spacing:.025em
+    }
+    .resume-headline{font-size:.94em;font-weight:700;margin-top:.04in}
+    .resume-contact{font-size:.82em;color:#424750;margin-top:.045in}
+    .resume-summary{font-size:.91em;line-height:1.34}
+    .resume-item{margin-bottom:.075in;break-inside:avoid}
+    .resume-item:last-child{margin-bottom:0}
+    .resume-item-head{display:flex;justify-content:space-between;gap:.15in;font-weight:800;line-height:1.18}
+    .resume-item-sub{display:flex;justify-content:space-between;gap:.15in;color:#4d535c;font-size:.86em;margin-top:.015in}
+    .resume-item ul{margin:.035in 0 0 .16in;padding:0}
+    .resume-item li{margin:0 0 .018in}
+    .resume-project{margin-bottom:.07in;break-inside:avoid}
+    .resume-project:last-child{margin-bottom:0}
+    .resume-project-title{font-weight:800;line-height:1.16}
+    .resume-project-tech{font-size:.79em;color:#59606b;margin-top:.012in}
+    .resume-project-text{font-size:.88em;line-height:1.3;margin-top:.02in}
+    .resume-project-highlight{font-size:.84em;line-height:1.28;margin-top:.018in;color:#343941}
+    .resume-education-item{margin-bottom:.06in}
+    .resume-education-item:last-child{margin-bottom:0}
+    .resume-education-head{display:flex;justify-content:space-between;gap:.12in;font-weight:800}
+    .resume-education-sub{font-size:.84em;color:#4d535c;margin-top:.018in;line-height:1.3}
+    .resume-skill-line{font-size:.86em;line-height:1.32;margin:.016in 0}
+    .resume-small{font-size:.82em;line-height:1.3}
+    .resume-link{color:inherit;text-decoration:none}
+
+    /* ONYX — traditional single-column */
+    .template-onyx .resume-layout{padding:.34in .44in .32in}
+    .template-onyx .resume-header{
+      display:flex;justify-content:space-between;align-items:flex-end;gap:.2in;
+      border-bottom:2px solid var(--resume-accent);padding-bottom:.09in;margin-bottom:.1in
+    }
+    .template-onyx .resume-header-main{flex:1}
+    .template-onyx .resume-contact{text-align:right;max-width:2.45in;line-height:1.35}
+    .template-onyx .resume-section{margin-top:.105in}
+    .template-onyx .resume-section-title{color:#242832;border-bottom:1px solid var(--resume-divider);padding-bottom:.035in}
+
+    /* SCIZOR — linear modern layout with strong top rule */
+    .template-scizor .resume-layout{padding:.3in .44in .33in;border-top:.07in solid var(--resume-accent)}
+    .template-scizor .resume-header{padding-bottom:.1in}
+    .template-scizor .resume-header-name{font-size:calc(29pt*var(--resume-content-scale));max-width:70%}
+    .template-scizor .resume-name-rule{width:64%;border-bottom:3px solid #d8dce2;margin:.065in 0}
+    .template-scizor .resume-contact{display:flex;gap:.12in;flex-wrap:wrap;margin-top:.055in}
+    .template-scizor .resume-section{border-top:1px solid #d8dce2;padding-top:.085in;margin-top:.085in}
+    .template-scizor .resume-section-title{color:#15171a}
+
+    /* AZURILL — centered header + compact left sidebar */
+    .template-azurill .resume-layout{padding:.32in .4in}
+    .template-azurill .resume-header{text-align:center;margin-bottom:.12in}
+    .template-azurill .resume-contact{display:flex;justify-content:center;gap:.12in;flex-wrap:wrap}
+    .template-azurill .resume-columns{display:grid;grid-template-columns:31% 1fr;gap:.22in}
+    .template-azurill .resume-sidebar{border-right:1px solid #e0e3e7;padding-right:.16in}
+    .template-azurill .resume-main{padding-left:.01in}
+    .template-azurill .resume-section{margin-bottom:.105in}
+    .template-azurill .resume-section-title{color:var(--resume-accent)}
+    .template-azurill .resume-item{position:relative;padding-left:.11in;border-left:1px solid #c7cce0}
+    .template-azurill .resume-item:before{
+      content:"";position:absolute;left:-.035in;top:.055in;width:.06in;height:.06in;border-radius:50%;
+      background:#fff;border:1.4px solid var(--resume-accent)
+    }
+
+    /* CHIKORITA — main column with bold colored right sidebar */
+    .template-chikorita .resume-layout{
+      display:grid;grid-template-columns:70% 30%;padding:0;min-height:100%;
+      background:linear-gradient(to right,#fff 0,#fff 70%,var(--resume-accent) 70%,var(--resume-accent) 100%)
+    }
+    .template-chikorita .resume-main-panel{padding:.36in .28in .32in .42in}
+    .template-chikorita .resume-side-panel{padding:.36in .34in .32in .22in;color:#fff}
+    .template-chikorita .resume-header{margin-bottom:.12in}
+    .template-chikorita .resume-contact{display:flex;gap:.1in;flex-wrap:wrap}
+    .template-chikorita .resume-section{margin-bottom:.11in}
+    .template-chikorita .resume-main-panel .resume-section-title{
+      color:var(--resume-accent);border-bottom:1px solid var(--resume-accent);padding-bottom:.03in
+    }
+    .template-chikorita .resume-side-panel .resume-section-title{
+      color:#fff;border-bottom:1px solid rgba(255,255,255,.55);padding-bottom:.03in
+    }
+    .template-chikorita .resume-side-panel .resume-skill-line,
+    .template-chikorita .resume-side-panel .resume-small,
+    .template-chikorita .resume-side-panel .resume-education-sub{color:#fff}
+    .template-chikorita .resume-side-panel .resume-education-head{display:block}
+    .template-chikorita .resume-side-panel .resume-education-head span:last-child{display:block;font-size:.82em;margin-top:.015in}
+
+    /* DITTO — color band header + left information rail */
+    .template-ditto .resume-layout{padding:0}
+    .template-ditto .resume-header{
+      background:var(--resume-accent);color:#fff;padding:.28in .4in .24in;
+      display:flex;justify-content:space-between;gap:.25in;align-items:flex-end
+    }
+    .template-ditto .resume-contact{color:#fff;text-align:right;max-width:2.6in;line-height:1.35}
+    .template-ditto .resume-columns{display:grid;grid-template-columns:30% 1fr;gap:.22in;padding:.23in .4in .3in}
+    .template-ditto .resume-sidebar{padding-right:.12in}
+    .template-ditto .resume-main{padding-left:.02in}
+    .template-ditto .resume-section{margin-bottom:.105in}
+    .template-ditto .resume-section-title{color:var(--resume-accent)}
+
+    /* GENGAR — profile/sidebar column + main content */
+    .template-gengar .resume-layout{
+      display:grid;grid-template-columns:31% 69%;padding:0;min-height:100%;
+      background:linear-gradient(to right,#ecebff 0,#ecebff 31%,#fff 31%,#fff 100%)
+    }
+    .template-gengar .resume-side-panel{padding:0 0 .3in}
+    .template-gengar .resume-side-header{background:var(--resume-accent);color:#fff;padding:.36in .28in .28in}
+    .template-gengar .resume-side-header .resume-contact{color:#fff;line-height:1.45}
+    .template-gengar .resume-side-content{padding:.24in .25in}
+    .template-gengar .resume-main-panel{padding:.34in .4in .31in .31in}
+    .template-gengar .resume-main-panel .resume-featured-summary{
+      background:#ecebff;margin:-.34in -.4in .18in -.31in;padding:.28in .4in .22in .31in
+    }
+    .template-gengar .resume-section{margin-bottom:.11in}
+    .template-gengar .resume-section-title{
+      color:var(--resume-accent);border-bottom:1px solid var(--resume-accent);padding-bottom:.03in
+    }
 
     @media(max-width:980px){
-      .resume-page-body{padding:10px}
-      .resume-page-stage{padding:10px}
-      .resume-page-tools .desktop-label{display:none}
-      .resume-page-tools select{max-width:118px}
+      .resume-page-body{padding:8px 8px 35px}
+      .resume-page-tools .desktop-label,.rr-credit{display:none}
+      .resume-page-tools select{max-width:150px}
     }
     @media(max-width:700px){
-      .resume-page-topbar{height:auto;min-height:58px;align-items:flex-start;padding:10px}
+      .resume-page-topbar{align-items:flex-start;padding:9px 10px}
+      .resume-page-brand{min-width:auto}
       .resume-page-tools{justify-content:flex-end}
-      .resume-page-body{padding-top:10px}
+      .brand-copy-small{display:none}
     }
     @media print{
       html,body{width:8.5in;height:11in;background:#fff!important;margin:0!important;padding:0!important}
       .resume-page-topbar,.resume-customizer{display:none!important}
-      .resume-page-body,.resume-page-stage{margin:0!important;padding:0!important;border:0!important;background:#fff!important;min-height:0!important;display:block!important;overflow:visible!important}
-      .resume-document{width:8.5in!important;height:11in!important;min-width:8.5in!important;min-height:11in!important;box-shadow:none!important;transform:none!important;margin:0!important;overflow:hidden!important}
+      .resume-page-body,.resume-page-stage{
+        margin:0!important;padding:0!important;border:0!important;background:#fff!important;
+        min-height:0!important;display:block!important;overflow:visible!important
+      }
+      .resume-document{
+        width:8.5in!important;height:11in!important;min-width:8.5in!important;min-height:11in!important;
+        box-shadow:none!important;transform:none!important;margin:0!important;overflow:hidden!important
+      }
       @page{size:Letter;margin:0}
     }
   </style>
@@ -88,14 +221,17 @@
   <header class="resume-page-topbar">
     <div class="resume-page-brand">
       <a class="icon-btn" href="../" aria-label="Back to portfolio">←</a>
-      <div><div class="brand-title">Resume</div><div class="brand-sub">One-page print layout</div></div>
+      <div class="brand-copy-small"><div class="brand-title">Resume</div><div class="brand-sub">One-page resume builder</div></div>
     </div>
     <div class="resume-page-tools">
-      <select id="resumeStyle" aria-label="Resume style">
-        <option value="professional">Professional</option>
-        <option value="modern">Modern</option>
-        <option value="github">GitHub Classic</option>
-        <option value="minimal">Minimal</option>
+      <span class="rr-credit">Reactive Resume–inspired layouts</span>
+      <select id="resumeStyle" aria-label="Resume template">
+        <option value="onyx">Onyx — Traditional</option>
+        <option value="scizor">Scizor — Modern Linear</option>
+        <option value="azurill">Azurill — Two Column</option>
+        <option value="chikorita">Chikorita — Accent Sidebar</option>
+        <option value="ditto">Ditto — Header Band</option>
+        <option value="gengar">Gengar — Profile Sidebar</option>
       </select>
       <button class="tool-btn" id="summaryToggle">Edit summary</button>
       <button class="icon-btn" id="zoomOut" title="Zoom out">−</button>
@@ -111,7 +247,10 @@
   <main class="resume-page-body">
     <section class="resume-customizer" id="summaryPanel">
       <div class="resume-customizer-head">
-        <div><div class="resume-customizer-title">Custom Resume Summary</div><div class="brand-sub">Type your own summary below. It updates the resume immediately and is saved in this browser.</div></div>
+        <div>
+          <div class="resume-customizer-title">Custom Resume Summary</div>
+          <div class="brand-sub">Type your own summary. It updates every template immediately and is stored only in this browser.</div>
+        </div>
         <button class="icon-btn" id="summaryClose" aria-label="Close summary editor">×</button>
       </div>
       <textarea id="summaryInput" aria-label="Custom resume summary"></textarea>
@@ -122,165 +261,236 @@
     </section>
 
     <div class="resume-page-stage" id="stage">
-      <article class="resume-document" id="resumeDocument" data-resume-style="professional">
-        <header class="r-head">
-          <div class="r-name">HEMANTH VELAN</div>
-          <div class="r-title">Business Intelligence Analyst | Data, Analytics & Automation | New Jersey</div>
-          <div class="r-links">github.com/SirB0b27 &nbsp;•&nbsp; linkedin.com/in/hemanthvelan27</div>
-          <div class="r-summary" id="resumeSummary">Business intelligence and analytics professional with experience delivering production reporting, commission systems, financial analytics, data automation, operational dashboards, forecasting, data-quality controls, and stakeholder-facing analytics. Strong background in SQL, Snowflake, Sigma, Python, APIs, data modeling, reconciliation, and cross-functional project delivery.</div>
-        </header>
-
-        <section class="r-section">
-          <div class="r-section-title">Professional Experience</div>
-
-          <div class="r-entry">
-            <div class="r-entry-head"><span>Business Intelligence Analyst — Freight Logistics</span><span>2023 – Present</span></div>
-            <div class="r-entry-sub"><span>Business Intelligence, Analytics Engineering & Automation</span><span>United States</span></div>
-            <ul>
-              <li>Build and maintain analytics products used by operations, finance, agents, external partners, and executive leadership.</li>
-              <li>Develop commission reporting and payout workflows covering plan logic, historical snapshots, overrides, dashboard security, agent statements, and pay-cycle controls.</li>
-              <li>Create financial analytics for settlements, currency conversion, payment behavior, prior balances, reconciliation, and expected-cash forecasting.</li>
-              <li>Automate API and browser-based data collection, historical backfills, repeatable validation, source-to-report comparisons, and operational monitoring workflows.</li>
-              <li>Own large reporting initiatives from requirements and source analysis through SQL modeling, QA, stakeholder review, documentation, rollout, and long-term maintenance.</li>
-              <li>Create process maps and technical documentation that make complex joins, unions, business rules, security, and downstream calculations maintainable for future developers.</li>
-            </ul>
-          </div>
-
-          <div class="r-entry">
-            <div class="r-entry-head"><span>Enterprise Business Analyst Intern — Cooper University Hospital</span><span>Jun 2023 – Aug 2023</span></div>
-            <div class="r-entry-sub"><span>Administrative Department</span><span>Camden, NJ</span></div>
-            <ul>
-              <li>Built an auto-updating performance dashboard with company, team, and individual views using interactive slicers; the prior resume documented a 2–3% improvement across teams after deployment.</li>
-              <li>Developed a business model using partner-hospital appointment availability to support capacity, partnership, and staffing decisions.</li>
-              <li>Produced department performance reporting that helped managers identify anomalous data and investigate gaps between actual results and expectations.</li>
-            </ul>
-          </div>
-
-          <div class="r-entry">
-            <div class="r-entry-head"><span>Data Online Bootcamp Teaching Assistant — 2U, Inc.</span><span>Mar 2022 – 2024</span></div>
-            <div class="r-entry-sub"><span>Data & Software Development Bootcamps</span><span>Remote</span></div>
-            <ul>
-              <li>Led recurring office hours, technical troubleshooting, and class-resource support for data bootcamp cohorts at multiple universities.</li>
-              <li>Mentored final-project teams building dashboards and machine-learning deliverables using Python, neural networks, Tableau, SQL, and related technologies.</li>
-              <li>Provided substitute instructional support across JavaScript, React, MERN, ORM, HTML/CSS/Git, and other development topics.</li>
-            </ul>
-          </div>
-
-          <div class="r-entry">
-            <div class="r-entry-head"><span>Undergraduate Class Teaching Assistant — UNC Charlotte</span><span>Aug 2022 – Dec 2022</span></div>
-            <div class="r-entry-sub"><span>Intro to Data Science & Sociology</span><span>Charlotte, NC</span></div>
-            <ul>
-              <li>Supported an approximately 110-student course through grading, technical feedback, and recurring one-on-one office hours.</li>
-              <li>Collaborated with an eight-person instructional team to plan weekly class delivery and maintain student support coverage.</li>
-            </ul>
-          </div>
-        </section>
-
-        <section class="r-section">
-          <div class="r-section-title">Projects</div>
-          <div class="r-project"><div class="r-project-head">Commission Reporting & Payout Systems</div><div class="r-project-tech">SQL • Snowflake • Sigma • Data Modeling • Stored Procedures • Snapshots</div><p>Built maintainable plan-specific reporting with historical snapshots, overrides, reconciliation, security, statements, and payout-cycle controls.</p></div>
-          <div class="r-project"><div class="r-project-head">Front Analytics Automation</div><div class="r-project-tech">Python • REST APIs • Jupyter • Snowflake • Sigma</div><p>Created API-driven collection and analytics for inbox activity, status duration, reply and resolution timing, handling metrics, historical backfills, and validation.</p></div>
-          <div class="r-project"><div class="r-project-head">Cash Forecasting & Payment Behavior</div><div class="r-project-tech">SQL • Forecasting • DSO • Customer Segmentation • Data Modeling</div><p>Modeled payment timing using DSO, aging buckets, customer payment distributions, and weighted expected-pay-date logic to forecast unpaid invoiced cash.</p></div>
-        </section>
-
-        <section class="r-section">
-          <div class="r-section-title">Education</div>
-          <div class="r-edu"><div class="r-edu-head"><span>Master of Science — Data Science & Business Analytics, UNC Charlotte</span><span>2025</span></div><div class="r-edu-sub">Coursework included Business Intelligence & Analytics, Applied Machine Learning, Big Data Analytics, Cloud Computing, Database Systems, Strategic Business Analytics, and Visual Analytics.</div></div>
-          <div class="r-edu"><div class="r-edu-head"><span>Bachelor of Science — Computer Science, New Jersey Institute of Technology</span><span>2022</span></div><div class="r-edu-sub">Information Technology and Applied Physics background • Dean’s List — 7 terms • Coursework included algorithms, operating systems, AI, data mining, cybersecurity, database design, and systems integration.</div></div>
-        </section>
-
-        <section class="r-section">
-          <div class="r-section-title">Technical Skills</div>
-          <div class="r-skill-line"><strong>Analytics & BI:</strong> Data Analysis, Business Intelligence, Forecasting, Data Mining, Predictive Analytics, Machine Learning, Dashboard Design, KPI Design, Reconciliation, Sigma, Tableau</div>
-          <div class="r-skill-line"><strong>Data & Databases:</strong> SQL, Snowflake, PostgreSQL, MySQL, MariaDB, MongoDB, Data Modeling, Stored Procedures, Window Functions, Regex, Snapshots, Scheduled Tasks</div>
-          <div class="r-skill-line"><strong>Programming & Development:</strong> Python, JavaScript, Java, C++, C#, C, Bash, ReactJS, HTML, CSS, PHP, Flask, REST APIs, Socket.IO, RabbitMQ</div>
-          <div class="r-skill-line"><strong>Tools & Delivery:</strong> Git, GitHub, GitLab, GitHub Actions, Jupyter, Figma, Confluence, Jira, Slack, TensorFlow, Unix, Process Mapping, Technical Documentation, Requirements Gathering, Mentoring</div>
-        </section>
-
-        <section class="r-section">
-          <div class="r-section-title">Certifications & Additional Skills</div>
-          <div class="r-small"><strong>Training:</strong> Intermediate SQL Queries • Introduction to Relational Databases in SQL • Joining Data in SQL • Applying SQL to Real-World Problems • Introduction to Tableau</div>
-          <div class="r-small" style="margin-top:2px"><strong>Languages:</strong> English • Spanish • Tamil</div>
-        </section>
+      <article class="resume-document template-onyx" id="resumeDocument">
+        <div class="resume-layout" id="resumeLayout"></div>
       </article>
     </div>
   </main>
 </div>
 
+<script src="../data/portfolio-data.js"></script>
 <script>
 (() => {
+  const d=window.PORTFOLIO_DATA;
   const root=document.documentElement;
   const doc=document.getElementById('resumeDocument');
+  const layout=document.getElementById('resumeLayout');
   const stage=document.getElementById('stage');
   const readout=document.getElementById('zoomReadout');
   const styleSelect=document.getElementById('resumeStyle');
   const panel=document.getElementById('summaryPanel');
   const summaryInput=document.getElementById('summaryInput');
-  const summaryOutput=document.getElementById('resumeSummary');
-  const defaultSummary='Business intelligence and analytics professional with experience delivering production reporting, commission systems, financial analytics, data automation, operational dashboards, forecasting, data-quality controls, and stakeholder-facing analytics. Strong background in SQL, Snowflake, Sigma, Python, APIs, data modeling, reconciliation, and cross-functional project delivery.';
-  let zoom=Number(localStorage.getItem('resumeDisplayZoomV2')||1);
+  const defaultSummary=d.resume.summary;
+  const allowedTemplates=['onyx','scizor','azurill','chikorita','ditto','gengar'];
+  let template=localStorage.getItem('resumeStyleV3')||'onyx';
+  let zoom=Number(localStorage.getItem('resumeDisplayZoomV3')||1);
+  let customSummary=localStorage.getItem('resumeCustomSummary')||defaultSummary;
+
+  const escapeHTML=(value)=>String(value??'').replace(/[&<>"']/g,(ch)=>({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[ch]));
+
+  const contactHTML=()=>[
+    '<a class="resume-link" href="'+escapeHTML(d.profile.github)+'" target="_blank" rel="noopener">github.com/SirB0b27</a>',
+    '<a class="resume-link" href="'+escapeHTML(d.profile.linkedin)+'" target="_blank" rel="noopener">linkedin.com/in/hemanthvelan27</a>',
+    escapeHTML(d.profile.location)
+  ].join(' • ');
+
+  const headerHTML=(mode='normal')=>{
+    if(mode==='scizor'){
+      return '<header class="resume-header"><div class="resume-header-name">'+escapeHTML(d.profile.name.toUpperCase())+'</div><div class="resume-name-rule"></div><div class="resume-headline">'+escapeHTML(d.resume.headline)+'</div><div class="resume-contact">'+contactHTML()+'</div></header>';
+    }
+    return '<header class="resume-header"><div class="resume-header-main"><div class="resume-header-name">'+escapeHTML(d.profile.name.toUpperCase())+'</div><div class="resume-headline">'+escapeHTML(d.resume.headline)+'</div></div><div class="resume-contact">'+contactHTML()+'</div></header>';
+  };
+
+  const section=(title,body,cls='')=>'<section class="resume-section '+cls+'"><h2 class="resume-section-title">'+title+'</h2>'+body+'</section>';
+
+  const summaryHTML=(showHeading=true)=>showHeading
+    ? section('Summary','<div class="resume-summary">'+escapeHTML(customSummary)+'</div>','resume-summary-section')
+    : '<div class="resume-featured-summary"><div class="resume-summary">'+escapeHTML(customSummary)+'</div></div>';
+
+  const experienceHTML=()=>{
+    const limits=[5,3,3,2];
+    return section('Professional Experience',d.experience.map((x,i)=>
+      '<div class="resume-item">'+
+        '<div class="resume-item-head"><span>'+escapeHTML(x.role)+' — '+escapeHTML(x.org)+'</span><span>'+escapeHTML(x.period)+'</span></div>'+
+        '<div class="resume-item-sub"><span>'+escapeHTML(x.tags.slice(0,4).join(' • '))+'</span><span>'+escapeHTML(x.location)+'</span></div>'+
+        '<ul>'+x.bullets.slice(0,limits[i]||2).map(b=>'<li>'+escapeHTML(b)+'</li>').join('')+'</ul>'+
+      '</div>'
+    ).join(''),'resume-experience-section');
+  };
+
+  const projectsHTML=()=>{
+    const projects=d.resume.featuredProjectIds.map(id=>d.projects.find(p=>p.id===id)).filter(Boolean);
+    return section('Projects',projects.map(p=>
+      '<div class="resume-project">'+
+        '<div class="resume-project-title">'+escapeHTML(p.name)+'</div>'+
+        '<div class="resume-project-tech">'+escapeHTML(p.technologies.slice(0,6).join(' • '))+'</div>'+
+        '<div class="resume-project-text">'+escapeHTML(p.summary)+'</div>'+
+        '<div class="resume-project-highlight">'+escapeHTML(p.highlights[0]||'')+'</div>'+
+      '</div>'
+    ).join(''),'resume-projects-section');
+  };
+
+  const educationHTML=()=>section('Education',d.education.map(x=>
+    '<div class="resume-education-item">'+
+      '<div class="resume-education-head"><span>'+escapeHTML(x.degree)+' — '+escapeHTML(x.program)+', '+escapeHTML(x.school)+'</span><span>'+escapeHTML(x.period.split(' – ').pop())+'</span></div>'+
+      '<div class="resume-education-sub">'+
+        (x.secondary?escapeHTML(x.secondary)+' • ':'')+
+        (x.honors?escapeHTML(x.honors)+' • ':'')+
+        escapeHTML('Coursework: '+x.highlights.slice(0,6).join(', '))+
+      '</div>'+
+    '</div>'
+  ).join(''),'resume-education-section');
+
+  const skillsHTML=()=>section('Technical Skills',d.resume.skills.map(x=>
+    '<div class="resume-skill-line"><strong>'+escapeHTML(x.label)+':</strong> '+escapeHTML(x.value)+'</div>'
+  ).join(''),'resume-skills-section');
+
+  const additionalHTML=()=>section('Certifications & Additional Skills',
+    '<div class="resume-small"><strong>Training:</strong> '+escapeHTML(d.certifications.join(' • '))+'</div>'+
+    '<div class="resume-small" style="margin-top:.025in"><strong>Languages:</strong> '+escapeHTML(d.languages.join(' • '))+'</div>',
+    'resume-additional-section'
+  );
+
+  function renderTemplate(){
+    doc.className='resume-document template-'+template;
+
+    if(template==='onyx'){
+      layout.innerHTML=
+        headerHTML()+
+        summaryHTML()+
+        experienceHTML()+
+        projectsHTML()+
+        educationHTML()+
+        skillsHTML()+
+        additionalHTML();
+    }
+
+    if(template==='scizor'){
+      layout.innerHTML=
+        headerHTML('scizor')+
+        summaryHTML()+
+        experienceHTML()+
+        projectsHTML()+
+        educationHTML()+
+        skillsHTML()+
+        additionalHTML();
+    }
+
+    if(template==='azurill'){
+      layout.innerHTML=
+        headerHTML()+
+        '<div class="resume-columns">'+
+          '<aside class="resume-sidebar">'+skillsHTML()+educationHTML()+additionalHTML()+'</aside>'+
+          '<main class="resume-main">'+summaryHTML()+experienceHTML()+projectsHTML()+'</main>'+
+        '</div>';
+    }
+
+    if(template==='chikorita'){
+      layout.innerHTML=
+        '<main class="resume-main-panel">'+headerHTML()+summaryHTML()+experienceHTML()+projectsHTML()+'</main>'+
+        '<aside class="resume-side-panel">'+skillsHTML()+educationHTML()+additionalHTML()+'</aside>';
+    }
+
+    if(template==='ditto'){
+      layout.innerHTML=
+        headerHTML()+
+        '<div class="resume-columns">'+
+          '<aside class="resume-sidebar">'+educationHTML()+skillsHTML()+additionalHTML()+'</aside>'+
+          '<main class="resume-main">'+summaryHTML()+experienceHTML()+projectsHTML()+'</main>'+
+        '</div>';
+    }
+
+    if(template==='gengar'){
+      layout.innerHTML=
+        '<aside class="resume-side-panel">'+
+          '<div class="resume-side-header">'+headerHTML()+'</div>'+
+          '<div class="resume-side-content">'+skillsHTML()+educationHTML()+additionalHTML()+'</div>'+
+        '</aside>'+
+        '<main class="resume-main-panel">'+summaryHTML(false)+experienceHTML()+projectsHTML()+'</main>';
+    }
+
+    styleSelect.value=template;
+    localStorage.setItem('resumeStyleV3',template);
+    requestAnimationFrame(autoFitContent);
+  }
+
+  function autoFitContent(){
+    let factor=1;
+    layout.style.setProperty('--resume-content-scale','1');
+    doc.style.setProperty('--resume-content-scale','1');
+
+    const maxHeight=doc.clientHeight-2;
+    let natural=layout.scrollHeight;
+
+    while(natural>maxHeight && factor>.88){
+      factor=+(factor-.01).toFixed(2);
+      doc.style.setProperty('--resume-content-scale',factor);
+      natural=layout.scrollHeight;
+    }
+
+    while(natural<maxHeight*.90 && factor<1.07){
+      factor=+(factor+.01).toFixed(2);
+      doc.style.setProperty('--resume-content-scale',factor);
+      natural=layout.scrollHeight;
+      if(natural>maxHeight){factor=+(factor-.01).toFixed(2);doc.style.setProperty('--resume-content-scale',factor);break}
+    }
+  }
 
   function applyZoom(){
     const actualScale=zoom*1.25;
-    root.style.setProperty('--resume-scale',actualScale);
+    root.style.setProperty('--resume-preview-scale',actualScale);
     readout.textContent=Math.round(zoom*100)+'%';
     doc.style.marginBottom=((actualScale-1)*11)+'in';
-    localStorage.setItem('resumeDisplayZoomV2',zoom);
+    localStorage.setItem('resumeDisplayZoomV3',zoom);
   }
 
   function fitWidth(){
     const naturalW=816;
-    const availableW=Math.max(320,stage.clientWidth-28);
+    const availableW=Math.max(340,stage.clientWidth-18);
     const actualScale=availableW/naturalW;
-    zoom=Math.max(.5,Math.min(1.4,actualScale/1.25));
+    zoom=Math.max(.45,Math.min(1.35,actualScale/1.25));
     applyZoom();
   }
 
   function fitPage(){
     const naturalW=816,naturalH=1056;
-    const availableW=Math.max(320,stage.clientWidth-28);
-    const availableH=Math.max(420,window.innerHeight-118);
+    const availableW=Math.max(340,stage.clientWidth-18);
+    const availableH=Math.max(420,window.innerHeight-86);
     const actualScale=Math.min(availableW/naturalW,availableH/naturalH);
-    zoom=Math.max(.5,Math.min(1.4,actualScale/1.25));
+    zoom=Math.max(.45,Math.min(1.35,actualScale/1.25));
     applyZoom();
   }
 
-  function setSummary(value){
-    const clean=(value||'').trim();
-    summaryOutput.textContent=clean||defaultSummary;
-    summaryInput.value=clean||defaultSummary;
-    if(clean) localStorage.setItem('resumeCustomSummary',clean);
-    else localStorage.removeItem('resumeCustomSummary');
+  function setSummary(value,save=true){
+    customSummary=(value||'').trim()||defaultSummary;
+    summaryInput.value=customSummary;
+    if(save)localStorage.setItem('resumeCustomSummary',customSummary);
+    renderTemplate();
   }
 
-  function setStyle(style){
-    const allowed=['professional','modern','github','minimal'];
-    const next=allowed.includes(style)?style:'professional';
-    doc.dataset.resumeStyle=next;
-    styleSelect.value=next;
-    localStorage.setItem('resumeStyle',next);
-  }
-
-  document.getElementById('zoomOut').onclick=()=>{zoom=Math.max(.5,+(zoom-.05).toFixed(2));applyZoom()};
-  document.getElementById('zoomIn').onclick=()=>{zoom=Math.min(1.4,+(zoom+.05).toFixed(2));applyZoom()};
+  document.getElementById('zoomOut').onclick=()=>{zoom=Math.max(.45,+(zoom-.05).toFixed(2));applyZoom()};
+  document.getElementById('zoomIn').onclick=()=>{zoom=Math.min(1.35,+(zoom+.05).toFixed(2));applyZoom()};
   document.getElementById('fitPage').onclick=fitPage;
   document.getElementById('fitWidth').onclick=fitWidth;
-  document.getElementById('printResume').onclick=()=>window.print();
+  document.getElementById('printResume').onclick=()=>{autoFitContent();setTimeout(()=>window.print(),50)};
   document.getElementById('themeToggle').onclick=()=>{
     const next=root.dataset.theme==='dark'?'light':'dark';
-    root.dataset.theme=next;
-    localStorage.setItem('portfolioTheme',next);
+    root.dataset.theme=next;localStorage.setItem('portfolioTheme',next);
   };
   document.getElementById('summaryToggle').onclick=()=>panel.classList.toggle('open');
   document.getElementById('summaryClose').onclick=()=>panel.classList.remove('open');
-  document.getElementById('summaryDone').onclick=()=>panel.classList.remove('open');
-  document.getElementById('summaryReset').onclick=()=>{localStorage.removeItem('resumeCustomSummary');setSummary(defaultSummary)};
-  summaryInput.addEventListener('input',()=>{summaryOutput.textContent=summaryInput.value.trim()||defaultSummary;localStorage.setItem('resumeCustomSummary',summaryInput.value)});
-  styleSelect.addEventListener('change',()=>setStyle(styleSelect.value));
+  document.getElementById('summaryDone').onclick=()=>{setSummary(summaryInput.value);panel.classList.remove('open')};
+  document.getElementById('summaryReset').onclick=()=>{localStorage.removeItem('resumeCustomSummary');setSummary(defaultSummary,false)};
+  summaryInput.addEventListener('input',()=>{customSummary=summaryInput.value.trim()||defaultSummary;localStorage.setItem('resumeCustomSummary',summaryInput.value);renderTemplate()});
+  styleSelect.addEventListener('change',()=>{template=allowedTemplates.includes(styleSelect.value)?styleSelect.value:'onyx';renderTemplate()});
+  window.addEventListener('resize',()=>{if(window.innerWidth<980)fitWidth()});
 
   root.dataset.theme=localStorage.getItem('portfolioTheme')||'dark';
-  setStyle(localStorage.getItem('resumeStyle')||'professional');
-  setSummary(localStorage.getItem('resumeCustomSummary')||defaultSummary);
+  if(!allowedTemplates.includes(template))template='onyx';
+  summaryInput.value=customSummary;
+  renderTemplate();
   applyZoom();
 })();
 </script>
