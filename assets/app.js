@@ -22,21 +22,21 @@
       pageHead('Professional CV',d.profile.name,d.profile.summary,'<a class="primary-btn" href="resume/">Open resume</a><a class="secondary-btn" href="college-projects/">College projects</a>')+
       '<div class="grid kpi-grid">'+d.metrics.map(m=>'<div class="kpi"><div class="kpi-label">'+m.label+'</div><div class="kpi-value">'+m.value+'</div><div class="kpi-note">'+m.note+'</div></div>').join('')+'</div>'+
       '<div class="grid dashboard-grid">'+
-        '<div class="panel"><div class="panel-head"><div><div class="panel-title">Documented work activity</div><div class="panel-subtitle">Work items captured by month</div></div><span class="tag">2023–2026</span></div><div class="panel-body"><div class="chart-wrap">'+d.activityMonthly.map(([m,v])=>'<div class="bar" style="height:'+Math.max(8,v/max*100)+'%" data-label="'+m+': '+v+'"></div>').join('')+'</div><div class="chart-axis"><span>Dec 2023</span><span>Sep 2026</span></div></div></div>'+
-        '<div class="panel"><div class="panel-head"><div><div class="panel-title">Professional profile</div><div class="panel-subtitle">Current focus and technical background</div></div></div><div class="panel-body"><div class="stack"><div class="mini-card"><strong>Business intelligence & analytics</strong><p>Production reporting, financial analytics, operational dashboards, data modeling, QA, and stakeholder-facing delivery.</p></div><div class="mini-card"><strong>Automation & engineering</strong><p>Python, REST APIs, browser automation, Snowflake, SQL procedures, scheduled processes, snapshots, and repeatable validation workflows.</p></div><div class="mini-card"><strong>Technical breadth</strong><p>Background spanning data science, machine learning, software development, web technologies, databases, and technical instruction.</p></div></div></div></div>'+
+        '<div class="panel"><div class="panel-head"><div><div class="panel-title">Documented Work Activity</div><div class="panel-subtitle">Work Items Captured by Month</div></div><span class="tag">2023–2026</span></div><div class="panel-body"><div class="chart-wrap">'+d.activityMonthly.map(([m,v])=>'<div class="bar" style="height:'+Math.max(8,v/max*100)+'%" data-label="'+m+': '+v+'"></div>').join('')+'</div><div class="chart-axis"><span>Dec 2023</span><span>Sep 2026</span></div></div></div>'+
+        '<div class="panel"><div class="panel-head"><div><div class="panel-title">Professional Profile</div><div class="panel-subtitle">Current Focus and Technical Background</div></div></div><div class="panel-body"><div class="stack"><div class="mini-card"><strong>Business Intelligence & Analytics</strong><p>Production reporting, financial analytics, operational dashboards, data modeling, QA, and stakeholder-facing delivery.</p></div><div class="mini-card"><strong>Automation & Engineering</strong><p>Python, REST APIs, browser automation, Snowflake, SQL procedures, scheduled processes, snapshots, and repeatable validation workflows.</p></div><div class="mini-card"><strong>Technical Breadth</strong><p>Background spanning data science, machine learning, software development, web technologies, databases, and technical instruction.</p></div></div></div></div>'+
       '</div>'+
-      '<div class="panel focus-panel"><div class="panel-head"><div><div class="panel-title">Selected bodies of work</div><div class="panel-subtitle">Click a project to open its detail panel</div></div><button class="secondary-btn" data-scroll="projects">View all projects</button></div><div class="panel-body focus-grid">'+sortProjectsByPeriod(d.projects).slice(0,6).map(p=>'<button class="mini-card project-open" data-project="'+p.id+'" style="text-align:left;cursor:pointer;color:inherit"><strong>'+p.name+'</strong><p>'+p.summary+'</p>'+tags(p.technologies.slice(0,4))+'</button>').join('')+'</div></div>';
+      '<div class="panel focus-panel"><div class="panel-head"><div><div class="panel-title">Project Highlights</div><div class="panel-subtitle">Click a Project to Open Its Detail Panel</div></div><button class="secondary-btn" data-scroll="projects">View all projects</button></div><div class="panel-body focus-grid">'+sortProjectsByPeriod(d.projects).slice(0,6).map(p=>'<button class="mini-card project-open" data-project="'+p.id+'" style="text-align:left;cursor:pointer;color:inherit"><strong>'+p.name+'</strong><p>'+p.summary+'</p>'+tags(p.technologies.slice(0,4))+'</button>').join('')+'</div></div>';
   }
 
   function renderExperience(){
     qs('[data-view="experience"]').innerHTML=
-      pageHead('Experience','Professional experience','Roles across business intelligence, logistics, healthcare, analytics education, and technical support.')+
+      pageHead('Experience','Professional Experience','Roles across business intelligence, logistics, healthcare, analytics education, and technical support.')+
       '<div class="experience-list">'+d.experience.map(e=>'<article class="experience-card"><div class="experience-top"><div><h3>'+e.role+'</h3><div class="experience-meta">'+e.org+' • '+e.location+'</div></div><div class="experience-period">'+e.period+'</div></div>'+tags(e.tags)+'<ul>'+e.bullets.map(b=>'<li>'+b+'</li>').join('')+'</ul></article>').join('')+'</div>';
   }
 
   function renderProjects(){
     qs('[data-view="projects"]').innerHTML=
-      pageHead('Project explorer','Projects','Professional analytics work plus earlier software and data projects. Internal links, credentials, customer names, and confidential implementation details are excluded from the public site.')+
+      pageHead('Project Explorer','Projects','Professional analytics work plus earlier software and data projects. Internal links, credentials, customer names, and confidential implementation details are excluded from the public site.')+
       '<div class="filterbar"><input id="projectSearch" placeholder="Search projects, tools, or topics"><select id="projectCategory"><option value="">All categories</option>'+[...new Set(d.projects.map(p=>p.category))].map(c=>'<option>'+c+'</option>').join('')+'</select></div>'+
       '<div class="panel"><div class="table-wrap"><table class="data-table"><thead><tr><th>Project</th><th>Category</th><th>Period</th><th>Technologies</th></tr></thead><tbody id="projectRows"></tbody></table></div></div>';
     drawProjectRows();
@@ -53,17 +53,17 @@
   function renderSkills(){
     const skillTotal=d.skills.reduce((n,g)=>n+g.items.length,0);
     qs('[data-view="skills"]').innerHTML=
-      pageHead('Capability map','Skills & technologies','Expanded using the technical skills, tools, development background, certifications, and delivery strengths from the previous resume together with current professional work.')+
+      pageHead('Capability Map','Skills & Technologies','Expanded using the technical skills, tools, development background, certifications, and delivery strengths from the previous resume together with current professional work.')+
       '<div class="grid skills-kpi-row">'+
-        '<div class="kpi"><div class="kpi-label">Skill areas</div><div class="kpi-value">'+d.skills.length+'</div><div class="kpi-note">Grouped by capability</div></div>'+
-        '<div class="kpi"><div class="kpi-label">Technologies & capabilities</div><div class="kpi-value">'+skillTotal+'</div><div class="kpi-note">Analytics, programming, data, and delivery</div></div>'+
-        '<div class="kpi"><div class="kpi-label">Certifications / training</div><div class="kpi-value">'+d.certifications.length+'</div><div class="kpi-note">SQL and Tableau focused</div></div>'+
+        '<div class="kpi"><div class="kpi-label">Skill Areas</div><div class="kpi-value">'+d.skills.length+'</div><div class="kpi-note">Grouped by capability</div></div>'+
+        '<div class="kpi"><div class="kpi-label">Technologies & Capabilities</div><div class="kpi-value">'+skillTotal+'</div><div class="kpi-note">Analytics, programming, data, and delivery</div></div>'+
+        '<div class="kpi"><div class="kpi-label">Certifications / Training</div><div class="kpi-value">'+d.certifications.length+'</div><div class="kpi-note">SQL and Tableau focused</div></div>'+
         '<div class="kpi"><div class="kpi-label">Languages</div><div class="kpi-value">'+d.languages.length+'</div><div class="kpi-note">'+d.languages.join(' • ')+'</div></div>'+
       '</div>'+
       '<div class="grid skill-grid">'+d.skills.map(g=>'<div class="panel skill-group"><div class="panel-head"><div class="panel-title">'+g.group+'</div><span class="tag">'+g.items.length+' skills</span></div><div class="panel-body"><div class="skill-chip-grid">'+g.items.map(x=>'<span class="skill-chip">'+x+'</span>').join('')+'</div></div></div>').join('')+'</div>'+
       '<div class="grid skill-footer-grid">'+
-        '<div class="panel"><div class="panel-head"><div><div class="panel-title">Certifications & completed training</div><div class="panel-subtitle">Carried forward from the previous resume</div></div></div><div class="panel-body"><div class="credential-list">'+d.certifications.map(x=>'<div class="credential-row"><span class="credential-dot">✓</span><span>'+x+'</span></div>').join('')+'</div></div></div>'+
-        '<div class="panel"><div class="panel-head"><div><div class="panel-title">Spoken languages</div><div class="panel-subtitle">Additional background</div></div></div><div class="panel-body">'+tags(d.languages)+'</div></div>'+
+        '<div class="panel"><div class="panel-head"><div><div class="panel-title">Certifications & Completed Training</div><div class="panel-subtitle">Carried Forward From the Previous Resume</div></div></div><div class="panel-body"><div class="credential-list">'+d.certifications.map(x=>'<div class="credential-row"><span class="credential-dot">✓</span><span>'+x+'</span></div>').join('')+'</div></div></div>'+
+        '<div class="panel"><div class="panel-head"><div><div class="panel-title">Spoken Languages</div><div class="panel-subtitle">Additional Background</div></div></div><div class="panel-body">'+tags(d.languages)+'</div></div>'+
       '</div>';
   }
 
@@ -71,12 +71,12 @@
     const areas=[...new Set(edu.courses.map(c=>c.area))].sort();
     const totalCredits=edu.programs.reduce((sum,p)=>sum+p.transcriptCredits,0);
     qs('[data-view="education"]').innerHTML=
-      pageHead('Education','Education & coursework','A catalog-enriched view of completed undergraduate and graduate coursework. Course grades and student identifiers are intentionally excluded.')+
+      pageHead('Education','Education & Coursework','A catalog-enriched view of completed undergraduate and graduate coursework. Course grades and student identifiers are intentionally excluded.')+
       '<div class="grid education-kpi-grid">'+
         '<div class="kpi"><div class="kpi-label">Degrees</div><div class="kpi-value">'+edu.programs.length+'</div><div class="kpi-note">B.S. + M.S.</div></div>'+
-        '<div class="kpi"><div class="kpi-label">Completed courses</div><div class="kpi-value">'+edu.courses.length+'</div><div class="kpi-note">47 undergraduate • 11 graduate</div></div>'+
-        '<div class="kpi"><div class="kpi-label">Academic credits</div><div class="kpi-value">'+totalCredits+'</div><div class="kpi-note">Across undergraduate + graduate records</div></div>'+
-        '<div class="kpi"><div class="kpi-label">Undergraduate honors</div><div class="kpi-value">7</div><div class="kpi-note">Dean’s List terms</div></div>'+
+        '<div class="kpi"><div class="kpi-label">Completed Courses</div><div class="kpi-value">'+edu.courses.length+'</div><div class="kpi-note">47 undergraduate • 11 graduate</div></div>'+
+        '<div class="kpi"><div class="kpi-label">Academic Credits</div><div class="kpi-value">'+totalCredits+'</div><div class="kpi-note">Across undergraduate + graduate records</div></div>'+
+        '<div class="kpi"><div class="kpi-label">Undergraduate Honors</div><div class="kpi-value">7</div><div class="kpi-note">Dean’s List terms</div></div>'+
       '</div>'+
       '<div class="grid education-program-grid">'+edu.programs.map(p=>
         '<article class="panel education-program-card">'+
@@ -84,7 +84,7 @@
           '<div class="panel-body">'+
             (p.secondary?'<div class="edu-meta education-secondary">'+p.secondary+'</div>':'')+
             '<p class="education-program-summary">'+p.catalogSummary+'</p>'+
-            '<div class="edu-statline"><div><strong>'+p.completedCourses+'</strong><span>Completed courses</span></div><div><strong>'+p.transcriptCredits+'</strong><span>Transcript credits</span></div>'+(p.honors?'<div><strong>7</strong><span>Dean’s List terms</span></div>':'')+'</div>'+
+            '<div class="edu-statline"><div><strong>'+p.completedCourses+'</strong><span>Completed Courses</span></div><div><strong>'+p.transcriptCredits+'</strong><span>Transcript Credits</span></div>'+(p.honors?'<div><strong>7</strong><span>Dean’s List Terms</span></div>':'')+'</div>'+
             tags(p.focus)+
             '<div class="catalog-note">'+p.currentCatalogNote+'</div>'+
             '<div class="catalog-links"><a href="'+p.programUrl+'" target="_blank" rel="noopener">Program catalog ↗</a>'+(p.currentProgramUrl?'<a href="'+p.currentProgramUrl+'" target="_blank" rel="noopener">Current program overview ↗</a>':'')+'</div>'+
@@ -92,12 +92,12 @@
         '</article>'
       ).join('')+'</div>'+
       '<div class="panel education-explorer">'+
-        '<div class="panel-head"><div><div class="panel-title">Course catalog explorer</div><div class="panel-subtitle">Every completed course enriched with official catalog or School of Data Science context</div></div><span class="tag" id="educationResultCount">'+edu.courses.length+' courses</span></div>'+
+        '<div class="panel-head"><div><div class="panel-title">Course Catalog Explorer</div><div class="panel-subtitle">Every Completed Course Enriched With Official Catalog or School of Data Science Context</div></div><span class="tag" id="educationResultCount">'+edu.courses.length+' courses</span></div>'+
         '<div class="panel-body">'+
           '<div class="filterbar education-filterbar">'+
             '<input id="educationSearch" placeholder="Search course, code, topic, or skill">'+
-            '<select id="educationInstitution"><option value="">All institutions</option><option value="NJIT">NJIT</option><option value="UNC Charlotte">UNC Charlotte</option></select>'+
-            '<select id="educationArea"><option value="">All subject areas</option>'+areas.map(a=>'<option>'+a+'</option>').join('')+'</select>'+
+            '<select id="educationInstitution"><option value="">All Institutions</option><option value="NJIT">NJIT</option><option value="UNC Charlotte">UNC Charlotte</option></select>'+
+            '<select id="educationArea"><option value="">All Subject Areas</option>'+areas.map(a=>'<option>'+a+'</option>').join('')+'</select>'+
           '</div>'+
           '<div class="education-source-note">Catalog summaries are paraphrased from official university catalog, archived catalog, program, and syllabus pages. Historical course titles are kept when the current catalog has changed.</div>'+
           '<div class="table-wrap education-table-wrap"><table class="data-table education-table"><thead><tr><th>Course</th><th>Institution</th><th>Area</th><th>Credits</th><th>Catalog focus</th></tr></thead><tbody id="educationRows"></tbody></table></div>'+
@@ -142,9 +142,9 @@
       '<div class="eyebrow">'+c.institution+' • '+c.area+'</div>'+
       '<p><strong>'+c.credits+' credit'+(c.credits===1?'':'s')+'</strong>'+(c.origin?' • '+c.origin:'')+'</p>'+
       '<p>'+c.summary+'</p>'+
-      '<h3>Catalog topics</h3>'+tags(c.topics||[])+
+      '<h3>Catalog Topics</h3>'+tags(c.topics||[])+
       (c.status?'<div class="notice" style="margin-top:14px">'+c.status+'</div>':'')+
-      '<h3>Official source</h3><p><a class="secondary-btn drawer-source-link" href="'+c.source+'" target="_blank" rel="noopener">Open university source ↗</a></p>'+
+      '<h3>Official Source</h3><p><a class="secondary-btn drawer-source-link" href="'+c.source+'" target="_blank" rel="noopener">Open university source ↗</a></p>'+
       '<div class="notice">This portfolio intentionally omits individual course grades, student IDs, transcript identifiers, and other private academic information.</div>';
     qs('#drawer').classList.add('open');
     qs('#drawerBackdrop').classList.add('open');
