@@ -3,54 +3,195 @@
   const qs=(s,r=document)=>r.querySelector(s), qsa=(s,r=document)=>[...r.querySelectorAll(s)];
   let zoom=Number(localStorage.getItem('portfolioZoom')||1);
   let resumeZoom=Number(localStorage.getItem('resumeZoom')||1);
+  let scrollTick=false;
   const routes=['overview','experience','projects','skills','education','resume'];
+  const routeLabels={overview:'Overview',experience:'Experience',projects:'Projects',skills:'Skills & Technologies',education:'Education',resume:'Resume'};
   const tags=arr=>'<div class="tag-row">'+arr.map(x=>'<span class="tag">'+x+'</span>').join('')+'</div>';
   const pageHead=(eyebrow,title,desc,actions='')=>'<div class="page-head"><div><div class="eyebrow">'+eyebrow+'</div><h1>'+title+'</h1><p>'+desc+'</p></div>'+(actions?'<div class="page-actions">'+actions+'</div>':'')+'</div>';
 
   function renderOverview(){
     const max=Math.max(...d.activityMonthly.map(x=>x[1]));
-    qs('[data-view="overview"]').innerHTML=pageHead('Professional portfolio',d.profile.name,d.profile.summary,'<button class="primary-btn" data-go="resume">Open resume</button><a class="secondary-btn" href="college-projects/">College projects</a>')+
+    qs('[data-view="overview"]').innerHTML=
+      pageHead('Professional CV',d.profile.name,d.profile.summary,'<button class="primary-btn" data-scroll="resume">Open resume</button><a class="secondary-btn" href="college-projects/">College projects</a>')+
       '<div class="grid kpi-grid">'+d.metrics.map(m=>'<div class="kpi"><div class="kpi-label">'+m.label+'</div><div class="kpi-value">'+m.value+'</div><div class="kpi-note">'+m.note+'</div></div>').join('')+'</div>'+
-      '<div class="grid dashboard-grid"><div class="panel"><div class="panel-head"><div><div class="panel-title">Documented work activity</div><div class="panel-subtitle">Work items captured by month</div></div><span class="tag">2023–2026</span></div><div class="panel-body"><div class="chart-wrap">'+d.activityMonthly.map(([m,v])=>'<div class="bar" style="height:'+Math.max(8,v/max*100)+'%" data-label="'+m+': '+v+'"></div>').join('')+'</div><div class="chart-axis"><span>Dec 2023</span><span>Sep 2026</span></div></div></div>'+
-      '<div class="panel"><div class="panel-head"><div><div class="panel-title">Focus areas</div><div class="panel-subtitle">Selected bodies of work</div></div></div><div class="panel-body stack">'+d.projects.slice(0,5).map(p=>'<button class="mini-card project-open" data-project="'+p.id+'" style="text-align:left;cursor:pointer;color:inherit"><strong>'+p.name+'</strong><p>'+p.summary+'</p>'+tags(p.technologies.slice(0,3))+'</button>').join('')+'</div></div></div>';
+      '<div class="grid dashboard-grid">'+
+        '<div class="panel"><div class="panel-head"><div><div class="panel-title">Documented work activity</div><div class="panel-subtitle">Work items captured by month</div></div><span class="tag">2023–2026</span></div><div class="panel-body"><div class="chart-wrap">'+d.activityMonthly.map(([m,v])=>'<div class="bar" style="height:'+Math.max(8,v/max*100)+'%" data-label="'+m+': '+v+'"></div>').join('')+'</div><div class="chart-axis"><span>Dec 2023</span><span>Sep 2026</span></div></div></div>'+
+        '<div class="panel"><div class="panel-head"><div><div class="panel-title">Professional profile</div><div class="panel-subtitle">Current focus and technical background</div></div></div><div class="panel-body"><div class="stack"><div class="mini-card"><strong>Business intelligence & analytics</strong><p>Production reporting, financial analytics, operational dashboards, data modeling, QA, and stakeholder-facing delivery.</p></div><div class="mini-card"><strong>Automation & engineering</strong><p>Python, REST APIs, browser automation, Snowflake, SQL procedures, scheduled processes, snapshots, and repeatable validation workflows.</p></div><div class="mini-card"><strong>Technical breadth</strong><p>Background spanning data science, machine learning, software development, web technologies, databases, and technical instruction.</p></div></div></div></div>'+
+      '</div>'+
+      '<div class="panel focus-panel"><div class="panel-head"><div><div class="panel-title">Selected bodies of work</div><div class="panel-subtitle">Click a project to open its detail panel</div></div><button class="secondary-btn" data-scroll="projects">View all projects</button></div><div class="panel-body focus-grid">'+d.projects.slice(0,6).map(p=>'<button class="mini-card project-open" data-project="'+p.id+'" style="text-align:left;cursor:pointer;color:inherit"><strong>'+p.name+'</strong><p>'+p.summary+'</p>'+tags(p.technologies.slice(0,4))+'</button>').join('')+'</div></div>';
   }
+
   function renderExperience(){
-    qs('[data-view="experience"]').innerHTML=pageHead('Experience','Professional experience','Roles across business intelligence, analytics, healthcare, and technical education.')+'<div class="experience-list">'+d.experience.map(e=>'<article class="experience-card"><div class="experience-top"><div><h3>'+e.role+'</h3><div class="experience-meta">'+e.org+' • '+e.location+'</div></div><div class="experience-period">'+e.period+'</div></div>'+tags(e.tags)+'<ul>'+e.bullets.map(b=>'<li>'+b+'</li>').join('')+'</ul></article>').join('')+'</div>';
+    qs('[data-view="experience"]').innerHTML=
+      pageHead('Experience','Professional experience','Roles across business intelligence, logistics, healthcare, analytics education, and technical support.')+
+      '<div class="experience-list">'+d.experience.map(e=>'<article class="experience-card"><div class="experience-top"><div><h3>'+e.role+'</h3><div class="experience-meta">'+e.org+' • '+e.location+'</div></div><div class="experience-period">'+e.period+'</div></div>'+tags(e.tags)+'<ul>'+e.bullets.map(b=>'<li>'+b+'</li>').join('')+'</ul></article>').join('')+'</div>';
   }
+
   function renderProjects(){
-    qs('[data-view="projects"]').innerHTML=pageHead('Project explorer','Selected projects','Public-safe summaries distilled from documented work history. Internal links and confidential implementation details are intentionally excluded.')+'<div class="filterbar"><input id="projectSearch" placeholder="Search projects, tools, or topics"><select id="projectCategory"><option value="">All categories</option>'+[...new Set(d.projects.map(p=>p.category))].map(c=>'<option>'+c+'</option>').join('')+'</select></div><div class="panel"><div class="table-wrap"><table class="data-table"><thead><tr><th>Project</th><th>Category</th><th>Period</th><th>Technologies</th></tr></thead><tbody id="projectRows"></tbody></table></div></div>';
+    qs('[data-view="projects"]').innerHTML=
+      pageHead('Project explorer','Selected projects','Professional analytics work plus earlier software and data projects. Internal links, credentials, customer names, and confidential implementation details are excluded from the public site.')+
+      '<div class="filterbar"><input id="projectSearch" placeholder="Search projects, tools, or topics"><select id="projectCategory"><option value="">All categories</option>'+[...new Set(d.projects.map(p=>p.category))].map(c=>'<option>'+c+'</option>').join('')+'</select></div>'+
+      '<div class="panel"><div class="table-wrap"><table class="data-table"><thead><tr><th>Project</th><th>Category</th><th>Period</th><th>Technologies</th></tr></thead><tbody id="projectRows"></tbody></table></div></div>';
     drawProjectRows();
   }
+
   function drawProjectRows(){
-    const search=(qs('#projectSearch')?.value||'').toLowerCase(), cat=qs('#projectCategory')?.value||'';
+    const search=(qs('#projectSearch')?.value||'').toLowerCase();
+    const cat=qs('#projectCategory')?.value||'';
     const rows=d.projects.filter(p=>(!cat||p.category===cat)&&(!search||JSON.stringify(p).toLowerCase().includes(search)));
     const body=qs('#projectRows'); if(!body)return;
-    body.innerHTML=rows.map(p=>'<tr class="project-open" data-project="'+p.id+'"><td><strong>'+p.name+'</strong><div class="panel-subtitle" style="margin-top:3px">'+p.summary+'</div></td><td>'+p.category+'</td><td>'+p.period+'</td><td>'+p.technologies.slice(0,4).join(' • ')+'</td></tr>').join('')||'<tr><td colspan="4">No matching projects.</td></tr>';
+    body.innerHTML=rows.map(p=>'<tr class="project-open" data-project="'+p.id+'"><td><strong>'+p.name+'</strong><div class="panel-subtitle" style="margin-top:3px">'+p.summary+'</div></td><td>'+p.category+'</td><td>'+p.period+'</td><td>'+p.technologies.slice(0,6).join(' • ')+'</td></tr>').join('')||'<tr><td colspan="4">No matching projects.</td></tr>';
   }
+
   function renderSkills(){
-    qs('[data-view="skills"]').innerHTML=pageHead('Capability map','Skills & technologies','Technologies and delivery skills reflected across professional work and education.')+'<div class="grid skill-grid">'+d.skills.map(g=>'<div class="panel skill-group"><div class="panel-head"><div class="panel-title">'+g.group+'</div></div><div class="panel-body"><div class="skill-chip-grid">'+g.items.map(x=>'<span class="skill-chip">'+x+'</span>').join('')+'</div></div></div>').join('')+'</div>';
+    const skillTotal=d.skills.reduce((n,g)=>n+g.items.length,0);
+    qs('[data-view="skills"]').innerHTML=
+      pageHead('Capability map','Skills & technologies','Expanded using the technical skills, tools, development background, certifications, and delivery strengths from the previous resume together with current professional work.')+
+      '<div class="grid skills-kpi-row">'+
+        '<div class="kpi"><div class="kpi-label">Skill areas</div><div class="kpi-value">'+d.skills.length+'</div><div class="kpi-note">Grouped by capability</div></div>'+
+        '<div class="kpi"><div class="kpi-label">Technologies & capabilities</div><div class="kpi-value">'+skillTotal+'</div><div class="kpi-note">Analytics, programming, data, and delivery</div></div>'+
+        '<div class="kpi"><div class="kpi-label">Certifications / training</div><div class="kpi-value">'+d.certifications.length+'</div><div class="kpi-note">SQL and Tableau focused</div></div>'+
+        '<div class="kpi"><div class="kpi-label">Languages</div><div class="kpi-value">'+d.languages.length+'</div><div class="kpi-note">'+d.languages.join(' • ')+'</div></div>'+
+      '</div>'+
+      '<div class="grid skill-grid">'+d.skills.map(g=>'<div class="panel skill-group"><div class="panel-head"><div class="panel-title">'+g.group+'</div><span class="tag">'+g.items.length+' skills</span></div><div class="panel-body"><div class="skill-chip-grid">'+g.items.map(x=>'<span class="skill-chip">'+x+'</span>').join('')+'</div></div></div>').join('')+'</div>'+
+      '<div class="grid skill-footer-grid">'+
+        '<div class="panel"><div class="panel-head"><div><div class="panel-title">Certifications & completed training</div><div class="panel-subtitle">Carried forward from the previous resume</div></div></div><div class="panel-body"><div class="credential-list">'+d.certifications.map(x=>'<div class="credential-row"><span class="credential-dot">✓</span><span>'+x+'</span></div>').join('')+'</div></div></div>'+
+        '<div class="panel"><div class="panel-head"><div><div class="panel-title">Spoken languages</div><div class="panel-subtitle">Additional background</div></div></div><div class="panel-body">'+tags(d.languages)+'</div></div>'+
+      '</div>';
   }
+
   function renderEducation(){
     const max=Math.max(...d.courseSubjects.map(x=>x[1]));
-    qs('[data-view="education"]').innerHTML=pageHead('Education','Education & coursework','Degree and coursework view without individual course grades or student identifiers.')+'<div class="grid edu-grid">'+d.education.map(e=>'<article class="panel edu-card"><h3>'+e.school+'</h3><div class="edu-degree">'+e.degree+' — '+e.program+'</div>'+(e.secondary?'<div class="edu-meta">'+e.secondary+'</div>':'')+'<div class="edu-meta">'+e.period+(e.honors?' • '+e.honors:'')+'</div><div class="edu-statline"><div><strong>'+e.completedCourses+'</strong><span>Courses</span></div><div><strong>'+e.credits+'</strong><span>Credits</span></div></div>'+tags(e.highlights)+'</article>').join('')+'</div><div class="panel"><div class="panel-head"><div><div class="panel-title">Coursework by subject</div><div class="panel-subtitle">Grouped from completed undergraduate and graduate coursework</div></div></div><div class="panel-body subject-bars">'+d.courseSubjects.map(([s,v])=>'<div class="subject-row"><span>'+s+'</span><div class="subject-track"><div class="subject-fill" style="width:'+(v/max*100)+'%"></div></div><strong>'+v+'</strong></div>').join('')+'</div></div>';
+    qs('[data-view="education"]').innerHTML=
+      pageHead('Education','Education & coursework','Degree and coursework view without individual course grades or student identifiers.')+
+      '<div class="grid edu-grid">'+d.education.map(e=>'<article class="panel edu-card"><h3>'+e.school+'</h3><div class="edu-degree">'+e.degree+' — '+e.program+'</div>'+(e.secondary?'<div class="edu-meta">'+e.secondary+'</div>':'')+'<div class="edu-meta">'+e.period+(e.honors?' • '+e.honors:'')+'</div><div class="edu-statline"><div><strong>'+e.completedCourses+'</strong><span>Courses</span></div><div><strong>'+e.credits+'</strong><span>Credits</span></div></div>'+tags(e.highlights)+'</article>').join('')+'</div>'+
+      '<div class="panel"><div class="panel-head"><div><div class="panel-title">Coursework by subject</div><div class="panel-subtitle">Grouped from completed undergraduate and graduate coursework</div></div></div><div class="panel-body subject-bars">'+d.courseSubjects.map(([s,v])=>'<div class="subject-row"><span>'+s+'</span><div class="subject-track"><div class="subject-fill" style="width:'+(v/max*100)+'%"></div></div><strong>'+v+'</strong></div>').join('')+'</div></div>';
   }
+
   function renderResume(){
     const resumeExperience=d.experience.slice(0,3).map(x=>'<div class="resume-entry"><div class="resume-entry-top"><span>'+x.role+' — '+x.org+'</span><span>'+x.period+'</span></div><ul>'+x.bullets.slice(0,3).map(b=>'<li>'+b+'</li>').join('')+'</ul></div>').join('');
-    const resumeProjects=d.projects.slice(0,4).map(p=>'<div class="resume-entry"><div class="resume-entry-top"><span>'+p.name+'</span><span>'+p.period+'</span></div><div class="resume-entry-sub">'+p.technologies.slice(0,5).join(' • ')+'</div><ul><li>'+p.summary+'</li></ul></div>').join('');
-    const resumeEducation=d.education.map(x=>'<div class="resume-entry"><div class="resume-entry-top"><span>'+x.degree+', '+x.program+' — '+x.school+'</span><span>'+x.period+'</span></div>'+(x.secondary?'<div class="resume-entry-sub">'+x.secondary+'</div>':'')+'</div>').join('');
-    qs('[data-view="resume"]').innerHTML=pageHead('Resume','One-page resume','Use the controls to fit the preview, then print or save it as a one-page Letter PDF.')+'<div class="resume-controls"><button class="secondary-btn" id="resumeZoomOut">−</button><button class="secondary-btn" id="resumeFit">Fit page</button><button class="secondary-btn" id="resumeZoomIn">+</button><button class="primary-btn" id="printResume">Print / Save PDF</button></div><div class="resume-stage" id="resumeStage"><article class="resume-sheet" id="resumeSheet"><header class="resume-head"><div class="resume-name">'+d.profile.name+'</div><div class="resume-headline">'+d.resume.headline+' • '+d.profile.location+'</div><div class="resume-links">github.com/SirB0b27 • linkedin.com/in/hemanthvelan27</div></header><section class="resume-section"><div class="resume-section-title">Summary</div><div class="resume-summary">'+d.resume.summary+'</div></section><section class="resume-section"><div class="resume-section-title">Experience</div>'+resumeExperience+'</section><section class="resume-section"><div class="resume-section-title">Selected Projects</div>'+resumeProjects+'</section><section class="resume-section"><div class="resume-section-title">Education</div>'+resumeEducation+'</section><section class="resume-section"><div class="resume-section-title">Technical Skills</div><div class="resume-skillline">'+d.resume.skills+'</div></section></article></div>';
+    const resumeProjects=d.projects.slice(0,3).map(p=>'<div class="resume-entry"><div class="resume-entry-top"><span>'+p.name+'</span><span>'+p.period+'</span></div><div class="resume-entry-sub">'+p.technologies.slice(0,6).join(' • ')+'</div><ul><li>'+p.summary+'</li></ul></div>').join('');
+    const resumeEducation=d.education.map(x=>'<div class="resume-entry"><div class="resume-entry-top"><span>'+x.degree+', '+x.program+' — '+x.school+'</span><span>'+x.period+'</span></div>'+(x.secondary?'<div class="resume-entry-sub">'+x.secondary+'</div>':'')+(x.honors?'<div class="resume-entry-sub">'+x.honors+'</div>':'')+'</div>').join('');
+    const resumeSkills=d.resume.skills.map(x=>'<div class="resume-skillline"><strong>'+x.label+':</strong> '+x.value+'</div>').join('');
+    qs('[data-view="resume"]').innerHTML=
+      pageHead('Resume','One-page resume','The site itself is a long-form CV. This section is the condensed one-page version for printing or saving as a Letter-size PDF.')+
+      '<div class="resume-controls"><button class="secondary-btn" id="resumeZoomOut">−</button><button class="secondary-btn" id="resumeFit">Fit page</button><button class="secondary-btn" id="resumeZoomIn">+</button><button class="primary-btn" id="printResume">Print / Save PDF</button></div>'+
+      '<div class="resume-stage" id="resumeStage"><article class="resume-sheet" id="resumeSheet">'+
+        '<header class="resume-head"><div class="resume-name">'+d.profile.name+'</div><div class="resume-headline">'+d.resume.headline+' • '+d.profile.location+'</div><div class="resume-links">github.com/SirB0b27 • linkedin.com/in/hemanthvelan27</div></header>'+
+        '<section class="resume-section"><div class="resume-section-title">Summary</div><div class="resume-summary">'+d.resume.summary+'</div></section>'+
+        '<section class="resume-section"><div class="resume-section-title">Experience</div>'+resumeExperience+'</section>'+
+        '<section class="resume-section"><div class="resume-section-title">Selected Projects</div>'+resumeProjects+'</section>'+
+        '<section class="resume-section"><div class="resume-section-title">Education</div>'+resumeEducation+'</section>'+
+        '<section class="resume-section"><div class="resume-section-title">Technical Skills</div>'+resumeSkills+'</section>'+
+        '<section class="resume-section"><div class="resume-section-title">Certifications</div><div class="resume-skillline">'+d.certifications.join(' • ')+'</div></section>'+
+      '</article></div>';
     applyResumeZoom();
   }
-  function openProject(id){const p=d.projects.find(x=>x.id===id);if(!p)return;qs('#drawerTitle').textContent=p.name;qs('#drawerBody').innerHTML='<div class="eyebrow">'+p.category+'</div><p><strong>'+p.period+'</strong></p><p>'+p.summary+'</p>'+tags(p.technologies)+'<h3>Highlights</h3><ul>'+p.highlights.map(x=>'<li>'+x+'</li>').join('')+'</ul><div class="notice">This public view intentionally excludes internal ticket links, customer names, credentials, and confidential implementation details.</div>';qs('#drawer').classList.add('open');qs('#drawerBackdrop').classList.add('open')}
+
+  function openProject(id){
+    const p=d.projects.find(x=>x.id===id); if(!p)return;
+    qs('#drawerTitle').textContent=p.name;
+    qs('#drawerBody').innerHTML='<div class="eyebrow">'+p.category+'</div><p><strong>'+p.period+'</strong></p><p>'+p.summary+'</p>'+tags(p.technologies)+'<h3>Highlights</h3><ul>'+p.highlights.map(x=>'<li>'+x+'</li>').join('')+'</ul><div class="notice">This public view intentionally excludes internal ticket links, customer names, credentials, and confidential implementation details.</div>';
+    qs('#drawer').classList.add('open'); qs('#drawerBackdrop').classList.add('open');
+  }
+
   function closeDrawer(){qs('#drawer').classList.remove('open');qs('#drawerBackdrop').classList.remove('open')}
-  function routeTo(route,push=true){if(!routes.includes(route))route='overview';qsa('.view').forEach(v=>v.classList.toggle('active',v.dataset.view===route));qsa('.nav-item[data-route]').forEach(n=>n.classList.toggle('active',n.dataset.route===route));qs('#crumb').textContent='Portfolio / '+(route==='skills'?'Skills & Technologies':route[0].toUpperCase()+route.slice(1));if(push)history.replaceState(null,'','#'+route);if(innerWidth<760)qs('#sidebar').classList.remove('mobile-open');if(route==='resume')setTimeout(fitResume,50);window.scrollTo(0,0)}
-  function applyZoom(){document.documentElement.style.setProperty('--zoom',zoom);qs('#zoomReadout').textContent=Math.round(zoom*100)+'%';localStorage.setItem('portfolioZoom',zoom)}
-  function applyResumeZoom(){const sheet=qs('#resumeSheet');if(!sheet)return;sheet.style.transform='scale('+resumeZoom+')';sheet.style.marginBottom=((resumeZoom-1)*11)+'in';localStorage.setItem('resumeZoom',resumeZoom)}
-  function fitResume(){const stage=qs('#resumeStage'),sheet=qs('#resumeSheet');if(!stage||!sheet)return;const available=stage.clientWidth-24,natural=816;resumeZoom=Math.min(1,Math.max(.55,available/natural));applyResumeZoom()}
-  renderOverview();renderExperience();renderProjects();renderSkills();renderEducation();renderResume();
+
+  function setActive(route,updateHash=false){
+    if(!routes.includes(route))return;
+    qsa('.nav-item[data-route]').forEach(n=>n.classList.toggle('active',n.dataset.route===route));
+    qs('#crumb').textContent='Portfolio / '+routeLabels[route];
+    if(updateHash && location.hash!=='#'+route) history.replaceState(null,'','#'+route);
+  }
+
+  function scrollToSection(route,smooth=true){
+    if(!routes.includes(route))route='overview';
+    const el=qs('[data-view="'+route+'"]'); if(!el)return;
+    const topbar=58;
+    const y=window.scrollY+el.getBoundingClientRect().top-topbar-10;
+    window.scrollTo({top:y,behavior:smooth?'smooth':'auto'});
+    setActive(route,true);
+    if(innerWidth<760)qs('#sidebar').classList.remove('mobile-open');
+    if(route==='resume')setTimeout(fitResume,120);
+  }
+
+  function updateActiveFromScroll(){
+    const threshold=100;
+    let current='overview';
+    routes.forEach(route=>{
+      const el=qs('[data-view="'+route+'"]');
+      if(el && el.getBoundingClientRect().top<=threshold)current=route;
+    });
+    setActive(current,true);
+    scrollTick=false;
+  }
+
+  function applyZoom(){
+    document.documentElement.style.setProperty('--zoom',zoom);
+    qs('#zoomReadout').textContent=Math.round(zoom*100)+'%';
+    localStorage.setItem('portfolioZoom',zoom);
+  }
+
+  function applyResumeZoom(){
+    const sheet=qs('#resumeSheet'); if(!sheet)return;
+    sheet.style.transform='scale('+resumeZoom+')';
+    sheet.style.marginBottom=((resumeZoom-1)*11)+'in';
+    localStorage.setItem('resumeZoom',resumeZoom);
+  }
+
+  function fitResume(){
+    const stage=qs('#resumeStage'),sheet=qs('#resumeSheet'); if(!stage||!sheet)return;
+    const available=stage.clientWidth-24,natural=816;
+    resumeZoom=Math.min(1,Math.max(.55,available/natural));
+    applyResumeZoom();
+  }
+
+  renderOverview();
+  renderExperience();
+  renderProjects();
+  renderSkills();
+  renderEducation();
+  renderResume();
+
+  qsa('.view').forEach(v=>{v.id=v.dataset.view;});
   qs('#projectCountBadge').textContent=d.projects.length;
-  document.addEventListener('click',e=>{const nav=e.target.closest('[data-route]');if(nav){routeTo(nav.dataset.route);return}const go=e.target.closest('[data-go]');if(go){routeTo(go.dataset.go);return}const project=e.target.closest('.project-open');if(project){openProject(project.dataset.project);return}if(e.target.id==='drawerClose'||e.target.id==='drawerBackdrop')closeDrawer();if(e.target.id==='menuToggle'){innerWidth<760?qs('#sidebar').classList.toggle('mobile-open'):qs('#sidebar').classList.toggle('collapsed')}if(e.target.id==='zoomOut'){zoom=Math.max(.75,+(zoom-.05).toFixed(2));applyZoom()}if(e.target.id==='zoomIn'){zoom=Math.min(1.5,+(zoom+.05).toFixed(2));applyZoom()}if(e.target.id==='fitWidth'){zoom=1;applyZoom()}if(e.target.id==='themeToggle'){const next=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=next;localStorage.setItem('portfolioTheme',next)}if(e.target.id==='resumeZoomOut'){resumeZoom=Math.max(.55,+(resumeZoom-.05).toFixed(2));applyResumeZoom()}if(e.target.id==='resumeZoomIn'){resumeZoom=Math.min(1.2,+(resumeZoom+.05).toFixed(2));applyResumeZoom()}if(e.target.id==='resumeFit')fitResume();if(e.target.id==='printResume')window.print()});
+
+  document.addEventListener('click',e=>{
+    const nav=e.target.closest('[data-route]');
+    if(nav){scrollToSection(nav.dataset.route);return}
+    const scroll=e.target.closest('[data-scroll]');
+    if(scroll){scrollToSection(scroll.dataset.scroll);return}
+    const project=e.target.closest('.project-open');
+    if(project){openProject(project.dataset.project);return}
+    if(e.target.id==='drawerClose'||e.target.id==='drawerBackdrop')closeDrawer();
+    if(e.target.id==='menuToggle'){
+      if(innerWidth<760)qs('#sidebar').classList.toggle('mobile-open');
+      else qs('#sidebar').classList.toggle('collapsed');
+    }
+    if(e.target.id==='zoomOut'){zoom=Math.max(.75,+(zoom-.05).toFixed(2));applyZoom()}
+    if(e.target.id==='zoomIn'){zoom=Math.min(1.5,+(zoom+.05).toFixed(2));applyZoom()}
+    if(e.target.id==='fitWidth'){zoom=1;applyZoom()}
+    if(e.target.id==='themeToggle'){
+      const next=document.documentElement.dataset.theme==='dark'?'light':'dark';
+      document.documentElement.dataset.theme=next;
+      localStorage.setItem('portfolioTheme',next);
+    }
+    if(e.target.id==='resumeZoomOut'){resumeZoom=Math.max(.55,+(resumeZoom-.05).toFixed(2));applyResumeZoom()}
+    if(e.target.id==='resumeZoomIn'){resumeZoom=Math.min(1.2,+(resumeZoom+.05).toFixed(2));applyResumeZoom()}
+    if(e.target.id==='resumeFit')fitResume();
+    if(e.target.id==='printResume')window.print();
+  });
+
   document.addEventListener('input',e=>{if(e.target.id==='projectSearch')drawProjectRows()});
   document.addEventListener('change',e=>{if(e.target.id==='projectCategory')drawProjectRows()});
-  const savedTheme=localStorage.getItem('portfolioTheme');if(savedTheme)document.documentElement.dataset.theme=savedTheme;applyZoom();routeTo(location.hash.replace('#','')||'overview',false);window.addEventListener('hashchange',()=>routeTo(location.hash.replace('#',''),false));
+  window.addEventListener('scroll',()=>{if(!scrollTick){scrollTick=true;requestAnimationFrame(updateActiveFromScroll)}},{passive:true});
+  window.addEventListener('resize',()=>{if(qs('#resume')?.getBoundingClientRect().top<innerHeight)fitResume()});
+
+  const savedTheme=localStorage.getItem('portfolioTheme');
+  document.documentElement.dataset.theme=savedTheme||'dark';
+  applyZoom();
+
+  const initial=location.hash.replace('#','');
+  if(routes.includes(initial)) setTimeout(()=>scrollToSection(initial,false),0);
+  else setActive('overview',false);
 })();
