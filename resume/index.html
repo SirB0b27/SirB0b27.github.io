@@ -7,14 +7,21 @@
   <title>Resume | Hemanth Velan</title>
   <link rel="stylesheet" href="../assets/styles.css">
   <style>
-    :root{--resume-scale:1}
+    :root{--resume-scale:1.25}
     body{overflow-x:hidden}
     .resume-page-shell{min-height:100vh;background:var(--bg)}
     .resume-page-topbar{height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:var(--panel);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30}
     .resume-page-brand{display:flex;align-items:center;gap:10px}
-    .resume-page-tools{display:flex;align-items:center;gap:6px}
-    .resume-page-body{padding:22px;min-height:calc(100vh - 58px)}
-    .resume-page-stage{display:flex;justify-content:center;align-items:flex-start;overflow:auto;padding:22px;border:1px solid var(--line);border-radius:var(--radius);background:var(--panel-2);min-height:calc(100vh - 102px)}
+    .resume-page-tools{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+    .resume-page-tools select{height:32px;border:1px solid var(--line);border-radius:7px;background:var(--panel);color:var(--text);padding:0 8px;font-size:11px}
+    .resume-page-body{padding:18px 22px 22px;min-height:calc(100vh - 58px)}
+    .resume-customizer{max-width:980px;margin:0 auto 12px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:12px;display:none}
+    .resume-customizer.open{display:block}
+    .resume-customizer-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:8px}
+    .resume-customizer-title{font-size:12px;font-weight:750}
+    .resume-customizer textarea{width:100%;min-height:92px;resize:vertical;background:var(--panel-2);color:var(--text);border:1px solid var(--line);border-radius:7px;padding:9px 10px;font-size:11px;line-height:1.45}
+    .resume-customizer-actions{display:flex;justify-content:flex-end;gap:7px;margin-top:8px}
+    .resume-page-stage{display:flex;justify-content:center;align-items:flex-start;overflow:auto;padding:22px;border:1px solid var(--line);border-radius:var(--radius);background:var(--panel-2);min-height:calc(100vh - 98px)}
     .resume-document{width:8.5in;height:11in;min-width:8.5in;min-height:11in;background:#fff;color:#111;box-shadow:0 12px 34px rgba(0,0,0,.22);padding:.34in .42in .31in;transform:scale(var(--resume-scale));transform-origin:top center;font-family:Arial,Helvetica,sans-serif;overflow:hidden}
     .r-head{text-align:center;border-bottom:1.4px solid #222;padding-bottom:5px}
     .r-name{font-size:22px;font-weight:800;letter-spacing:.035em;line-height:1}
@@ -38,12 +45,40 @@
     .r-skill-line{font-size:7.15px;line-height:1.22;margin:1px 0}
     .r-small{font-size:6.95px;line-height:1.2}
     .resume-zoom-readout{font-size:11px;color:var(--muted);min-width:44px;text-align:center}
-    @media(max-width:900px){.resume-page-body{padding:10px}.resume-page-stage{padding:10px}.resume-page-tools .desktop-label{display:none}}
+
+    /* Resume style presets */
+    .resume-document[data-resume-style="professional"] .r-section-title{color:#111}
+    .resume-document[data-resume-style="modern"]{font-family:"Segoe UI",Arial,sans-serif}
+    .resume-document[data-resume-style="modern"] .r-head{border-bottom:2px solid #315a8c}
+    .resume-document[data-resume-style="modern"] .r-name{color:#244a78;letter-spacing:.02em}
+    .resume-document[data-resume-style="modern"] .r-section-title{color:#244a78;border-bottom-color:#8aa6c6}
+    .resume-document[data-resume-style="github"]{font-family:Arial,Helvetica,sans-serif}
+    .resume-document[data-resume-style="github"] .r-name,.resume-document[data-resume-style="github"] .r-section-title{font-family:Consolas,"Courier New",monospace}
+    .resume-document[data-resume-style="github"] .r-head{border-bottom:2px solid #2f6f44}
+    .resume-document[data-resume-style="github"] .r-name{color:#214d30}
+    .resume-document[data-resume-style="github"] .r-section-title{color:#214d30;border-bottom-color:#8bb59a}
+    .resume-document[data-resume-style="minimal"]{font-family:Georgia,"Times New Roman",serif;padding:.38in .48in}
+    .resume-document[data-resume-style="minimal"] .r-head{border-bottom:1px solid #999}
+    .resume-document[data-resume-style="minimal"] .r-name{font-weight:600;letter-spacing:.07em}
+    .resume-document[data-resume-style="minimal"] .r-section-title{font-family:Arial,Helvetica,sans-serif;letter-spacing:.12em;border-bottom-color:#aaa}
+    .resume-document[data-resume-style="minimal"] .r-entry-head,.resume-document[data-resume-style="minimal"] .r-project-head,.resume-document[data-resume-style="minimal"] .r-edu-head{font-weight:700}
+
+    @media(max-width:980px){
+      .resume-page-body{padding:10px}
+      .resume-page-stage{padding:10px}
+      .resume-page-tools .desktop-label{display:none}
+      .resume-page-tools select{max-width:118px}
+    }
+    @media(max-width:700px){
+      .resume-page-topbar{height:auto;min-height:58px;align-items:flex-start;padding:10px}
+      .resume-page-tools{justify-content:flex-end}
+      .resume-page-body{padding-top:10px}
+    }
     @media print{
       html,body{width:8.5in;height:11in;background:#fff!important;margin:0!important;padding:0!important}
-      .resume-page-topbar{display:none!important}
+      .resume-page-topbar,.resume-customizer{display:none!important}
       .resume-page-body,.resume-page-stage{margin:0!important;padding:0!important;border:0!important;background:#fff!important;min-height:0!important;display:block!important;overflow:visible!important}
-      .resume-document{width:8.5in!important;height:11in!important;min-width:8.5in!important;min-height:11in!important;box-shadow:none!important;transform:none!important;margin:0!important;padding:.34in .42in .31in!important;overflow:hidden!important}
+      .resume-document{width:8.5in!important;height:11in!important;min-width:8.5in!important;min-height:11in!important;box-shadow:none!important;transform:none!important;margin:0!important;overflow:hidden!important}
       @page{size:Letter;margin:0}
     }
   </style>
@@ -56,23 +91,43 @@
       <div><div class="brand-title">Resume</div><div class="brand-sub">One-page print layout</div></div>
     </div>
     <div class="resume-page-tools">
+      <select id="resumeStyle" aria-label="Resume style">
+        <option value="professional">Professional</option>
+        <option value="modern">Modern</option>
+        <option value="github">GitHub Classic</option>
+        <option value="minimal">Minimal</option>
+      </select>
+      <button class="tool-btn" id="summaryToggle">Edit summary</button>
       <button class="icon-btn" id="zoomOut" title="Zoom out">−</button>
       <span class="resume-zoom-readout" id="zoomReadout">100%</span>
       <button class="icon-btn" id="zoomIn" title="Zoom in">+</button>
       <button class="tool-btn desktop-label" id="fitPage">Fit page</button>
+      <button class="tool-btn desktop-label" id="fitWidth">Fit width</button>
       <button class="primary-btn" id="printResume">Print / Save PDF</button>
       <button class="icon-btn" id="themeToggle" title="Toggle light/dark mode">◐</button>
     </div>
   </header>
 
   <main class="resume-page-body">
+    <section class="resume-customizer" id="summaryPanel">
+      <div class="resume-customizer-head">
+        <div><div class="resume-customizer-title">Custom Resume Summary</div><div class="brand-sub">Type your own summary below. It updates the resume immediately and is saved in this browser.</div></div>
+        <button class="icon-btn" id="summaryClose" aria-label="Close summary editor">×</button>
+      </div>
+      <textarea id="summaryInput" aria-label="Custom resume summary"></textarea>
+      <div class="resume-customizer-actions">
+        <button class="secondary-btn" id="summaryReset">Reset to default</button>
+        <button class="primary-btn" id="summaryDone">Done</button>
+      </div>
+    </section>
+
     <div class="resume-page-stage" id="stage">
-      <article class="resume-document" id="resumeDocument">
+      <article class="resume-document" id="resumeDocument" data-resume-style="professional">
         <header class="r-head">
           <div class="r-name">HEMANTH VELAN</div>
           <div class="r-title">Business Intelligence Analyst | Data, Analytics & Automation | New Jersey</div>
           <div class="r-links">github.com/SirB0b27 &nbsp;•&nbsp; linkedin.com/in/hemanthvelan27</div>
-          <div class="r-summary">Business intelligence and analytics professional with experience delivering production reporting, commission systems, financial analytics, data automation, operational dashboards, forecasting, data-quality controls, and stakeholder-facing analytics. Strong background in SQL, Snowflake, Sigma, Python, APIs, data modeling, reconciliation, and cross-functional project delivery.</div>
+          <div class="r-summary" id="resumeSummary">Business intelligence and analytics professional with experience delivering production reporting, commission systems, financial analytics, data automation, operational dashboards, forecasting, data-quality controls, and stakeholder-facing analytics. Strong background in SQL, Snowflake, Sigma, Python, APIs, data modeling, reconciliation, and cross-functional project delivery.</div>
         </header>
 
         <section class="r-section">
@@ -158,39 +213,75 @@
   const doc=document.getElementById('resumeDocument');
   const stage=document.getElementById('stage');
   const readout=document.getElementById('zoomReadout');
-  let scale=Number(localStorage.getItem('resumePageZoom')||1);
+  const styleSelect=document.getElementById('resumeStyle');
+  const panel=document.getElementById('summaryPanel');
+  const summaryInput=document.getElementById('summaryInput');
+  const summaryOutput=document.getElementById('resumeSummary');
+  const defaultSummary='Business intelligence and analytics professional with experience delivering production reporting, commission systems, financial analytics, data automation, operational dashboards, forecasting, data-quality controls, and stakeholder-facing analytics. Strong background in SQL, Snowflake, Sigma, Python, APIs, data modeling, reconciliation, and cross-functional project delivery.';
+  let zoom=Number(localStorage.getItem('resumeDisplayZoomV2')||1);
 
-  function apply(){
-    scale=Math.max(.5,Math.min(1.25,scale));
-    root.style.setProperty('--resume-scale',scale);
-    readout.textContent=Math.round(scale*100)+'%';
-    doc.style.marginBottom=((scale-1)*11)+'in';
-    localStorage.setItem('resumePageZoom',scale);
+  function applyZoom(){
+    const actualScale=zoom*1.25;
+    root.style.setProperty('--resume-scale',actualScale);
+    readout.textContent=Math.round(zoom*100)+'%';
+    doc.style.marginBottom=((actualScale-1)*11)+'in';
+    localStorage.setItem('resumeDisplayZoomV2',zoom);
   }
 
-  function fit(){
-    const availableW=stage.clientWidth-28;
-    const availableH=window.innerHeight-120;
+  function fitWidth(){
     const naturalW=816;
-    const naturalH=1056;
-    scale=Math.min(1,availableW/naturalW,availableH/naturalH);
-    apply();
+    const availableW=Math.max(320,stage.clientWidth-28);
+    const actualScale=availableW/naturalW;
+    zoom=Math.max(.5,Math.min(1.4,actualScale/1.25));
+    applyZoom();
   }
 
-  document.getElementById('zoomOut').onclick=()=>{scale-=.05;apply()};
-  document.getElementById('zoomIn').onclick=()=>{scale+=.05;apply()};
-  document.getElementById('fitPage').onclick=fit;
+  function fitPage(){
+    const naturalW=816,naturalH=1056;
+    const availableW=Math.max(320,stage.clientWidth-28);
+    const availableH=Math.max(420,window.innerHeight-118);
+    const actualScale=Math.min(availableW/naturalW,availableH/naturalH);
+    zoom=Math.max(.5,Math.min(1.4,actualScale/1.25));
+    applyZoom();
+  }
+
+  function setSummary(value){
+    const clean=(value||'').trim();
+    summaryOutput.textContent=clean||defaultSummary;
+    summaryInput.value=clean||defaultSummary;
+    if(clean) localStorage.setItem('resumeCustomSummary',clean);
+    else localStorage.removeItem('resumeCustomSummary');
+  }
+
+  function setStyle(style){
+    const allowed=['professional','modern','github','minimal'];
+    const next=allowed.includes(style)?style:'professional';
+    doc.dataset.resumeStyle=next;
+    styleSelect.value=next;
+    localStorage.setItem('resumeStyle',next);
+  }
+
+  document.getElementById('zoomOut').onclick=()=>{zoom=Math.max(.5,+(zoom-.05).toFixed(2));applyZoom()};
+  document.getElementById('zoomIn').onclick=()=>{zoom=Math.min(1.4,+(zoom+.05).toFixed(2));applyZoom()};
+  document.getElementById('fitPage').onclick=fitPage;
+  document.getElementById('fitWidth').onclick=fitWidth;
   document.getElementById('printResume').onclick=()=>window.print();
   document.getElementById('themeToggle').onclick=()=>{
     const next=root.dataset.theme==='dark'?'light':'dark';
     root.dataset.theme=next;
     localStorage.setItem('portfolioTheme',next);
   };
+  document.getElementById('summaryToggle').onclick=()=>panel.classList.toggle('open');
+  document.getElementById('summaryClose').onclick=()=>panel.classList.remove('open');
+  document.getElementById('summaryDone').onclick=()=>panel.classList.remove('open');
+  document.getElementById('summaryReset').onclick=()=>{localStorage.removeItem('resumeCustomSummary');setSummary(defaultSummary)};
+  summaryInput.addEventListener('input',()=>{summaryOutput.textContent=summaryInput.value.trim()||defaultSummary;localStorage.setItem('resumeCustomSummary',summaryInput.value)});
+  styleSelect.addEventListener('change',()=>setStyle(styleSelect.value));
 
   root.dataset.theme=localStorage.getItem('portfolioTheme')||'dark';
-  apply();
-  setTimeout(fit,0);
-  window.addEventListener('resize',fit);
+  setStyle(localStorage.getItem('resumeStyle')||'professional');
+  setSummary(localStorage.getItem('resumeCustomSummary')||defaultSummary);
+  applyZoom();
 })();
 </script>
 </body>
