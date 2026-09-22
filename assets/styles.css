@@ -257,3 +257,89 @@ html{scroll-behavior:smooth;scroll-padding-top:74px}
   opacity:1!important
 }
 .nav-subitem{padding-left:10px!important}
+
+/* Experience subsections: one consistent accent treatment */
+.experience-subsection,
+.overview-subsection,
+.business-subsection,
+.stakeholder-subsection,
+.timeline-subsection,
+.responsibilities-subsection,
+.focus-subsection,
+.projects-subsection{
+  border:1px solid color-mix(in srgb,var(--accent) 24%,var(--line))!important;
+  border-left:1px solid color-mix(in srgb,var(--accent) 24%,var(--line))!important;
+  background:color-mix(in srgb,var(--panel) 88%,var(--accent-soft))!important;
+}
+.experience-subsection .inline-detail-title{
+  color:var(--accent)!important;
+}
+
+/* Personal navigation gate */
+.personal-nav-trigger{
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  border:0;
+  background:transparent;
+  cursor:pointer;
+  text-align:left;
+}
+.personal-nav-trigger:hover{color:var(--text)}
+.personal-lock{font-size:10px;line-height:1}
+.personal-nav-gate{
+  margin:4px 8px 8px;
+  padding:10px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:var(--panel-2);
+}
+.personal-nav-gate label{
+  display:block;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:5px;
+}
+.personal-nav-gate input{
+  width:100%;
+  height:32px;
+  border:1px solid var(--line);
+  border-radius:6px;
+  background:var(--panel);
+  color:var(--text);
+  padding:0 8px;
+  outline:none;
+  font-size:11px;
+}
+.personal-nav-gate input:focus{border-color:var(--accent)}
+.personal-nav-gate-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:6px;
+  margin-top:8px;
+}
+.personal-nav-gate-actions .primary-btn,
+.personal-nav-gate-actions .secondary-btn{
+  padding:6px 9px;
+  font-size:10px;
+}
+.personal-nav-error{
+  margin-top:7px;
+  font-size:10px;
+  color:#e06b6b;
+}
+.personal-nav-links{display:grid;gap:3px}
+.sidebar.collapsed .personal-nav-trigger span:first-child,
+.sidebar.collapsed .personal-nav-gate,
+.sidebar.collapsed .personal-nav-links .nav-text{
+  display:none
+}
+.sidebar.collapsed .personal-nav-trigger{
+  justify-content:center;
+  padding:9px 0;
+}
