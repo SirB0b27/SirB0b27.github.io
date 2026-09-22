@@ -1,7 +1,7 @@
 (() => {
   const d = window.PORTFOLIO_DATA;
   const qs=(s,r=document)=>r.querySelector(s), qsa=(s,r=document)=>[...r.querySelectorAll(s)];
-  let zoom=Number(localStorage.getItem('portfolioZoom')||1);
+  let zoom=Number(localStorage.getItem('portfolioZoomV2')||1);
   let scrollTick=false;
   const routes=['overview','experience','projects','skills','education'];
   const routeLabels={overview:'Overview',experience:'Experience',projects:'Projects',skills:'Skills & Technologies',education:'Education'};
@@ -105,9 +105,10 @@
   }
 
   function applyZoom(){
-    document.documentElement.style.setProperty('--zoom',zoom);
+    const effectiveZoom=zoom*1.25;
+    document.documentElement.style.setProperty('--zoom',effectiveZoom);
     qs('#zoomReadout').textContent=Math.round(zoom*100)+'%';
-    localStorage.setItem('portfolioZoom',zoom);
+    localStorage.setItem('portfolioZoomV2',zoom);
   }
 
   renderOverview();
@@ -131,9 +132,9 @@
       if(innerWidth<760)qs('#sidebar').classList.toggle('mobile-open');
       else qs('#sidebar').classList.toggle('collapsed');
     }
-    if(e.target.id==='zoomOut'){zoom=Math.max(.75,+(zoom-.05).toFixed(2));applyZoom()}
-    if(e.target.id==='zoomIn'){zoom=Math.min(1.5,+(zoom+.05).toFixed(2));applyZoom()}
-    if(e.target.id==='fitWidth'){zoom=1;applyZoom()}
+    if(e.target.id==='zoomOut'){zoom=Math.max(.6,+(zoom-.05).toFixed(2));applyZoom()}
+    if(e.target.id==='zoomIn'){zoom=Math.min(1.4,+(zoom+.05).toFixed(2));applyZoom()}
+    if(e.target.id==='fitWidth'){zoom=.8;applyZoom()}
     if(e.target.id==='themeToggle'){
       const next=document.documentElement.dataset.theme==='dark'?'light':'dark';
       document.documentElement.dataset.theme=next;
