@@ -116,7 +116,9 @@
   function relock(){document.body.classList.add('locked');q('#accessGate').classList.remove('hidden');q('#personalPassword').value='';q('#gateError').classList.remove('show')}
   window.addEventListener('pagehide',relock);
   window.addEventListener('pageshow',e=>{if(e.persisted)relock()});
-  setTimeout(()=>q('#personalPassword').focus(),0);
+  const entryGrant=sessionStorage.getItem('personalAnalyticsEntryGrant');
+  sessionStorage.removeItem('personalAnalyticsEntryGrant');
+  if(entryGrant==='1')unlock(); else setTimeout(()=>q('#personalPassword').focus(),0);
 })();
 </script>
 </body>
