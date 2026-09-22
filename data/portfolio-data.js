@@ -94,7 +94,7 @@ window.PORTFOLIO_DATA = {
       },
       projectIds:[
         "commission-platform","1099-commission","boise-commission","mexico-commission","ops-specialist-commission","capacity-commission","agent-recruiter-commission","cad-controls","internal-payroll",
-        "agent-operations-dashboard","boise-operational-dashboard","carrier-team-contribution","office-callout","carrier-status","ltl-billing","ltl-quotes","customer-tracking","drayage-dashboard","financial-auto-processing",
+        "agent-operations-dashboard","boise-operational-dashboard","carrier-team-contribution","capacity-operations","office-callout","carrier-status","ltl-billing","ltl-quotes","customer-tracking","drayage-dashboard","financial-auto-processing",
         "customer-aging","financial-variance","operational-communication-analytics","cash-forecasting","user-activity","snapshot-automation","commission-reconciliation","process-docs"
       ],
       focus:["Business Intelligence","Analytics Engineering","Financial Analytics","Operational Analytics","Commission Systems","Snowflake","Sigma","Data Quality","Decision Support","Technical Documentation"]
@@ -280,7 +280,7 @@ window.PORTFOLIO_DATA = {
     },
     {
       id:"agent-operations-dashboard",
-      name:"Agent Operations Dashboard",
+      name:"Agent Dashboard & Growth Analytics",
       category:"Operational Business Intelligence",
       period:"2023 – 2024",
       technologies:["Sigma","Snowflake","Power BI Migration","Operational KPIs","Roster Integration"],
@@ -321,6 +321,22 @@ window.PORTFOLIO_DATA = {
         "Migrated existing dashboard logic into Sigma/Snowflake.",
         "Homogenized data logic with shared datasets and updated roster references.",
         "Improved maintainability of team-level performance comparisons."
+      ]
+    },
+    {
+      id:"capacity-operations",
+      name:"Capacity Operations & Coverage Analytics",
+      category:"Operational Business Intelligence",
+      period:"2023 – 2026",
+      technologies:["Sigma","Snowflake","Capacity KPIs","Lead-Time Analysis","Operational Alerts","Snapshots"],
+      summary:"Built and evolved operational analytics around load coverage, shared-capacity timing, rep performance, lead-time loss, and capacity-related snapshot controls.",
+      businessContext:"The work focuses on where operational time is gained or lost before loads reach capacity teams, how quickly coverage occurs, and whether team-level metrics reflect the true state of the operation. Those insights help leadership identify process delays, staffing or routing issues, and opportunities to improve execution speed.",
+      stakeholderScope:["Director","Manager / Lead","Capacity Operations"],
+      highlights:[
+        "Migrated recurring coverage analytics into Sigma/Snowflake and standardized underlying logic.",
+        "Designed lead-time metrics to distinguish customer/facility lead time from delays before work was shared with capacity.",
+        "Supported recurring rep-level operational metrics and visibility into same-day, prebook, utilization, and coverage activity.",
+        "Improved shared-capacity timestamps, coverage-state logic, and snapshot support so operational and compensation views stayed aligned."
       ]
     },
     {
