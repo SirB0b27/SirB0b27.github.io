@@ -769,3 +769,70 @@ html[data-theme="light"] .experience-expandable:hover{
     0 0 0 2px color-mix(in srgb,var(--org-accent,var(--accent)) 86%,black),
     0 8px 24px color-mix(in srgb,var(--org-accent,var(--accent)) 14%,transparent)!important;
 }
+
+
+/* Compact pagination for long project and course tables */
+.pagination-row,
+.pagination-footer{
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+}
+.pagination-row{margin:0 0 8px}
+.pagination-footer{
+  padding:10px 12px;
+  border-top:1px solid var(--line-2);
+  background:var(--panel);
+}
+.pagination-shell{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:10px;
+  min-height:32px;
+  color:var(--muted);
+  font-size:11px;
+}
+.pagination-shell.is-single{padding-right:2px}
+.pagination-summary{white-space:nowrap}
+.pagination-controls{
+  display:flex;
+  align-items:center;
+  gap:4px;
+}
+.pagination-page,
+.pagination-arrow{
+  min-width:30px;
+  height:30px;
+  padding:0 8px;
+  border:1px solid var(--line);
+  border-radius:6px;
+  background:var(--panel);
+  color:var(--text);
+  cursor:pointer;
+}
+.pagination-page:hover,
+.pagination-arrow:hover:not(:disabled){
+  background:var(--panel-2);
+  border-color:color-mix(in srgb,var(--accent) 45%,var(--line));
+}
+.pagination-page.active{
+  color:#fff;
+  background:var(--accent);
+  border-color:var(--accent);
+  font-weight:750;
+}
+.pagination-arrow:disabled{
+  opacity:.38;
+  cursor:default;
+}
+.pagination-ellipsis{
+  min-width:18px;
+  text-align:center;
+  color:var(--muted);
+}
+@media(max-width:760px){
+  .pagination-shell{width:100%;justify-content:space-between;gap:8px}
+  .pagination-row{justify-content:stretch}
+  .pagination-page,.pagination-arrow{min-width:28px;height:28px;padding:0 6px}
+}
