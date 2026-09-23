@@ -85,14 +85,14 @@
       '<div class="grid kpi-grid">'+d.metrics.map(m=>'<div class="kpi"><div class="kpi-label">'+m.label+'</div><div class="kpi-value">'+m.value+'</div><div class="kpi-note">'+m.note+'</div></div>').join('')+'</div>'+
       '<div class="grid dashboard-grid">'+
         '<div class="panel"><div class="panel-head"><div><div class="panel-title">Professional Scope</div><div class="panel-subtitle">Business Intelligence, Analytics Engineering, Financial Analytics, and Decision Support</div></div></div><div class="panel-body"><div class="stack">'+
-          '<div class="mini-card"><strong>Business Intelligence & Decision Support</strong><p>Translate operational and financial questions into KPIs, segmentation, drilldowns, trend analysis, exception views, and management-ready decisions.</p></div>'+
-          '<div class="mini-card"><strong>Analytics Engineering & Financial Controls</strong><p>Build reusable Snowflake/Sigma data products, commission workflows, forecasting logic, snapshots, reconciliation controls, and validation processes.</p></div>'+
-          '<div class="mini-card"><strong>Cross-Functional Delivery</strong><p>Work across executive leadership, finance, operations, shared services, technology, LTL, marketing, legal, and agent-facing teams.</p></div>'+
+          '<div class="mini-card"><strong>Business Intelligence & Decision Support</strong><p>Turn operational and financial questions into KPIs, drilldowns, trends, exception views, and reporting that managers can use.</p></div>'+
+          '<div class="mini-card"><strong>Analytics Engineering & Financial Controls</strong><p>Build reusable Snowflake and Sigma datasets, commission workflows, forecasts, snapshots, reconciliation checks, and validation logic.</p></div>'+
+          '<div class="mini-card"><strong>Cross-Functional Delivery</strong><p>Work with teams across leadership, finance, operations, shared services, technology, LTL, marketing, legal, and agent relations.</p></div>'+
         '</div></div></div>'+
         '<div class="panel"><div class="panel-head"><div><div class="panel-title">Current Focus</div><div class="panel-subtitle">How Technical Work Connects to Business Outcomes</div></div></div><div class="panel-body"><div class="stack">'+
-          '<div class="mini-card"><strong>Operational Intelligence</strong><p>Performance dashboards, workflow monitoring, growth analytics, service metrics, and exception-driven reporting.</p></div>'+
-          '<div class="mini-card"><strong>Financial Analytics</strong><p>Commission systems, payout controls, cash forecasting, settlement analytics, currency logic, and reconciliation.</p></div>'+
-          '<div class="mini-card"><strong>Maintainability & Governance</strong><p>Process maps, documentation, data lineage, reusable modeling patterns, QA, and long-term production support.</p></div>'+
+          '<div class="mini-card"><strong>Operational Intelligence</strong><p>Performance dashboards, workflow monitoring, growth analytics, service metrics, and exception reporting.</p></div>'+
+          '<div class="mini-card"><strong>Financial Analytics</strong><p>Commission systems, payout checks, cash forecasting, settlement analytics, currency logic, and reconciliation.</p></div>'+
+          '<div class="mini-card"><strong>Maintainability & Governance</strong><p>Process maps, documentation, data lineage, reusable models, QA, and ongoing production support.</p></div>'+
         '</div></div></div>'+
       '</div>'+
       '<div class="panel focus-panel"><div class="panel-head"><div><div class="panel-title">Project Highlights</div><div class="panel-subtitle">Click a Project to Expand Its Full Business and Technical Context</div></div><button class="secondary-btn" data-scroll="projects">View All Projects</button></div><div class="panel-body focus-grid">'+sortProjectsByPeriod(d.projects).slice(0,6).map(p=>'<button class="mini-card project-jump" data-project="'+p.id+'" style="text-align:left;cursor:pointer;color:inherit"><strong>'+p.name+'</strong><p>'+p.summary+'</p>'+tags(p.technologies.slice(0,4))+'</button>').join('')+'</div></div>';
@@ -101,7 +101,7 @@
   function renderExperience(){
     const details=d.experienceDetails||{};
     qs('[data-view="experience"]').innerHTML=
-      pageHead('Experience','Professional Experience','Click anywhere on a role card to expand a deeper view of the business context, year-by-year growth, stakeholder scope, major projects, and additional responsibilities.')+
+      pageHead('Experience','Professional Experience','Click a role to see more detail on the work, how the role changed over time, who I worked with, and the projects tied to it.')+
       '<div class="experience-list">'+d.experience.map((e,i)=>{
         const detail=details[e.org]||{};
         const timeline=(detail.timeline||[]).map(t=>
@@ -169,7 +169,7 @@
 
   function renderProjects(){
     qs('[data-view="projects"]').innerHTML=
-      pageHead('Project Explorer','Projects','Professional analytics work plus earlier software and data projects. Internal links, credentials, customer names, and confidential implementation details are excluded from the public site.')+
+      pageHead('Project Explorer','Projects','Professional analytics work plus earlier software and data projects. Internal links, customer names, credentials, and private implementation details are left out.')+
       '<div class="filterbar"><input id="projectSearch" placeholder="Search projects, tools, or topics"><select id="projectCategory"><option value="">All categories</option>'+[...new Set(d.projects.map(p=>p.category))].map(c=>'<option>'+c+'</option>').join('')+'</select></div>'+
       '<div class="pagination-row pagination-top" id="projectPaginationTop"></div>'+
       '<div class="panel"><div class="table-wrap"><table class="data-table"><thead><tr><th>Project</th><th>Category</th><th>Period</th><th>Technologies</th></tr></thead><tbody id="projectRows"></tbody></table></div><div class="pagination-footer" id="projectPaginationBottom"></div></div>';
@@ -218,7 +218,7 @@
   function renderSkills(){
     const skillTotal=d.skills.reduce((n,g)=>n+g.items.length,0);
     qs('[data-view="skills"]').innerHTML=
-      pageHead('Capability Map','Skills & Technologies','Expanded using the technical skills, tools, development background, certifications, and delivery strengths from the previous resume together with current professional work.')+
+      pageHead('Capability Map','Skills & Technologies','Skills and tools from my previous resume and current work, grouped by how I use them.')+
       '<div class="grid skills-kpi-row">'+
         '<div class="kpi"><div class="kpi-label">Skill Areas</div><div class="kpi-value">'+d.skills.length+'</div><div class="kpi-note">Grouped by capability</div></div>'+
         '<div class="kpi"><div class="kpi-label">Technologies & Capabilities</div><div class="kpi-value">'+skillTotal+'</div><div class="kpi-note">Analytics, programming, data, and delivery</div></div>'+
@@ -236,7 +236,7 @@
     const areas=[...new Set(edu.courses.map(c=>c.area))].sort();
     const totalCredits=edu.programs.reduce((sum,p)=>sum+p.transcriptCredits,0);
     qs('[data-view="education"]').innerHTML=
-      pageHead('Education','Education & Coursework','A catalog-enriched view of completed undergraduate and graduate coursework. Course grades and student identifiers are intentionally excluded.')+
+      pageHead('Education','Education & Coursework','Completed undergraduate and graduate coursework with course descriptions and topic summaries. Grades and student identifiers are left out.')+
       '<div class="grid education-kpi-grid">'+
         '<div class="kpi"><div class="kpi-label">Degrees</div><div class="kpi-value">'+edu.programs.length+'</div><div class="kpi-note">B.S. + M.S.</div></div>'+
         '<div class="kpi"><div class="kpi-label">Completed Courses</div><div class="kpi-value">'+edu.courses.length+'</div><div class="kpi-note">47 undergraduate • 11 graduate</div></div>'+
