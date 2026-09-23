@@ -206,6 +206,7 @@
     .template-chikorita .resume-sidebar .resume-skill-line,
     .template-chikorita .resume-sidebar .resume-small,
     .template-chikorita .resume-sidebar .resume-education-head,
+    .template-chikorita .resume-sidebar .resume-education-head span:last-child,
     .template-chikorita .resume-sidebar .resume-education-sub{color:#fff}
     .template-chikorita .resume-sidebar .resume-section-title{
       border-bottom:1px solid rgba(255,255,255,.62);padding-bottom:.024in
@@ -928,14 +929,14 @@
     // Start at full template size. Only reduce the inner document when content would
     // otherwise cross the bottom edge of the Letter page.
     let scale=1;
-    const targetHeight=doc.clientHeight-2;
+    const targetHeight=doc.clientHeight;
 
     for(let i=0;i<14;i++){
       root.style.setProperty('--resume-content-scale',scale.toFixed(4));
       // Force layout so scrollHeight reflects the wider inverse-scaled content width.
       void layout.offsetHeight;
       const visualHeight=layout.scrollHeight*scale;
-      if(visualHeight<=targetHeight)break;
+      if(visualHeight<=targetHeight+1)break;
       const next=Math.min(scale-.01,scale*(targetHeight/visualHeight)*.992);
       scale=Math.max(.86,next);
       if(scale<=.86)break;
@@ -946,7 +947,7 @@
 
     // If a template still overflows at the readability floor, loosen only the
     // high-density spacing rather than hiding content.
-    const stillOver=layout.scrollHeight*scale>targetHeight+1;
+    const stillOver=layout.scrollHeight*scale>targetHeight+2;
     doc.classList.toggle('resume-compact-fit',stillOver);
     if(stillOver){
       scale=.84;
