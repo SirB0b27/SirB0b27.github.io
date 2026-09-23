@@ -4,6 +4,9 @@
   const qs=(s,r=document)=>r.querySelector(s), qsa=(s,r=document)=>[...r.querySelectorAll(s)];
   let zoom=Number(localStorage.getItem('portfolioZoomV2')||1);
   let scrollTick=false;
+  let projectPage=1;
+  let educationPage=1;
+  const tablePageSize=8;
   let personalMenuUnlocked=false;
   const personalExpectedHash='d0f1e3c007d7e9411923d1922fb8364004ca9eaf7b8aee6cb1955104e35f2dca';
   sessionStorage.removeItem('personalSpaceAuth');
@@ -140,20 +143,53 @@
       }).join('')+'</div>';
   }
 
+  function paginationMarkup(kind,current,total){
+    if(total<=1)return '<div class="pagination-shell is-single"><span>Page 1 of 1</span></div>';
+    const pages=[];
+    const add=n=>{if(n>=1&&n<=total&&!pages.includes(n))pages.push(n)};
+    add(1);
+    for(let n=current-1;n<=current+1;n++)add(n);
+    add(total);
+    pages.sort((a,b)=>a-b);
+    let last=0;
+    const numberButtons=pages.map(n=>{
+      const gap=last && n-last>1?'<span class="pagination-ellipsis">…</span>':'';
+      last=n;
+      return gap+'<button class="pagination-page'+(n===current?' active':'')+'" data-page-kind="'+kind+'" data-page-target="'+n+'" type="button">'+n+'</button>';
+    }).join('');
+    return '<div class="pagination-shell">'+
+      '<span class="pagination-summary">Page '+current+' of '+total+'</span>'+
+      '<div class="pagination-controls">'+
+        '<button class="pagination-arrow" data-page-kind="'+kind+'" data-page-target="'+(current-1)+'" type="button"'+(current<=1?' disabled':'')+'>←</button>'+
+        numberButtons+
+        '<button class="pagination-arrow" data-page-kind="'+kind+'" data-page-target="'+(current+1)+'" type="button"'+(current>=total?' disabled':'')+'>→</button>'+
+      '</div>'+
+    '</div>';
+  }
+
   function renderProjects(){
     qs('[data-view="projects"]').innerHTML=
       pageHead('Project Explorer','Projects','Professional analytics work plus earlier software and data projects. Internal links, credentials, customer names, and confidential implementation details are excluded from the public site.')+
       '<div class="filterbar"><input id="projectSearch" placeholder="Search projects, tools, or topics"><select id="projectCategory"><option value="">All categories</option>'+[...new Set(d.projects.map(p=>p.category))].map(c=>'<option>'+c+'</option>').join('')+'</select></div>'+
-      '<div class="panel"><div class="table-wrap"><table class="data-table"><thead><tr><th>Project</th><th>Category</th><th>Period</th><th>Technologies</th></tr></thead><tbody id="projectRows"></tbody></table></div></div>';
+      '<div class="pagination-row pagination-top" id="projectPaginationTop"></div>'+
+      '<div class="panel"><div class="table-wrap"><table class="data-table"><thead><tr><th>Project</th><th>Category</th><th>Period</th><th>Technologies</th></tr></thead><tbody id="projectRows"></tbody></table></div><div class="pagination-footer" id="projectPaginationBottom"></div></div>';
     drawProjectRows();
   }
 
-  function drawProjectRows(){
+  function filteredProjects(){
     const search=(qs('#projectSearch')?.value||'').toLowerCase();
     const cat=qs('#projectCategory')?.value||'';
-    const rows=sortProjectsByPeriod(d.projects).filter(p=>(!cat||p.category===cat)&&(!search||JSON.stringify(p).toLowerCase().includes(search)));
+    return sortProjectsByPeriod(d.projects).filter(p=>(!cat||p.category===cat)&&(!search||JSON.stringify(p).toLowerCase().includes(search)));
+  }
+
+  function drawProjectRows(){
+    const rows=filteredProjects();
+    const totalPages=Math.max(1,Math.ceil(rows.length/tablePageSize));
+    projectPage=Math.min(Math.max(1,projectPage),totalPages);
+    const start=(projectPage-1)*tablePageSize;
+    const pageRows=rows.slice(start,start+tablePageSize);
     const body=qs('#projectRows'); if(!body)return;
-    body.innerHTML=rows.map(p=>
+    body.innerHTML=pageRows.map(p=>
       '<tr class="project-row" data-project-toggle="'+p.id+'" aria-expanded="false" style="--item-accent:'+projectAccent(p)+'">'+
         '<td><strong>'+p.name+'</strong><div class="panel-subtitle" style="margin-top:3px">'+p.summary+'</div></td>'+
         '<td>'+p.category+'</td>'+
@@ -173,6 +209,10 @@
         '</div></td>'+
       '</tr>'
     ).join('')||'<tr><td colspan="4">No Matching Projects.</td></tr>';
+    const pager=paginationMarkup('projects',projectPage,totalPages);
+    const top=qs('#projectPaginationTop'), bottom=qs('#projectPaginationBottom');
+    if(top)top.innerHTML=pager;
+    if(bottom)bottom.innerHTML=pager;
   }
 
   function renderSkills(){
@@ -212,7 +252,6 @@
             '<div class="edu-statline"><div><strong>'+p.completedCourses+'</strong><span>Completed Courses</span></div><div><strong>'+p.transcriptCredits+'</strong><span>Transcript Credits</span></div>'+(p.honors?'<div><strong>7</strong><span>Dean’s List Terms</span></div>':'')+'</div>'+
             tags(p.focus)+
             '<div class="catalog-note">'+p.currentCatalogNote+'</div>'+
-            '<div class="catalog-links"><a href="'+p.programUrl+'" target="_blank" rel="noopener">Program catalog ↗</a>'+(p.currentProgramUrl?'<a href="'+p.currentProgramUrl+'" target="_blank" rel="noopener">Current program overview ↗</a>':'')+'</div>'+
           '</div>'+
         '</article>'
       ).join('')+'</div>'+
@@ -225,7 +264,9 @@
             '<select id="educationArea"><option value="">All Subject Areas</option>'+areas.map(a=>'<option>'+a+'</option>').join('')+'</select>'+
           '</div>'+
           '<div class="education-source-note">Catalog summaries are paraphrased from official university catalog, archived catalog, program, and syllabus pages. Historical course titles are kept when the current catalog has changed.</div>'+
+          '<div class="pagination-row pagination-top" id="educationPaginationTop"></div>'+
           '<div class="table-wrap education-table-wrap"><table class="data-table education-table"><thead><tr><th>Course</th><th>Institution</th><th>Area</th><th>Credits</th><th>Catalog focus</th></tr></thead><tbody id="educationRows"></tbody></table></div>'+
+          '<div class="pagination-footer" id="educationPaginationBottom"></div>'+
         '</div>'+
       '</div>';
     drawEducationRows();
@@ -246,8 +287,12 @@
   function drawEducationRows(){
     const body=qs('#educationRows'); if(!body)return;
     const rows=filteredEducationCourses();
+    const totalPages=Math.max(1,Math.ceil(rows.length/tablePageSize));
+    educationPage=Math.min(Math.max(1,educationPage),totalPages);
+    const start=(educationPage-1)*tablePageSize;
+    const pageRows=rows.slice(start,start+tablePageSize);
     const count=qs('#educationResultCount'); if(count)count.textContent=rows.length+' course'+(rows.length===1?'':'s');
-    body.innerHTML=rows.map(c=>{
+    body.innerHTML=pageRows.map(c=>{
       const key=c.institution+'|'+c.code;
       return '<tr class="course-row" data-course-toggle="'+key+'" aria-expanded="false" style="--item-accent:'+educationAccent(c.institution)+'">'+
         '<td><strong>'+c.code+'</strong><div class="course-title">'+c.title+'</div>'+(c.origin?'<div class="course-origin">'+c.origin+'</div>':'')+'</td>'+
@@ -264,10 +309,13 @@
           '</div>'+
           '<div class="inline-detail-title">Catalog Topics</div>'+tags(c.topics||[])+
           (c.status?'<div class="notice inline-notice">'+c.status+'</div>':'')+
-          '<div class="inline-detail-actions"><a class="secondary-btn" href="'+c.source+'" target="_blank" rel="noopener">Open University Source ↗</a></div>'+
         '</div></td>'+
       '</tr>';
     }).join('')||'<tr><td colspan="5"><div class="empty-state">No Courses Match the Current Filters.</div></td></tr>';
+    const pager=paginationMarkup('education',educationPage,totalPages);
+    const top=qs('#educationPaginationTop'), bottom=qs('#educationPaginationBottom');
+    if(top)top.innerHTML=pager;
+    if(bottom)bottom.innerHTML=pager;
   }
 
   function toggleInlineDetail(toggleSelector,detailSelector,key){
@@ -302,6 +350,13 @@
 
   function jumpToProject(id){
     scrollToSection('projects');
+    const search=qs('#projectSearch'), category=qs('#projectCategory');
+    if(search)search.value='';
+    if(category)category.value='';
+    const rows=sortProjectsByPeriod(d.projects);
+    const index=rows.findIndex(p=>p.id===id);
+    projectPage=index>=0?Math.floor(index/tablePageSize)+1:1;
+    drawProjectRows();
     setTimeout(()=>{
       const detail=qs('[data-project-detail="'+CSS.escape(id)+'"]');
       const toggle=qs('[data-project-toggle="'+CSS.escape(id)+'"]');
@@ -367,6 +422,13 @@
     if(personalAnalyticsLink){sessionStorage.setItem('personalAnalyticsEntryGrant','1');return}
     const collegeProjectsLink=e.target.closest('#collegeProjectsLink');
     if(collegeProjectsLink){sessionStorage.setItem('collegeProjectsEntryGrant','1');return}
+    const pager=e.target.closest('[data-page-kind][data-page-target]');
+    if(pager && !pager.disabled){
+      const target=Number(pager.dataset.pageTarget);
+      if(pager.dataset.pageKind==='projects'){projectPage=target;drawProjectRows();qs('#projectPaginationTop')?.scrollIntoView({behavior:'smooth',block:'nearest'});}
+      if(pager.dataset.pageKind==='education'){educationPage=target;drawEducationRows();qs('#educationPaginationTop')?.scrollIntoView({behavior:'smooth',block:'nearest'});}
+      return;
+    }
     const nav=e.target.closest('[data-route]');
     if(nav){scrollToSection(nav.dataset.route);return}
     const scroll=e.target.closest('[data-scroll]');
@@ -410,12 +472,12 @@
   });
 
   document.addEventListener('input',e=>{
-    if(e.target.id==='projectSearch')drawProjectRows();
-    if(e.target.id==='educationSearch')drawEducationRows();
+    if(e.target.id==='projectSearch'){projectPage=1;drawProjectRows();}
+    if(e.target.id==='educationSearch'){educationPage=1;drawEducationRows();}
   });
   document.addEventListener('change',e=>{
-    if(e.target.id==='projectCategory')drawProjectRows();
-    if(e.target.id==='educationInstitution'||e.target.id==='educationArea')drawEducationRows();
+    if(e.target.id==='projectCategory'){projectPage=1;drawProjectRows();}
+    if(e.target.id==='educationInstitution'||e.target.id==='educationArea'){educationPage=1;drawEducationRows();}
   });
   window.addEventListener('scroll',()=>{if(!scrollTick){scrollTick=true;requestAnimationFrame(updateActiveFromScroll)}},{passive:true});
   window.addEventListener('pagehide',resetPersonalNav);
