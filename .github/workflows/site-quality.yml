@@ -13,7 +13,38 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+
       - name: Content voice audit
         run: node scripts/content-audit.mjs
+
       - name: Static regression test
         run: node scripts/site-regression.mjs
+
+      - name: Install browser test dependency
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+
+      - name: Start local site
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/portfolio-server.log 2>&1 &
+          echo $! > /tmp/portfolio-server.pid
+          for i in {1..20}; do
+            if curl -fsS http://127.0.0.1:4173/resume/ > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/portfolio-server.log
+          exit 1
+
+      - name: Browser-test every resume template
+        run: node scripts/resume-layout-browser-test.mjs
+
+      - name: Upload resume layout screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: resume-layout-screenshots
+          path: artifacts/resume-layouts/
+          if-no-files-found: ignore
