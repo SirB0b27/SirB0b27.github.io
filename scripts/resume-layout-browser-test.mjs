@@ -43,7 +43,7 @@ const checkTemplate = async (template) => {
     ).slice(0, 8);
 
     const text = layout.innerText;
-    const titleWidths = [...layout.querySelectorAll(".resume-section-title")].map((el) => el.getBoundingClientRect().width);
+    const baseFontPx = Number.parseFloat(getComputedStyle(layout).fontSize) || 0;
     const mainWidth = main?.getBoundingClientRect().width ?? 0;
     const sidebarWidth = sidebar?.getBoundingClientRect().width ?? 0;
 
@@ -57,7 +57,7 @@ const checkTemplate = async (template) => {
       visualContentHeight: layout.scrollHeight * scale,
       docClientHeight: doc.clientHeight,
       offenders,
-      minTitleWidth: titleWidths.length ? Math.min(...titleWidths) : 0,
+      effectiveBodyPt: baseFontPx * (72 / 96) * scale,
       textLength: text.length,
       containsGithub: /github\.com\/SirB0b27/i.test(text),
       containsLinkedIn: /linkedin\.com\/in\/hemanthvelan27/i.test(text)
@@ -73,8 +73,8 @@ const checkTemplate = async (template) => {
   if (metrics.offenders.length) failures.push(`${template}: content escapes page bounds: ${JSON.stringify(metrics.offenders)}`);
   if (metrics.hasColumns && ratio < 0.48) failures.push(`${template}: main content column is too narrow (${Math.round(ratio * 100)}% of page)`);
   if (metrics.hasColumns && (sidebarRatio < 0.19 || sidebarRatio > 0.38)) failures.push(`${template}: sidebar width is abnormal (${Math.round(sidebarRatio * 100)}% of page)`);
-  if (metrics.minTitleWidth < 75) failures.push(`${template}: a section heading is being squeezed too narrowly`);
-  if (metrics.contentScale < 0.82) failures.push(`${template}: required excessive content scaling (${metrics.contentScale})`);
+  if (metrics.contentScale < 0.90) failures.push(`${template}: required excessive content scaling (${metrics.contentScale})`);
+  if (metrics.effectiveBodyPt < 8.5) failures.push(`${template}: effective body text is too small (${metrics.effectiveBodyPt.toFixed(2)}pt)`);
 
   await page.locator("#resumeDocument").screenshot({ path: path.join(outputDir, `${template}.png`) });
   console.log(`[OK] ${template}: main=${Math.round(ratio*100)}%, sidebar=${Math.round(sidebarRatio*100)}%, fit=${metrics.contentScale}`);
