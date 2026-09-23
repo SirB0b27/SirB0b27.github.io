@@ -17,6 +17,20 @@
     html:not(.personal-authorized) body{display:none}
     .personal-main{margin-left:var(--sidebar);padding-top:var(--topbar);min-height:100vh;transition:margin-left .18s ease}
     .personal-main.sidebar-collapsed{margin-left:56px}
+    .personal-main .workspace{zoom:var(--personal-zoom,1.25)}
+    .personal-main .page-head h1{font-size:27px}
+    .personal-main .page-head p{font-size:13px;line-height:1.55}
+    .personal-main .panel-title{font-size:13px}
+    .personal-main .panel-subtitle{font-size:11px}
+    .personal-main .kpi-label{font-size:12px}
+    .personal-main .kpi-value{font-size:29px}
+    .personal-main .kpi-note{font-size:11px}
+    .personal-main .private-row{font-size:11px}
+    .personal-main .private-table{font-size:12px}
+    .personal-main .private-table th{font-size:10px}
+    .personal-main .privacy-banner{font-size:11px}
+    .personal-main .assignment-tab{font-size:12px}
+    .personal-main .assignment-meta{font-size:11px}
     .personal-view[hidden]{display:none!important}
     .personal-home-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;max-width:1000px}
     .personal-launch-card{min-height:220px;padding:22px;border:1px solid var(--line);border-radius:12px;background:var(--panel);color:var(--text);text-align:left;cursor:pointer;transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease}
@@ -62,7 +76,13 @@
     </div>
     <div class="topbar-main">
       <div class="crumb" id="personalCrumb">Personal / Home</div>
-      <div class="toolbar"><button class="icon-btn" id="themeToggle" title="Toggle theme">◐</button></div>
+      <div class="toolbar">
+        <button class="icon-btn desktop-optional" id="zoomOut" title="Zoom out">−</button>
+        <span class="zoom-readout desktop-optional" id="zoomReadout">100%</span>
+        <button class="icon-btn desktop-optional" id="zoomIn" title="Zoom in">+</button>
+        <button class="tool-btn desktop-optional" id="fitWidth" type="button">Fit Width</button>
+        <button class="icon-btn" id="themeToggle" title="Toggle theme">◐</button>
+      </div>
     </div>
   </header>
 
@@ -150,8 +170,13 @@
   const q=(s,r=document)=>r.querySelector(s);
   const qa=(s,r=document)=>[...r.querySelectorAll(s)];
   const data=window.PERSONAL_ANALYTICS||{};
+  // Same-origin assignment entry pages use this flag to confirm they are being
+  // rendered inside the authenticated Personal workspace rather than opened directly.
+  window.__collegeProjectsUnlocked=true;
+  window.__personalSpaceUnlocked=true;
   let analyticsRendered=false;
   let currentView='home';
+  let zoom=Number(localStorage.getItem('portfolioZoomV2')||1);
   const assignments={
     1:{src:'../IT201/Assignment1/index.html',desc:'HTML/CSS heritage page'},
     2:{src:'../IT201/Assignment2/index.html',desc:'JavaScript validation and account verification interface'},
@@ -162,6 +187,14 @@
 
   function clearPersonalAccess(){
     sessionStorage.removeItem('personalSpaceAuth');
+  }
+
+  function applyZoom(){
+    const effectiveZoom=zoom*1.25;
+    document.documentElement.style.setProperty('--personal-zoom',effectiveZoom);
+    const readout=q('#zoomReadout');
+    if(readout)readout.textContent=Math.round(zoom*100)+'%';
+    localStorage.setItem('portfolioZoomV2',zoom);
   }
 
   function goPortfolio(){
@@ -247,6 +280,9 @@
     else q('#personalSidebar').classList.toggle('collapsed');
     q('#personalMain').classList.toggle('sidebar-collapsed',q('#personalSidebar').classList.contains('collapsed'));
   });
+  q('#zoomOut').addEventListener('click',()=>{zoom=Math.max(.6,+(zoom-.05).toFixed(2));applyZoom()});
+  q('#zoomIn').addEventListener('click',()=>{zoom=Math.min(1.4,+(zoom+.05).toFixed(2));applyZoom()});
+  q('#fitWidth').addEventListener('click',()=>{zoom=.8;applyZoom()});
   q('#themeToggle').addEventListener('click',()=>{
     const next=document.documentElement.dataset.theme==='dark'?'light':'dark';
     document.documentElement.dataset.theme=next;
@@ -264,6 +300,7 @@
   });
 
   setTheme();
+  applyZoom();
   const route=parseHash();
   navigate(route.view,false);
   if(route.view==='college')showAssignment(route.assignment,false);
