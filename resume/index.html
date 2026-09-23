@@ -12,11 +12,14 @@
   <meta name="description" content="Hemanth Velan — one-page resume">
   <title>Resume | Hemanth Velan</title>
   <link rel="stylesheet" href="../assets/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Serif:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root{
       --resume-preview-scale:1.25;
       --resume-content-scale:1;
-      --resume-accent:#4f46e5;
+      --resume-accent:#0084d1;
       --resume-muted:#59606b;
       --resume-divider:#d7dbe2;
     }
@@ -259,23 +262,205 @@
     .template-rhyhorn .resume-contact{display:flex;gap:.07in;flex-wrap:wrap;justify-content:flex-end;max-width:3.2in}
     .template-rhyhorn .resume-section-title{color:var(--resume-accent);border-bottom:1px solid var(--resume-accent);padding-bottom:.012in}
 
-    .resume-layout,
-    .resume-headline,
-    .resume-contact,
-    .resume-summary,
-    .resume-item-head,
-    .resume-item-sub,
-    .resume-item li,
-    .resume-project-title,
-    .resume-project-tech,
-    .resume-project-text,
-    .resume-project-highlight,
-    .resume-education-head,
-    .resume-education-sub,
-    .resume-skill-line,
-    .resume-small{
-      font-size:11pt!important;
+    /* Reactive Resume source-aligned fidelity + readability pass.
+       Layout families follow the current upstream template structure while this static
+       portfolio keeps a single-page Letter resume and the user's own content. */
+    .resume-document{font-family:"IBM Plex Serif",Georgia,serif}
+    .resume-layout{
+      --name-size:24pt;--section-title:12pt;
+      font-family:"IBM Plex Serif",Georgia,serif;
+      font-size:10pt;line-height:1.42;color:#111;
     }
+    .resume-section-title,.resume-header-name{
+      font-family:"Fira Sans Condensed","Arial Narrow",Arial,sans-serif;
+    }
+    .resume-section{margin-bottom:.12in}
+    .resume-section:last-child{margin-bottom:0}
+    .resume-section-title{
+      font-size:12pt;line-height:1.2;font-weight:600;letter-spacing:.035em;
+      margin:0 0 .055in;
+    }
+    .resume-header-name{font-size:24pt;line-height:1.15;font-weight:600;letter-spacing:.01em}
+    .resume-headline{font-size:10pt;line-height:1.35;font-weight:500;margin-top:.035in}
+    .resume-contact{font-size:8.8pt;line-height:1.4;margin-top:.045in}
+    .resume-summary,.resume-item li,.resume-project-text,.resume-project-highlight{
+      text-align:justify;text-justify:inter-word;hyphens:auto;
+    }
+    .resume-summary{font-size:9.7pt;line-height:1.48}
+    .resume-item{margin-bottom:.105in}
+    .resume-item-head{font-size:10pt;line-height:1.3;gap:.14in}
+    .resume-item-sub{font-size:8.7pt;line-height:1.35;margin-top:.025in}
+    .resume-item ul{margin:.045in 0 0 .17in;padding:0}
+    .resume-item li{font-size:9.1pt;line-height:1.42;margin:0 0 .035in;padding-left:.015in}
+    .resume-item li:last-child{margin-bottom:0}
+    .resume-project{margin-bottom:.085in}
+    .resume-project-title{font-size:9.7pt;line-height:1.3}
+    .resume-project-tech{font-size:8.2pt;line-height:1.35;margin-top:.018in}
+    .resume-project-text{font-size:8.9pt;line-height:1.42;margin-top:.025in}
+    .resume-education-item{margin-bottom:.07in}
+    .resume-education-head{font-size:9.3pt;line-height:1.32}
+    .resume-education-sub{font-size:8.4pt;line-height:1.38;margin-top:.018in}
+    .resume-skill-line,.resume-small{font-size:8.6pt;line-height:1.42;margin:.025in 0}
+    .resume-columns{display:grid;min-width:0}
+    .resume-main,.resume-sidebar,.resume-main-panel,.resume-side-panel{min-width:0}
+    .resume-photo{
+      width:.82in;height:.82in;object-fit:cover;flex:0 0 auto;
+      border:0 solid var(--resume-accent);background:#eef1f4;
+    }
+    .resume-photo.round{border-radius:50%}
+    .resume-photo.soft{border-radius:12px}
+    .resume-photo.square{border-radius:0}
+
+    /* Structural placement follows Reactive Resume's current template families. */
+    .template-azurill .resume-layout{padding:.28in .38in}
+    .template-azurill .resume-header{display:flex;align-items:center;gap:.16in;border:0;padding:0;margin-bottom:.14in}
+    .template-azurill .resume-header-main{flex:1}.template-azurill .resume-contact{text-align:left;max-width:none}
+    .template-azurill .resume-columns{grid-template-columns:30% 1fr;gap:.22in}
+    .template-azurill .resume-sidebar{border-right:1px solid #d5dbe1;padding-right:.16in}
+    .template-azurill .resume-main{padding-left:.01in}.template-azurill .resume-section-title{color:var(--resume-accent)}
+    .template-azurill .resume-photo{border-radius:50%;border-width:1px}
+
+    .template-bronzor .resume-layout{padding:.28in .36in}
+    .template-bronzor .resume-header{text-align:center;display:block;border:0;padding:0;margin-bottom:.12in}
+    .template-bronzor .resume-header .resume-photo{margin:0 auto .07in;border-radius:50%;border-width:1px}
+    .template-bronzor .resume-contact{text-align:center;max-width:none}
+    .template-bronzor .resume-columns{grid-template-columns:1fr 29%;gap:.22in}
+    .template-bronzor .resume-sidebar{padding-left:.16in}
+    .template-bronzor .resume-section{border-top:1px solid var(--resume-accent);padding-top:.055in}
+    .template-bronzor .resume-section-title{color:var(--resume-accent);font-size:10.5pt}
+
+    .template-chikorita .resume-layout{
+      padding:0;min-height:100%;background:linear-gradient(to right,#fff 0,#fff 70%,var(--resume-accent) 70%,var(--resume-accent) 100%);
+    }
+    .template-chikorita .resume-columns{grid-template-columns:70% 30%;gap:0;min-height:11in}
+    .template-chikorita .resume-main{padding:.32in .3in .3in .4in}
+    .template-chikorita .resume-sidebar{padding:.32in .28in .3in .22in;color:#fff}
+    .template-chikorita .resume-header{display:flex;align-items:flex-start;gap:.14in;border:0;padding:0;margin-bottom:.14in}
+    .template-chikorita .resume-header-main{flex:1}.template-chikorita .resume-contact{text-align:left;max-width:none}
+    .template-chikorita .resume-photo{border-radius:50%}
+    .template-chikorita .resume-main .resume-section-title{color:var(--resume-accent);border-bottom:1px solid var(--resume-accent);padding-bottom:.025in}
+    .template-chikorita .resume-sidebar .resume-section-title,.template-chikorita .resume-sidebar *{color:#fff!important}
+    .template-chikorita .resume-sidebar .resume-section-title{border-bottom:1px solid rgba(255,255,255,.55);padding-bottom:.025in}
+
+    .template-ditgar .resume-layout{padding:0;min-height:100%;background:linear-gradient(to right,#e8f5fb 0,#e8f5fb 30%,#fff 30%,#fff 100%)}
+    .template-ditgar .resume-columns{grid-template-columns:30% 70%;gap:0;min-height:11in}
+    .template-ditgar .resume-sidebar{padding:0}
+    .template-ditgar .resume-side-header{background:var(--resume-accent);color:#fff;padding:.28in .2in .2in}
+    .template-ditgar .resume-side-header *{color:#fff!important}
+    .template-ditgar .resume-side-content{padding:.18in .18in .24in}
+    .template-ditgar .resume-main{padding:.28in .34in .28in .24in}
+    .template-ditgar .resume-featured-summary{background:#e8f5fb;margin:-.28in -.34in .14in -.24in;padding:.22in .34in .17in .24in}
+    .template-ditgar .resume-header{display:block;border:0;padding:0;margin:0}.template-ditgar .resume-photo{border-radius:50%;margin-bottom:.08in}
+    .template-ditgar .resume-main .resume-section-title{color:var(--resume-accent);border-bottom:1px solid var(--resume-accent);padding-bottom:.025in}
+    .template-ditgar .resume-main .resume-item-head{border-left:3px solid var(--resume-accent);padding-left:.05in}
+
+    .template-ditto .resume-layout{padding:0}
+    .template-ditto .resume-header{background:var(--resume-accent);color:#fff;padding:.25in .38in;display:flex;align-items:center;gap:.18in;border:0;margin:0}
+    .template-ditto .resume-header *{color:#fff!important}.template-ditto .resume-photo{border-radius:50%;border:3px solid #fff}
+    .template-ditto .resume-columns{grid-template-columns:30% 1fr;gap:.2in;padding:.2in .38in .3in}
+    .template-ditto .resume-sidebar{padding-right:.12in}.template-ditto .resume-section-title{color:var(--resume-accent)}
+
+    .template-gengar .resume-layout{padding:0;min-height:100%;background:linear-gradient(to right,#e8f5fb 0,#e8f5fb 31%,#fff 31%,#fff 100%)}
+    .template-gengar .resume-columns{grid-template-columns:31% 69%;gap:0;min-height:11in}
+    .template-gengar .resume-sidebar{padding:0}.template-gengar .resume-side-header{background:var(--resume-accent);color:#fff;padding:.32in .24in .24in}
+    .template-gengar .resume-side-header *{color:#fff!important}.template-gengar .resume-photo{border-radius:50%;margin-bottom:.08in}
+    .template-gengar .resume-side-content{padding:.2in .22in}.template-gengar .resume-main{padding:.3in .36in .28in .28in}
+    .template-gengar .resume-featured-summary{background:#e8f5fb;margin:-.3in -.36in .16in -.28in;padding:.22in .36in .18in .28in}
+    .template-gengar .resume-section-title{color:var(--resume-accent);border-bottom:1px solid var(--resume-accent);padding-bottom:.025in}
+
+    .template-glalie .resume-layout{padding:0;min-height:100%;background:linear-gradient(to right,#eef7fb 0,#eef7fb 30%,#fff 30%,#fff 100%)}
+    .template-glalie .resume-columns{grid-template-columns:30% 70%;gap:0;min-height:11in}
+    .template-glalie .resume-sidebar{padding:.25in .18in}.template-glalie .resume-main{padding:.28in .34in .26in .24in}
+    .template-glalie .resume-header{text-align:center;display:block;border:0;padding:0;margin-bottom:.12in}
+    .template-glalie .resume-photo{border-radius:50%;border:1px solid var(--resume-accent);margin:0 auto .08in}
+    .template-glalie .resume-contact{text-align:left;border:1px solid var(--resume-accent);padding:.05in;max-width:none}
+    .template-glalie .resume-section-title{color:var(--resume-accent);border-bottom:1px solid var(--resume-accent);padding-bottom:.025in}
+
+    .template-kakuna .resume-layout{padding:.28in .36in}
+    .template-kakuna .resume-header{text-align:center;display:block;border:0;padding:0;margin-bottom:.12in}
+    .template-kakuna .resume-photo{margin:0 auto .08in;border-radius:50%;border:1px solid var(--resume-accent)}
+    .template-kakuna .resume-contact{text-align:center;max-width:none}
+    .template-kakuna .resume-columns{grid-template-columns:1fr 28%;gap:.2in}
+    .template-kakuna .resume-section-title{text-align:center;color:var(--resume-accent);border-bottom:1px solid var(--resume-accent);padding-bottom:.025in}
+
+    .template-lapras .resume-layout{padding:.22in .28in}
+    .template-lapras .resume-header,.template-lapras .resume-section{border:1px solid #ccc;border-radius:12px;background:#fff;padding:.085in .1in}
+    .template-lapras .resume-header{display:flex;align-items:center;gap:.12in;margin-bottom:.12in}
+    .template-lapras .resume-photo{border-radius:12px}.template-lapras .resume-columns{grid-template-columns:1fr 28%;gap:.16in}
+    .template-lapras .resume-section-title{display:inline-block;background:#fff;margin-top:-.16in;padding:0 .045in;color:var(--resume-accent)}
+
+    .template-leafish .resume-layout{padding:0}
+    .template-leafish .resume-header-intro{background:#eaf7fc;padding:.22in .32in .16in}
+    .template-leafish .resume-header{display:flex;align-items:center;gap:.14in;border:0;padding:0;margin:0}
+    .template-leafish .resume-photo{border-radius:50%}.template-leafish .resume-header-summary{font-size:8.8pt;max-width:3.25in}
+    .template-leafish .resume-contact-band{background:#cdeaf6;padding:.07in .32in;display:flex;gap:.08in;flex-wrap:wrap;font-size:8.6pt}
+    .template-leafish .resume-columns{grid-template-columns:1fr 29%;gap:.18in;padding:.18in .32in .28in}
+    .template-leafish .resume-section-title{color:var(--resume-accent);border-bottom:1px solid var(--resume-accent);padding-bottom:.025in}
+
+    .template-meowth .resume-layout{padding:.28in .36in}
+    .template-meowth .resume-header{display:flex;align-items:center;gap:.14in;border:0;padding:0;margin-bottom:.12in}
+    .template-meowth .resume-photo{border-radius:12px}.template-meowth .resume-columns{grid-template-columns:29% 1fr;gap:.2in}
+    .template-meowth .resume-sidebar{padding-right:.13in}.template-meowth .resume-section-title{color:var(--resume-accent);border-bottom:1px solid var(--resume-accent);padding-bottom:.025in}
+
+    .template-onyx .resume-layout{padding:.28in .36in}
+    .template-onyx .resume-header{display:flex;align-items:center;gap:.14in;border-bottom:1px solid var(--resume-accent);padding-bottom:.12in;margin-bottom:.14in}
+    .template-onyx .resume-photo{border-radius:50%;border:1px solid var(--resume-accent)}
+    .template-onyx .resume-columns{grid-template-columns:1fr 28%;gap:.2in}.template-onyx .resume-sidebar{padding-left:.13in}
+    .template-onyx .resume-section-title{color:var(--resume-accent);border:0;padding:0}
+
+    .template-pikachu .resume-layout{padding:.22in .28in}
+    .template-pikachu .resume-columns{grid-template-columns:28% 1fr;gap:.16in}
+    .template-pikachu .resume-sidebar{padding-right:.08in}
+    .template-pikachu .resume-main-header{background:var(--resume-accent);color:#fff;border-radius:12px;padding:.13in .15in;margin-bottom:.13in}
+    .template-pikachu .resume-main-header *{color:#fff!important}.template-pikachu .resume-header{display:flex;align-items:center;gap:.12in;border:0;padding:0;margin:0}
+    .template-pikachu .resume-photo{border-radius:50%;border:2px solid #fff}.template-pikachu .resume-section-title{color:var(--resume-accent);border-bottom:1px solid var(--resume-accent);padding-bottom:.025in}
+
+    .template-rhyhorn .resume-layout{padding:.28in .36in}
+    .template-rhyhorn .resume-header{display:flex;align-items:center;gap:.14in;border:0;padding:0;margin-bottom:.12in}
+    .template-rhyhorn .resume-photo{border-radius:50%}.template-rhyhorn .resume-columns{grid-template-columns:1fr 29%;gap:.2in}
+    .template-rhyhorn .resume-contact{display:flex;gap:.06in;flex-wrap:wrap;max-width:none}
+    .template-rhyhorn .resume-section-title{color:var(--resume-accent);border-bottom:1px solid var(--resume-accent);padding-bottom:.025in}
+
+    .template-scizor .resume-layout{padding:.28in .36in .3in;border-top:.07in solid var(--resume-accent)}
+    .template-scizor .resume-header{display:flex;align-items:center;gap:.15in;border:0;padding:0 0 .12in;margin-bottom:.1in}
+    .template-scizor .resume-header-main{flex:1}.template-scizor .resume-header-name{font-size:28pt}
+    .template-scizor .resume-name-rule{width:72%;border-bottom:2px solid #d8dce2;margin:.055in 0}
+    .template-scizor .resume-photo{border-radius:0}.template-scizor .resume-columns{grid-template-columns:29% 1fr;gap:.2in}
+    .template-scizor .resume-section{border-top:1px solid #d8dce2;padding-top:.07in}.template-scizor .resume-section-title{color:#15171a}
+
+    .resume-toolbar-group{position:relative}
+    .resume-menu{
+      position:absolute;right:0;top:calc(100% + 6px);z-index:80;min-width:190px;padding:6px;
+      border:1px solid var(--line);border-radius:9px;background:var(--panel);box-shadow:var(--shadow)
+    }
+    .resume-menu[hidden]{display:none!important}
+    .resume-menu button{width:100%;border:0;background:transparent;color:var(--text);text-align:left;padding:8px 9px;border-radius:6px;cursor:pointer;font-size:11px}
+    .resume-menu button:hover{background:var(--panel-2)}
+    .resume-menu button:disabled{opacity:.45;cursor:not-allowed}
+    .photo-library{max-width:980px;margin:0 auto 12px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;display:none}
+    .photo-library.open{display:block}
+    .photo-library-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}
+    .photo-picker{position:relative}
+    .photo-picker-button{
+      width:100%;min-height:46px;border:1px solid var(--line);border-radius:8px;background:var(--panel-2);color:var(--text);
+      display:flex;align-items:center;gap:10px;padding:6px 9px;cursor:pointer;text-align:left
+    }
+    .photo-picker-button .photo-picker-name{flex:1}
+    .photo-thumb{width:32px;height:32px;border-radius:6px;object-fit:cover;background:var(--bg);border:1px solid var(--line)}
+    .photo-thumb.empty{display:grid;place-items:center;font-size:15px}
+    .photo-menu{
+      position:absolute;left:0;right:0;top:calc(100% + 5px);z-index:90;padding:5px;border:1px solid var(--line);
+      border-radius:8px;background:var(--panel);box-shadow:var(--shadow);max-height:260px;overflow:auto
+    }
+    .photo-menu[hidden]{display:none!important}
+    .photo-choice{display:grid;grid-template-columns:1fr 38px;align-items:stretch;border-radius:7px;overflow:hidden}
+    .photo-choice+.photo-choice{margin-top:3px}
+    .photo-choice-main{border:0;background:transparent;color:var(--text);display:flex;align-items:center;gap:9px;padding:6px 8px;cursor:pointer;text-align:left}
+    .photo-choice-main:hover{background:var(--panel-2)}
+    .photo-delete{border:0;background:transparent;color:#ef4444;cursor:pointer;font-size:16px;display:grid;place-items:center}
+    .photo-delete:hover{background:#ff2d2d;color:#111;font-weight:900}
+    .photo-library-actions{display:flex;justify-content:flex-end;gap:7px;margin-top:10px}
+    .photo-help{font-size:10px;color:var(--muted);line-height:1.45;margin:4px 0 10px}
 
     @media(max-width:980px){
       .resume-page-body{padding:8px 8px 35px}
@@ -313,23 +498,33 @@
     <div class="resume-page-tools">
       <span class="rr-credit">Reactive Resume–Inspired Layouts</span>
       <select id="resumeStyle" aria-label="Resume Template">
-        <option value="azurill">Azurill — Two Column</option>
-        <option value="bronzor">Bronzor — Labeled Sections</option>
-        <option value="chikorita">Chikorita — Accent Sidebar</option>
-        <option value="ditgar">Ditgar — Profile Sidebar</option>
-        <option value="ditto">Ditto — Header Band</option>
-        <option value="gengar">Gengar — Profile Sidebar</option>
-        <option value="glalie">Glalie — Soft Sidebar</option>
-        <option value="kakuna">Kakuna — Centered</option>
-        <option value="lapras">Lapras — Card Layout</option>
-        <option value="leafish">Leafish — Intro Band</option>
-        <option value="meowth">Meowth — Inline</option>
-        <option value="onyx">Onyx — Traditional</option>
-        <option value="pikachu">Pikachu — Header Card</option>
-        <option value="rhyhorn">Rhyhorn — Contact Separators</option>
-        <option value="scizor">Scizor — Modern Linear</option>
+        <option value="azurill">Azurill</option>
+        <option value="bronzor">Bronzor</option>
+        <option value="chikorita">Chikorita</option>
+        <option value="ditgar">Ditgar</option>
+        <option value="ditto">Ditto</option>
+        <option value="gengar">Gengar</option>
+        <option value="glalie">Glalie</option>
+        <option value="kakuna">Kakuna</option>
+        <option value="lapras">Lapras</option>
+        <option value="leafish">Leafish</option>
+        <option value="meowth">Meowth</option>
+        <option value="onyx">Onyx</option>
+        <option value="pikachu">Pikachu</option>
+        <option value="rhyhorn">Rhyhorn</option>
+        <option value="scizor">Scizor</option>
       </select>
       <button class="tool-btn" id="summaryToggle">Edit Summary</button>
+      <button class="tool-btn" id="photoToggle">Photos</button>
+      <div class="resume-toolbar-group">
+        <button class="tool-btn" id="exportToggle" type="button" aria-expanded="false">Export ▾</button>
+        <div class="resume-menu" id="exportMenu" hidden>
+          <button id="exportPdf" type="button">PDF / Print</button>
+          <button id="exportWord" type="button">Microsoft Word (.doc)</button>
+          <button id="exportHtml" type="button">HTML</button>
+          <button type="button" disabled title="Microsoft Publisher uses a proprietary format that cannot be generated reliably in-browser.">Publisher (.pub) — manual</button>
+        </div>
+      </div>
       <button class="icon-btn" id="zoomOut" title="Zoom out">−</button>
       <span class="resume-zoom-readout" id="zoomReadout">100%</span>
       <button class="icon-btn" id="zoomIn" title="Zoom in">+</button>
@@ -356,6 +551,30 @@
       </div>
     </section>
 
+    <section class="photo-library" id="photoPanel">
+      <div class="photo-library-head">
+        <div>
+          <div class="resume-customizer-title">Resume Photos</div>
+          <div class="brand-sub">Photos stay in this browser. Add multiple photos, pick the one to use, or delete photos you no longer want.</div>
+        </div>
+        <button class="icon-btn" id="photoClose" aria-label="Close photo library">×</button>
+      </div>
+      <div class="photo-help">A selected photo is used by templates that include profile imagery. Choose “No photo” to keep the resume text-only.</div>
+      <div class="photo-picker">
+        <button class="photo-picker-button" id="photoPickerButton" type="button" aria-expanded="false">
+          <span class="photo-thumb empty" id="selectedPhotoThumb">＋</span>
+          <span class="photo-picker-name" id="selectedPhotoName">No photo</span>
+          <span aria-hidden="true">▾</span>
+        </button>
+        <div class="photo-menu" id="photoMenu" hidden></div>
+      </div>
+      <input id="photoUpload" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+      <div class="photo-library-actions">
+        <button class="secondary-btn" id="addPhoto" type="button">Add Photo</button>
+        <button class="primary-btn" id="photoDone" type="button">Done</button>
+      </div>
+    </section>
+
     <div class="resume-page-stage" id="stage">
       <article class="resume-document template-onyx" id="resumeDocument">
         <div class="resume-layout" id="resumeLayout"></div>
@@ -376,11 +595,19 @@
   const styleSelect=document.getElementById('resumeStyle');
   const panel=document.getElementById('summaryPanel');
   const summaryInput=document.getElementById('summaryInput');
+  const photoPanel=document.getElementById('photoPanel');
+  const photoMenu=document.getElementById('photoMenu');
+  const photoPickerButton=document.getElementById('photoPickerButton');
+  const photoUpload=document.getElementById('photoUpload');
+  const exportMenu=document.getElementById('exportMenu');
   const defaultSummary=d.resume.summary;
   const allowedTemplates=['azurill','bronzor','chikorita','ditgar','ditto','gengar','glalie','kakuna','lapras','leafish','meowth','onyx','pikachu','rhyhorn','scizor'];
   let template=localStorage.getItem('resumeStyleV4')||'onyx';
   let zoom=Number(localStorage.getItem('resumeDisplayZoomV3')||1);
   let customSummary=localStorage.getItem('resumeCustomSummary')||defaultSummary;
+  let photos=[];
+  let selectedPhotoId=localStorage.getItem('resumeSelectedPhotoId')||'';
+  let selectedPhotoUrl='';
 
   const escapeHTML=(value)=>String(value??'').replace(/[&<>"']/g,(ch)=>({
     '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
@@ -392,11 +619,15 @@
     escapeHTML(d.profile.location)
   ].join(' • ');
 
+  const photoHTML=(shape='round')=>selectedPhotoUrl
+    ? '<img class="resume-photo '+shape+'" src="'+selectedPhotoUrl+'" alt="Profile photo">'
+    : '';
+
   const headerHTML=(mode='normal')=>{
     if(mode==='scizor'){
-      return '<header class="resume-header"><div class="resume-header-name">'+escapeHTML(d.profile.name.toUpperCase())+'</div><div class="resume-name-rule"></div><div class="resume-headline">'+escapeHTML(d.resume.headline)+'</div><div class="resume-contact">'+contactHTML()+'</div></header>';
+      return '<header class="resume-header"><div class="resume-header-main"><div class="resume-header-name">'+escapeHTML(d.profile.name.toUpperCase())+'</div><div class="resume-name-rule"></div><div class="resume-headline">'+escapeHTML(d.resume.headline)+'</div><div class="resume-contact">'+contactHTML()+'</div></div>'+photoHTML('square')+'</header>';
     }
-    return '<header class="resume-header"><div class="resume-header-main"><div class="resume-header-name">'+escapeHTML(d.profile.name.toUpperCase())+'</div><div class="resume-headline">'+escapeHTML(d.resume.headline)+'</div></div><div class="resume-contact">'+contactHTML()+'</div></header>';
+    return '<header class="resume-header">'+photoHTML(template==='lapras'||template==='meowth'?'soft':'round')+'<div class="resume-header-main"><div class="resume-header-name">'+escapeHTML(d.profile.name.toUpperCase())+'</div><div class="resume-headline">'+escapeHTML(d.resume.headline)+'</div><div class="resume-contact">'+contactHTML()+'</div></div></header>';
   };
 
   const section=(title,body,cls='')=>'<section class="resume-section '+cls+'"><h2 class="resume-section-title">'+title+'</h2><div class="resume-section-body">'+body+'</div></section>';
@@ -407,21 +638,20 @@
 
   const resumeImpactBullets={
     "Armstrong Transport Group, Inc.":[
-      "Own 30+ major BI, analytics-engineering, financial-control, and automation initiatives from requirements through production, supporting managers and directors through VP/SVP and C-suite leadership.",
-      "Built operational dashboards across agent, carrier, office, LTL, capacity, customer, and finance workflows, converting source data into KPIs, drilldowns, growth signals, risk flags, and exception monitoring.",
-      "Engineered multi-plan commission and payout systems spanning 1099, Boise, Mexico, Capacity, Operations Specialist, recruiter, and CAD workflows with snapshots, overrides, security, statements, reconciliation, and payroll controls.",
-      "Developed cash forecasting, customer-aging, financial-variance, currency, and processing analytics to improve visibility into payment timing, payout accuracy, and operational performance."
+      "Own 30+ BI, financial analytics, commission, and automation projects from requirements through production, working with managers, directors, VPs, SVPs, and C-suite leaders.",
+      "Built Sigma and Snowflake dashboards for agent, carrier, office, capacity, customer, LTL, and finance teams with KPIs, drilldowns, trends, and exception views.",
+      "Built commission and payout workflows for multiple plans, including snapshots, overrides, row-level security, statements, reconciliation, and payroll controls."
     ],
     "Cooper University Hospital":[
-      "Built an auto-updating company/team/individual performance dashboard; the prior resume documented a 2–3% improvement across teams after deployment.",
-      "Developed a partner-hospital capacity model using appointment availability to support partnership, staffing, and operational decisions."
+      "Built an auto-updating performance dashboard with company, team, and individual views; the prior resume documented a 2–3% improvement across teams after rollout.",
+      "Built a partner-hospital capacity model using appointment availability to support staffing and partnership decisions."
     ],
     "2U, Inc.":[
-      "Mentored data bootcamp cohorts and capstone teams across Python, SQL, Tableau, machine learning, and data applications through office hours and technical troubleshooting.",
-      "Provided substitute instruction across JavaScript, React, MERN, ORM, HTML/CSS/Git, databases, and related development topics."
+      "Helped data bootcamp students with Python, SQL, Tableau, machine learning, and project troubleshooting through office hours and one-on-one support.",
+      "Mentored capstone teams and provided substitute instruction across JavaScript, React, MERN, databases, HTML/CSS, Git, and related development topics."
     ],
     "UNC Charlotte":[
-      "Supported approximately 110 students in Intro to Data Science & Sociology through grading, office hours, and technical feedback within an eight-person instructional team."
+      "Supported about 110 students in Intro to Data Science & Sociology through grading, office hours, and one-on-one technical feedback."
     ]
   };
 
@@ -480,90 +710,161 @@
 
   function renderTemplate(){
     doc.className='resume-document template-'+template;
-
-    if(template==='onyx'){
-      layout.innerHTML=headerHTML()+summaryHTML()+experienceHTML()+projectsHTML()+educationHTML()+skillsHTML()+additionalHTML();
-    }
-
-    if(template==='scizor'){
-      layout.innerHTML=headerHTML('scizor')+summaryHTML()+experienceHTML()+projectsHTML()+educationHTML()+skillsHTML()+additionalHTML();
-    }
+    const summary=summaryHTML();
+    const mainBody=summary+experienceHTML()+projectsHTML();
+    const sideBody=skillsHTML()+educationHTML()+additionalHTML();
+    const fullHeader=headerHTML();
 
     if(template==='azurill'){
-      layout.innerHTML=headerHTML()+
-        '<div class="resume-columns"><aside class="resume-sidebar">'+skillsHTML()+educationHTML()+additionalHTML()+'</aside>'+
-        '<main class="resume-main">'+summaryHTML()+experienceHTML()+projectsHTML()+'</main></div>';
+      layout.innerHTML=fullHeader+'<div class="resume-columns"><aside class="resume-sidebar">'+sideBody+'</aside><main class="resume-main">'+mainBody+'</main></div>';
     }
-
     if(template==='bronzor'){
-      layout.innerHTML=headerHTML()+summaryHTML()+experienceHTML()+projectsHTML()+educationHTML()+skillsHTML()+additionalHTML();
+      layout.innerHTML=fullHeader+'<div class="resume-columns"><main class="resume-main">'+mainBody+'</main><aside class="resume-sidebar">'+sideBody+'</aside></div>';
     }
-
     if(template==='chikorita'){
-      layout.innerHTML=
-        '<main class="resume-main-panel">'+headerHTML()+summaryHTML()+experienceHTML()+projectsHTML()+'</main>'+
-        '<aside class="resume-side-panel">'+skillsHTML()+educationHTML()+additionalHTML()+'</aside>';
+      layout.innerHTML='<div class="resume-columns"><main class="resume-main">'+fullHeader+mainBody+'</main><aside class="resume-sidebar">'+sideBody+'</aside></div>';
     }
-
     if(template==='ditgar'){
-      layout.innerHTML=
-        '<aside class="resume-side-panel"><div class="resume-side-header">'+headerHTML()+'</div><div class="resume-side-content">'+skillsHTML()+educationHTML()+additionalHTML()+'</div></aside>'+
-        '<main class="resume-main-panel">'+summaryHTML(false)+experienceHTML()+projectsHTML()+'</main>';
+      layout.innerHTML='<div class="resume-columns"><aside class="resume-sidebar"><div class="resume-side-header">'+fullHeader+'</div><div class="resume-side-content">'+sideBody+'</div></aside><main class="resume-main">'+summaryHTML(false)+experienceHTML()+projectsHTML()+'</main></div>';
     }
-
     if(template==='ditto'){
-      layout.innerHTML=headerHTML()+
-        '<div class="resume-columns"><aside class="resume-sidebar">'+educationHTML()+skillsHTML()+additionalHTML()+'</aside>'+
-        '<main class="resume-main">'+summaryHTML()+experienceHTML()+projectsHTML()+'</main></div>';
+      layout.innerHTML=fullHeader+'<div class="resume-columns"><aside class="resume-sidebar">'+sideBody+'</aside><main class="resume-main">'+mainBody+'</main></div>';
     }
-
     if(template==='gengar'){
-      layout.innerHTML=
-        '<aside class="resume-side-panel"><div class="resume-side-header">'+headerHTML()+'</div><div class="resume-side-content">'+skillsHTML()+educationHTML()+additionalHTML()+'</div></aside>'+
-        '<main class="resume-main-panel">'+summaryHTML(false)+experienceHTML()+projectsHTML()+'</main>';
+      layout.innerHTML='<div class="resume-columns"><aside class="resume-sidebar"><div class="resume-side-header">'+fullHeader+'</div><div class="resume-side-content">'+sideBody+'</div></aside><main class="resume-main">'+summaryHTML(false)+experienceHTML()+projectsHTML()+'</main></div>';
     }
-
     if(template==='glalie'){
-      layout.innerHTML=
-        '<aside class="resume-side-panel"><div class="resume-side-header">'+headerHTML()+'</div>'+skillsHTML()+educationHTML()+additionalHTML()+'</aside>'+
-        '<main class="resume-main-panel">'+summaryHTML()+experienceHTML()+projectsHTML()+'</main>';
+      layout.innerHTML='<div class="resume-columns"><aside class="resume-sidebar">'+fullHeader+sideBody+'</aside><main class="resume-main">'+mainBody+'</main></div>';
     }
-
     if(template==='kakuna'){
-      layout.innerHTML=headerHTML()+summaryHTML()+experienceHTML()+projectsHTML()+educationHTML()+skillsHTML()+additionalHTML();
+      layout.innerHTML=fullHeader+'<div class="resume-columns"><main class="resume-main">'+mainBody+'</main><aside class="resume-sidebar">'+sideBody+'</aside></div>';
     }
-
     if(template==='lapras'){
-      layout.innerHTML=headerHTML()+summaryHTML()+experienceHTML()+projectsHTML()+educationHTML()+skillsHTML()+additionalHTML();
+      layout.innerHTML=fullHeader+'<div class="resume-columns"><main class="resume-main">'+mainBody+'</main><aside class="resume-sidebar">'+sideBody+'</aside></div>';
     }
-
     if(template==='leafish'){
-      layout.innerHTML=
-        '<div class="resume-header-intro"><div class="resume-header">'+
-          '<div class="resume-header-main"><div class="resume-header-name">'+escapeHTML(d.profile.name.toUpperCase())+'</div><div class="resume-headline">'+escapeHTML(d.resume.headline)+'</div></div>'+
-          '<div class="resume-header-summary resume-summary">'+escapeHTML(customSummary)+'</div>'+
-        '</div></div>'+
-        '<div class="resume-contact-band">'+contactHTML()+'</div>'+
-        '<div class="resume-columns"><main class="resume-main">'+experienceHTML()+projectsHTML()+'</main><aside class="resume-sidebar">'+skillsHTML()+educationHTML()+additionalHTML()+'</aside></div>';
+      layout.innerHTML='<div class="resume-header-intro"><div class="resume-header">'+photoHTML('round')+'<div class="resume-header-main"><div class="resume-header-name">'+escapeHTML(d.profile.name.toUpperCase())+'</div><div class="resume-headline">'+escapeHTML(d.resume.headline)+'</div></div><div class="resume-header-summary resume-summary">'+escapeHTML(customSummary)+'</div></div></div><div class="resume-contact-band">'+contactHTML()+'</div><div class="resume-columns"><main class="resume-main">'+experienceHTML()+projectsHTML()+'</main><aside class="resume-sidebar">'+sideBody+'</aside></div>';
     }
-
     if(template==='meowth'){
-      layout.innerHTML=headerHTML()+summaryHTML()+experienceHTML()+projectsHTML()+educationHTML()+skillsHTML()+additionalHTML();
+      layout.innerHTML=fullHeader+'<div class="resume-columns"><aside class="resume-sidebar">'+sideBody+'</aside><main class="resume-main">'+mainBody+'</main></div>';
     }
-
+    if(template==='onyx'){
+      layout.innerHTML=fullHeader+'<div class="resume-columns"><main class="resume-main">'+mainBody+'</main><aside class="resume-sidebar">'+sideBody+'</aside></div>';
+    }
     if(template==='pikachu'){
-      layout.innerHTML=
-        '<div class="resume-columns"><aside class="resume-sidebar">'+skillsHTML()+educationHTML()+additionalHTML()+'</aside>'+
-        '<main class="resume-main"><div class="resume-main-header">'+headerHTML()+'</div>'+summaryHTML()+experienceHTML()+projectsHTML()+'</main></div>';
+      layout.innerHTML='<div class="resume-columns"><aside class="resume-sidebar">'+sideBody+'</aside><main class="resume-main"><div class="resume-main-header">'+fullHeader+'</div>'+mainBody+'</main></div>';
     }
-
     if(template==='rhyhorn'){
-      layout.innerHTML=headerHTML()+summaryHTML()+experienceHTML()+projectsHTML()+educationHTML()+skillsHTML()+additionalHTML();
+      layout.innerHTML=fullHeader+'<div class="resume-columns"><main class="resume-main">'+mainBody+'</main><aside class="resume-sidebar">'+sideBody+'</aside></div>';
+    }
+    if(template==='scizor'){
+      layout.innerHTML=headerHTML('scizor')+'<div class="resume-columns"><aside class="resume-sidebar">'+sideBody+'</aside><main class="resume-main">'+mainBody+'</main></div>';
     }
 
     styleSelect.value=template;
     localStorage.setItem('resumeStyleV4',template);
-    
+  }
+
+  const photoDb=()=>new Promise((resolve,reject)=>{
+    const req=indexedDB.open('portfolioResumePhotos',1);
+    req.onupgradeneeded=()=>{const db=req.result;if(!db.objectStoreNames.contains('photos'))db.createObjectStore('photos',{keyPath:'id'});};
+    req.onsuccess=()=>resolve(req.result);
+    req.onerror=()=>reject(req.error);
+  });
+
+  async function getPhotos(){
+    const db=await photoDb();
+    return new Promise((resolve,reject)=>{
+      const req=db.transaction('photos','readonly').objectStore('photos').getAll();
+      req.onsuccess=()=>resolve(req.result.sort((a,b)=>b.createdAt-a.createdAt));
+      req.onerror=()=>reject(req.error);
+    });
+  }
+
+  async function savePhoto(photo){
+    const db=await photoDb();
+    return new Promise((resolve,reject)=>{
+      const req=db.transaction('photos','readwrite').objectStore('photos').put(photo);
+      req.onsuccess=()=>resolve();
+      req.onerror=()=>reject(req.error);
+    });
+  }
+
+  async function removePhoto(id){
+    const db=await photoDb();
+    return new Promise((resolve,reject)=>{
+      const req=db.transaction('photos','readwrite').objectStore('photos').delete(id);
+      req.onsuccess=()=>resolve();
+      req.onerror=()=>reject(req.error);
+    });
+  }
+
+  function fileToDataUrl(file){
+    return new Promise((resolve,reject)=>{
+      const reader=new FileReader();
+      reader.onload=()=>resolve(reader.result);
+      reader.onerror=()=>reject(reader.error);
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function refreshPhotoLibrary(){
+    photos=await getPhotos();
+    const selected=photos.find(x=>x.id===selectedPhotoId);
+    if(!selected && selectedPhotoId){
+      selectedPhotoId='';
+      localStorage.removeItem('resumeSelectedPhotoId');
+    }
+    const active=photos.find(x=>x.id===selectedPhotoId);
+    selectedPhotoUrl=active?.dataUrl||'';
+    document.getElementById('selectedPhotoName').textContent=active?.name||'No photo';
+    const thumb=document.getElementById('selectedPhotoThumb');
+    thumb.className='photo-thumb'+(active?'':' empty');
+    thumb.innerHTML=active?'':'＋';
+    thumb.style.backgroundImage=active?'url("'+active.dataUrl+'")':'';
+    thumb.style.backgroundSize='cover';
+    thumb.style.backgroundPosition='center';
+    photoMenu.innerHTML=
+      '<div class="photo-choice"><button class="photo-choice-main" data-photo-select="" type="button"><span class="photo-thumb empty">∅</span><span>No photo</span></button><span></span></div>'+
+      photos.map(p=>'<div class="photo-choice"><button class="photo-choice-main" data-photo-select="'+p.id+'" type="button"><img class="photo-thumb" src="'+p.dataUrl+'" alt=""><span>'+escapeHTML(p.name)+'</span></button><button class="photo-delete" data-photo-delete="'+p.id+'" type="button" aria-label="Delete '+escapeHTML(p.name)+'">🗑</button></div>').join('');
+    renderTemplate();
+  }
+
+  async function addPhotoFile(file){
+    if(!file)return;
+    if(!/^image\/(png|jpeg|webp)$/.test(file.type)){alert('Please choose a PNG, JPG, or WebP image.');return;}
+    if(file.size>8*1024*1024){alert('Please choose an image smaller than 8 MB.');return;}
+    const dataUrl=await fileToDataUrl(file);
+    const photo={id:'photo-'+Date.now()+'-'+Math.random().toString(36).slice(2,8),name:file.name,dataUrl,createdAt:Date.now()};
+    await savePhoto(photo);
+    selectedPhotoId=photo.id;
+    localStorage.setItem('resumeSelectedPhotoId',selectedPhotoId);
+    await refreshPhotoLibrary();
+  }
+
+  function downloadBlob(name,type,content){
+    const blob=content instanceof Blob?content:new Blob([content],{type});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),1500);
+  }
+
+  function exportStyles(){
+    return [...document.querySelectorAll('style')].map(s=>s.textContent).join('\n');
+  }
+
+  function exportWord(){
+    const html='<!doctype html><html><head><meta charset="utf-8"><style>'+exportStyles()+
+      'html,body{margin:0;background:#fff}.resume-document{transform:none!important;box-shadow:none!important;margin:0 auto!important}</style></head><body>'+
+      '<article class="'+doc.className+'" style="--resume-accent:'+getComputedStyle(root).getPropertyValue('--resume-accent')+'"><div class="resume-layout">'+layout.innerHTML+'</div></article></body></html>';
+    downloadBlob('Hemanth_Velan_Resume_'+template+'.doc','application/msword;charset=utf-8',html);
+  }
+
+  function exportHtml(){
+    const html='<!doctype html><html><head><meta charset="utf-8"><style>'+exportStyles()+
+      'html,body{margin:0;background:#fff}.resume-document{transform:none!important;box-shadow:none!important;margin:0 auto!important}</style></head><body>'+
+      '<article class="'+doc.className+'"><div class="resume-layout">'+layout.innerHTML+'</div></article></body></html>';
+    downloadBlob('Hemanth_Velan_Resume_'+template+'.html','text/html;charset=utf-8',html);
   }
 
   function fitSpacing(){
@@ -611,23 +912,62 @@
   document.getElementById('fitPage').onclick=fitPage;
   document.getElementById('fitWidth').onclick=fitWidth;
   document.getElementById('printResume').onclick=()=>{autoFitContent();setTimeout(()=>window.print(),50)};
+  document.getElementById('exportPdf').onclick=()=>{exportMenu.hidden=true;autoFitContent();setTimeout(()=>window.print(),50)};
+  document.getElementById('exportWord').onclick=()=>{exportMenu.hidden=true;exportWord()};
+  document.getElementById('exportHtml').onclick=()=>{exportMenu.hidden=true;exportHtml()};
+  document.getElementById('exportToggle').onclick=()=>{
+    exportMenu.hidden=!exportMenu.hidden;
+    document.getElementById('exportToggle').setAttribute('aria-expanded',String(!exportMenu.hidden));
+  };
   document.getElementById('themeToggle').onclick=()=>{
     const next=root.dataset.theme==='dark'?'light':'dark';
     root.dataset.theme=next;localStorage.setItem('portfolioTheme',next);
   };
-  document.getElementById('summaryToggle').onclick=()=>panel.classList.toggle('open');
+  document.getElementById('summaryToggle').onclick=()=>{panel.classList.toggle('open');photoPanel.classList.remove('open')};
   document.getElementById('summaryClose').onclick=()=>panel.classList.remove('open');
   document.getElementById('summaryDone').onclick=()=>{setSummary(summaryInput.value);panel.classList.remove('open')};
   document.getElementById('summaryReset').onclick=()=>{localStorage.removeItem('resumeCustomSummary');setSummary(defaultSummary,false)};
   summaryInput.addEventListener('input',()=>{customSummary=summaryInput.value.trim()||defaultSummary;localStorage.setItem('resumeCustomSummary',summaryInput.value);renderTemplate()});
+  document.getElementById('photoToggle').onclick=()=>{photoPanel.classList.toggle('open');panel.classList.remove('open')};
+  document.getElementById('photoClose').onclick=()=>photoPanel.classList.remove('open');
+  document.getElementById('photoDone').onclick=()=>photoPanel.classList.remove('open');
+  document.getElementById('addPhoto').onclick=()=>photoUpload.click();
+  photoUpload.onchange=async()=>{await addPhotoFile(photoUpload.files?.[0]);photoUpload.value=''};
+  photoPickerButton.onclick=()=>{photoMenu.hidden=!photoMenu.hidden;photoPickerButton.setAttribute('aria-expanded',String(!photoMenu.hidden))};
+  photoMenu.onclick=async(e)=>{
+    const del=e.target.closest('[data-photo-delete]');
+    if(del){
+      e.stopPropagation();
+      const id=del.dataset.photoDelete;
+      await removePhoto(id);
+      if(selectedPhotoId===id){selectedPhotoId='';localStorage.removeItem('resumeSelectedPhotoId');}
+      await refreshPhotoLibrary();
+      photoMenu.hidden=false;
+      return;
+    }
+    const pick=e.target.closest('[data-photo-select]');
+    if(pick){
+      selectedPhotoId=pick.dataset.photoSelect||'';
+      if(selectedPhotoId)localStorage.setItem('resumeSelectedPhotoId',selectedPhotoId);else localStorage.removeItem('resumeSelectedPhotoId');
+      photoMenu.hidden=true;
+      await refreshPhotoLibrary();
+    }
+  };
   styleSelect.addEventListener('change',()=>{template=allowedTemplates.includes(styleSelect.value)?styleSelect.value:'onyx';renderTemplate()});
   window.addEventListener('resize',()=>{if(window.innerWidth<980)fitWidth()});
+  document.addEventListener('click',e=>{
+    if(!e.target.closest('.resume-toolbar-group'))exportMenu.hidden=true;
+    if(!e.target.closest('.photo-picker'))photoMenu.hidden=true;
+  });
 
-  root.dataset.theme=localStorage.getItem('portfolioTheme')||'dark';
-  if(!allowedTemplates.includes(template))template='onyx';
-  summaryInput.value=customSummary;
-  renderTemplate();
-  applyZoom();
+  async function boot(){
+    root.dataset.theme=localStorage.getItem('portfolioTheme')||'dark';
+    if(!allowedTemplates.includes(template))template='onyx';
+    summaryInput.value=customSummary;
+    await refreshPhotoLibrary();
+    applyZoom();
+  }
+  boot();
 })();
 </script>
 </body>
