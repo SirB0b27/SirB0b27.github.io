@@ -69,7 +69,10 @@
       --section-title:13pt;
       font-size:11pt;
       line-height:1.08;
-      width:100%;min-height:100%;
+      width:calc(100% / var(--resume-content-scale,1));
+      min-height:calc(100% / var(--resume-content-scale,1));
+      transform:scale(var(--resume-content-scale,1));
+      transform-origin:top left;
     }
     .resume-section{break-inside:avoid}
     .resume-section-title{
@@ -428,6 +431,11 @@
     .template-scizor .resume-photo{border-radius:0}.template-scizor .resume-columns{grid-template-columns:29% 1fr;gap:.2in}
     .template-scizor .resume-section{border-top:1px solid #d8dce2;padding-top:.07in}.template-scizor .resume-section-title{color:#15171a}
 
+    .resume-compact-fit .resume-section{margin-bottom:.09in}
+    .resume-compact-fit .resume-item{margin-bottom:.075in}
+    .resume-compact-fit .resume-item li{line-height:1.36;margin-bottom:.025in}
+    .resume-compact-fit .resume-project{margin-bottom:.055in}
+    .resume-compact-fit .resume-summary{line-height:1.42}
     .resume-toolbar-group{position:relative}
     .resume-menu{
       position:absolute;right:0;top:calc(100% + 6px);z-index:80;min-width:190px;padding:6px;
@@ -483,6 +491,11 @@
       .resume-document{
         width:8.5in!important;height:11in!important;min-width:8.5in!important;min-height:11in!important;
         box-shadow:none!important;transform:none!important;margin:0!important;overflow:hidden!important
+      }
+      .resume-layout{
+        transform:scale(var(--resume-content-scale,1))!important;
+        transform-origin:top left!important;
+        width:calc(100% / var(--resume-content-scale,1))!important;
       }
       @page{size:Letter;margin:0}
     }
@@ -614,11 +627,7 @@
     '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
   }[ch]));
 
-  const contactHTML=()=>[
-    '<a class="resume-link" href="'+escapeHTML(d.profile.github)+'" target="_blank" rel="noopener">github.com/SirB0b27</a>',
-    '<a class="resume-link" href="'+escapeHTML(d.profile.linkedin)+'" target="_blank" rel="noopener">linkedin.com/in/hemanthvelan27</a>',
-    escapeHTML(d.profile.location)
-  ].join(' • ');
+  const contactHTML=()=>escapeHTML(d.profile.location);
 
   const photoHTML=(shape='round')=>selectedPhotoUrl
     ? '<img class="resume-photo '+shape+'" src="'+selectedPhotoUrl+'" alt="Profile photo">'
@@ -667,9 +676,9 @@
 
   const resumeProjectIds=["commission-platform","agent-operations-dashboard","cash-forecasting"];
   const resumeProjectImpact={
-    "commission-platform":"Unified multiple compensation workflows into a controlled payout platform with snapshots, security, statements, overrides, reconciliation, and payroll support.",
-    "agent-operations-dashboard":"Modernized legacy agent-performance reporting into Sigma/Snowflake with current roster logic, KPI drilldowns, and growth-oriented operational views.",
-    "cash-forecasting":"Modeled DSO and customer payment behavior to estimate expected payment timing and forecast unpaid invoiced cash for finance planning."
+    "commission-platform":"Built a multi-plan payout platform with snapshots, security, overrides, reconciliation, and payroll support.",
+    "agent-operations-dashboard":"Moved agent-performance reporting into Sigma/Snowflake with roster logic, KPI drilldowns, and growth views.",
+    "cash-forecasting":"Used DSO and payment patterns to forecast unpaid invoice timing for finance planning."
   };
 
   const projectsHTML=()=>{
@@ -764,6 +773,7 @@
 
     styleSelect.value=template;
     localStorage.setItem('resumeStyleV4',template);
+    requestAnimationFrame(autoFitContent);
   }
 
   const photoDb=()=>new Promise((resolve,reject)=>{
@@ -851,6 +861,7 @@
   }
 
   function exportStyles(){
+    autoFitContent();
     return [...document.querySelectorAll('style')].map(s=>s.textContent).join('\n');
   }
 
@@ -892,7 +903,7 @@
     const headerParts=[
       odfParagraph(d.profile.name.toUpperCase(),'Name'),
       odfParagraph(d.resume.headline,'Headline'),
-      odfParagraph([d.profile.location,'github.com/SirB0b27','linkedin.com/in/hemanthvelan27'].join(' • '),'Contact')
+      odfParagraph(d.profile.location,'Contact')
     ];
     if(selectedPhotoUrl){
       const base64=selectedPhotoUrl.split(',')[1]||'';
@@ -962,11 +973,40 @@
   }
 
   function fitSpacing(){
-    // Resume spacing is intentionally fixed across templates.
+    autoFitContent();
   }
 
   function autoFitContent(){
-    // Content is curated to fit one page without changing document spacing.
+    // Start at full template size. Only reduce the inner document when content would
+    // otherwise cross the bottom edge of the Letter page.
+    let scale=1;
+    const targetHeight=doc.clientHeight-2;
+
+    for(let i=0;i<14;i++){
+      root.style.setProperty('--resume-content-scale',scale.toFixed(4));
+      // Force layout so scrollHeight reflects the wider inverse-scaled content width.
+      void layout.offsetHeight;
+      const visualHeight=layout.scrollHeight*scale;
+      if(visualHeight<=targetHeight)break;
+      const next=Math.min(scale-.01,scale*(targetHeight/visualHeight)*.992);
+      scale=Math.max(.86,next);
+      if(scale<=.86)break;
+    }
+
+    root.style.setProperty('--resume-content-scale',scale.toFixed(4));
+    void layout.offsetHeight;
+
+    // If a template still overflows at the readability floor, loosen only the
+    // high-density spacing rather than hiding content.
+    const stillOver=layout.scrollHeight*scale>targetHeight+1;
+    doc.classList.toggle('resume-compact-fit',stillOver);
+    if(stillOver){
+      scale=.84;
+      root.style.setProperty('--resume-content-scale',scale.toFixed(4));
+      void layout.offsetHeight;
+    }
+
+    return scale;
   }
 
   function applyZoom(){
@@ -1060,6 +1100,8 @@
     if(!allowedTemplates.includes(template))template='onyx';
     summaryInput.value=customSummary;
     await refreshPhotoLibrary();
+    if(document.fonts?.ready)await document.fonts.ready;
+    autoFitContent();
     applyZoom();
   }
   boot();
