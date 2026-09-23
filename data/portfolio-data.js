@@ -3,7 +3,7 @@ window.PORTFOLIO_DATA = {
     name: "Hemanth Velan",
     title: "Business Intelligence Analyst",
     location: "New Jersey",
-    summary: "Business intelligence and analytics professional with experience owning production reporting, operational dashboards, commission systems, financial analytics, forecasting, data quality controls, API-based automation, and technical documentation across logistics, healthcare, and education environments.",
+    summary: "Business intelligence and analytics professional with experience building production reports, dashboards, commission systems, financial analytics, forecasts, automation, and technical documentation across logistics, healthcare, and education.",
     github: "https://github.com/SirB0b27",
     linkedin: "https://www.linkedin.com/in/hemanthvelan27"
   },
@@ -23,13 +23,13 @@ window.PORTFOLIO_DATA = {
       location:"United States",
       tags:["SQL","Snowflake","Sigma","Python","REST APIs","Automation","Financial Analytics","Data Modeling","Business Intelligence"],
       bullets:[
-        "Own end-to-end analytics initiatives from requirements and business-rule discovery through SQL/Snowflake modeling, QA, stakeholder review, rollout, documentation, and long-term maintenance.",
-        "Serve as sole developer or primary technical owner for major dashboards, financial analytics, automation, and commission initiatives supporting stakeholders from managers and directors through VP/SVP and C-suite leadership.",
-        "Build commission reporting and payout systems spanning multiple plan types, business-rule logic, historical snapshots, overrides, row-level security, statements, pay-cycle controls, and reconciliation.",
-        "Create financial and operational analytics that turn settlement, payment, customer, coverage, quote, and usage data into KPIs, forecasts, exception views, opportunity signals, and management decision support.",
-        "Automate approved API-based and scheduled data workflows with Python, structured exports, validation controls, historical backfills, and downstream BI reporting.",
-        "Develop Sigma dashboards and Snowflake models that translate business questions into measurable KPIs, drilldowns, segmentation, trend analysis, and actionable operational views.",
-        "Create process maps and technical documentation that make complex joins, business rules, security logic, snapshots, and downstream calculations maintainable for future developers."
+        "Own analytics projects from requirements and business-rule discussions through SQL/Snowflake development, QA, stakeholder review, rollout, documentation, and ongoing support.",
+        "Serve as the sole developer or main technical owner for major dashboards, financial analytics, automation, and commission work used by managers, directors, VPs, SVPs, and C-suite leaders.",
+        "Build commission reporting and payout systems for multiple plans, including business rules, historical snapshots, overrides, row-level security, statements, pay-cycle controls, and reconciliation.",
+        "Build financial and operational analytics from settlement, payment, customer, coverage, quote, and usage data, with KPIs, forecasts, exception views, and management reporting.",
+        "Automate API and scheduled data workflows with Python, structured exports, validation checks, historical backfills, and downstream BI reporting.",
+        "Build Sigma dashboards and Snowflake models that turn business questions into KPIs, drilldowns, segments, trends, and operational views.",
+        "Create process maps and technical documentation so future developers can follow the joins, business rules, security logic, snapshots, and downstream calculations."
       ]
     },
     {
@@ -695,7 +695,7 @@ window.PORTFOLIO_DATA = {
 
   resume:{
     headline:"Business Intelligence Analyst | Data, Analytics Engineering & Automation",
-    summary:"Business Intelligence Analyst with 3+ years owning analytics, dashboard, financial-control, and automation initiatives from requirements through production. Delivered major data products for managers, directors, VP/SVP leaders, and C-suite executives using SQL, Snowflake, Sigma, and Python, with strengths in business process analysis, financial analytics, data modeling, QA, and decision support.",
+    summary:"Business Intelligence Analyst with 3+ years building dashboards, financial analytics, commission systems, forecasts, and automation from requirements through production. I work mainly with SQL, Snowflake, Sigma, and Python, and I have owned large projects used by managers, directors, VPs, SVPs, and C-suite leaders. My focus is making complicated business rules easier to understand, test, and maintain.",
     featuredProjectIds:["commission-platform","cash-forecasting","agent-operations-dashboard","financial-auto-processing"],
     skills:[
       {label:"Analytics & BI",value:"Data Analysis, Business Intelligence, Sigma, Tableau, Power BI, Forecasting, KPI Design, Dashboard Design, Reconciliation, Decision Support"},
