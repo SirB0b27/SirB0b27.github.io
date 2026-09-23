@@ -22,7 +22,9 @@
       --resume-accent:#0084d1;
       --resume-muted:#59606b;
       --resume-divider:#d7dbe2;
+      --resume-sidebar-tint:#e9f5fb;
     }
+
     body{overflow-x:hidden}
     .resume-page-shell{min-height:100vh;background:var(--bg)}
     .resume-page-topbar{
@@ -34,456 +36,402 @@
     .resume-page-tools{display:flex;align-items:center;justify-content:flex-end;gap:6px;flex-wrap:wrap}
     .resume-page-tools select{
       height:32px;border:1px solid var(--line);border-radius:7px;background:var(--panel);
-      color:var(--text);padding:0 9px;font-size:11px;max-width:210px
+      color:var(--text);padding:0 9px;font-size:11px;max-width:190px
     }
     .resume-zoom-readout{font-size:11px;color:var(--muted);min-width:44px;text-align:center}
     .rr-credit{font-size:9px;color:var(--muted);white-space:nowrap}
     .resume-page-body{padding:12px 20px 40px}
-    .resume-customizer{
+
+    .resume-customizer,.photo-library{
       max-width:980px;margin:0 auto 12px;background:var(--panel);border:1px solid var(--line);
       border-radius:10px;padding:12px;display:none
     }
-    .resume-customizer.open{display:block}
-    .resume-customizer-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:8px}
+    .resume-customizer.open,.photo-library.open{display:block}
+    .resume-customizer-head,.photo-library-head{
+      display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:8px
+    }
     .resume-customizer-title{font-size:12px;font-weight:750}
     .resume-customizer textarea{
       width:100%;min-height:96px;resize:vertical;background:var(--panel-2);color:var(--text);
       border:1px solid var(--line);border-radius:7px;padding:9px 10px;font-size:11px;line-height:1.45
     }
-    .resume-customizer-actions{display:flex;justify-content:flex-end;gap:7px;margin-top:8px}
+    .resume-customizer-actions,.photo-library-actions{
+      display:flex;justify-content:flex-end;gap:7px;margin-top:8px
+    }
 
-    /* No dashboard cell around the resume: the page sits directly on the site background. */
     .resume-page-stage{
       display:flex;justify-content:center;align-items:flex-start;overflow:visible;
-      padding:14px 0 70px;background:transparent;border:0;border-radius:0;min-height:calc(100vh - 70px)
+      padding:14px 0 70px;background:transparent;border:0;min-height:calc(100vh - 70px)
     }
     .resume-document{
       width:8.5in;height:11in;min-width:8.5in;min-height:11in;
       background:#fff;color:#111;box-shadow:0 10px 34px rgba(0,0,0,.22);
       transform:scale(var(--resume-preview-scale));transform-origin:top center;
-      font-family:Arial,Helvetica,sans-serif;overflow:hidden;
+      overflow:hidden;font-family:"IBM Plex Serif",Georgia,serif;
       -webkit-print-color-adjust:exact;print-color-adjust:exact
     }
+    .resume-document *{box-sizing:border-box}
     .resume-layout{
-      --name-size:26pt;
-      --section-title:13pt;
-      font-size:11pt;
-      line-height:1.08;
       width:calc(100% / var(--resume-content-scale,1));
       min-height:calc(100% / var(--resume-content-scale,1));
       transform:scale(var(--resume-content-scale,1));
       transform-origin:top left;
-    }
-    .resume-section{break-inside:avoid}
-    .resume-section-title{
-      font-size:var(--section-title);
-      line-height:1.1;font-weight:800;text-transform:uppercase;letter-spacing:.07em;
-      margin:0 0 .025in
-    }
-    .resume-header-name{
-      font-size:var(--name-size);
-      line-height:1;font-weight:800;letter-spacing:.025em
-    }
-    .resume-headline{font-size:11pt;font-weight:700;margin-top:.025in}
-    .resume-contact{font-size:11pt;color:#424750;margin-top:.025in;line-height:1.08}
-    .resume-summary{font-size:11pt;line-height:1.08}
-    .resume-item{margin-bottom:.04in;break-inside:avoid}
-    .resume-item:last-child{margin-bottom:0}
-    .resume-item-head{display:flex;justify-content:space-between;gap:.15in;font-weight:800;line-height:1.18}
-    .resume-item-sub{display:flex;justify-content:space-between;gap:.12in;color:#4d535c;font-size:11pt;margin-top:.008in}
-    .resume-item ul{margin:.015in 0 0 .15in;padding:0}
-    .resume-item li{margin:0 0 .005in}
-    .resume-project{margin-bottom:.035in;break-inside:avoid}
-    .resume-project:last-child{margin-bottom:0}
-    .resume-project-title{font-weight:800;line-height:1.16}
-    .resume-project-tech{font-size:.79em;color:#59606b;margin-top:.012in}
-    .resume-project-text{font-size:.88em;line-height:1.3;margin-top:.02in}
-    .resume-project-highlight{font-size:.84em;line-height:1.28;margin-top:.018in;color:#343941}
-    .resume-education-item{margin-bottom:.03in}
-    .resume-education-item:last-child{margin-bottom:0}
-    .resume-education-head{display:flex;justify-content:space-between;gap:.12in;font-weight:800}
-    .resume-education-sub{font-size:11pt;color:#4d535c;margin-top:.006in;line-height:1.06}
-    .resume-skill-line{font-size:11pt;line-height:1.06;margin:.006in 0}
-    .resume-small{font-size:11pt;line-height:1.06}
-    .resume-link{color:inherit;text-decoration:none}
-
-    /* ONYX — traditional single-column */
-    .template-onyx .resume-layout{padding:.34in .44in .32in}
-    .template-onyx .resume-header{
-      display:flex;justify-content:space-between;align-items:flex-end;gap:.2in;
-      border-bottom:2px solid var(--resume-accent);padding-bottom:.09in;margin-bottom:.1in
-    }
-    .template-onyx .resume-header-main{flex:1}
-    .template-onyx .resume-contact{text-align:right;max-width:2.45in;line-height:1.35}
-    .template-onyx .resume-section{margin-top:.105in}
-    .template-onyx .resume-section-title{color:#242832;border-bottom:1px solid var(--resume-divider);padding-bottom:.035in}
-
-    /* SCIZOR — linear modern layout with strong top rule */
-    .template-scizor .resume-layout{padding:.3in .44in .33in;border-top:.07in solid var(--resume-accent)}
-    .template-scizor .resume-header{padding-bottom:.1in}
-    .template-scizor .resume-header-name{font-size:29pt;max-width:70%}
-    .template-scizor .resume-name-rule{width:64%;border-bottom:3px solid #d8dce2;margin:.065in 0}
-    .template-scizor .resume-contact{display:flex;gap:.12in;flex-wrap:wrap;margin-top:.055in}
-    .template-scizor .resume-section{border-top:1px solid #d8dce2;padding-top:.085in;margin-top:.085in}
-    .template-scizor .resume-section-title{color:#15171a}
-
-    /* AZURILL — centered header + compact left sidebar */
-    .template-azurill .resume-layout{padding:.32in .4in}
-    .template-azurill .resume-header{text-align:center;margin-bottom:.12in}
-    .template-azurill .resume-contact{display:flex;justify-content:center;gap:.12in;flex-wrap:wrap}
-    .template-azurill .resume-columns{display:grid;grid-template-columns:31% 1fr;gap:.22in}
-    .template-azurill .resume-sidebar{border-right:1px solid #e0e3e7;padding-right:.16in}
-    .template-azurill .resume-main{padding-left:.01in}
-    .template-azurill .resume-section{margin-bottom:.105in}
-    .template-azurill .resume-section-title{color:var(--resume-accent)}
-    .template-azurill .resume-item{position:relative;padding-left:.11in;border-left:1px solid #c7cce0}
-    .template-azurill .resume-item:before{
-      content:"";position:absolute;left:-.035in;top:.055in;width:.06in;height:.06in;border-radius:50%;
-      background:#fff;border:1.4px solid var(--resume-accent)
-    }
-
-    /* CHIKORITA — main column with bold colored right sidebar */
-    .template-chikorita .resume-layout{
-      display:grid;grid-template-columns:70% 30%;padding:0;min-height:100%;
-      background:linear-gradient(to right,#fff 0,#fff 70%,var(--resume-accent) 70%,var(--resume-accent) 100%)
-    }
-    .template-chikorita .resume-main-panel{padding:.36in .28in .32in .42in}
-    .template-chikorita .resume-side-panel{padding:.36in .34in .32in .22in;color:#fff}
-    .template-chikorita .resume-header{margin-bottom:.12in}
-    .template-chikorita .resume-contact{display:flex;gap:.1in;flex-wrap:wrap}
-    .template-chikorita .resume-section{margin-bottom:.11in}
-    .template-chikorita .resume-main-panel .resume-section-title{
-      color:var(--resume-accent);border-bottom:1px solid var(--resume-accent);padding-bottom:.03in
-    }
-    .template-chikorita .resume-side-panel .resume-section-title{
-      color:#fff;border-bottom:1px solid rgba(255,255,255,.55);padding-bottom:.03in
-    }
-    .template-chikorita .resume-side-panel .resume-skill-line,
-    .template-chikorita .resume-side-panel .resume-small,
-    .template-chikorita .resume-side-panel .resume-education-sub{color:#fff}
-    .template-chikorita .resume-side-panel .resume-education-head{display:block}
-    .template-chikorita .resume-side-panel .resume-education-head span:last-child{display:block;font-size:.82em;margin-top:.015in}
-
-    /* DITTO — color band header + left information rail */
-    .template-ditto .resume-layout{padding:0}
-    .template-ditto .resume-header{
-      background:var(--resume-accent);color:#fff;padding:.28in .4in .24in;
-      display:flex;justify-content:space-between;gap:.25in;align-items:flex-end
-    }
-    .template-ditto .resume-contact{color:#fff;text-align:right;max-width:2.6in;line-height:1.35}
-    .template-ditto .resume-columns{display:grid;grid-template-columns:30% 1fr;gap:.22in;padding:.23in .4in .3in}
-    .template-ditto .resume-sidebar{padding-right:.12in}
-    .template-ditto .resume-main{padding-left:.02in}
-    .template-ditto .resume-section{margin-bottom:.105in}
-    .template-ditto .resume-section-title{color:var(--resume-accent)}
-
-    /* GENGAR — profile/sidebar column + main content */
-    .template-gengar .resume-layout{
-      display:grid;grid-template-columns:31% 69%;padding:0;min-height:100%;
-      background:linear-gradient(to right,#ecebff 0,#ecebff 31%,#fff 31%,#fff 100%)
-    }
-    .template-gengar .resume-side-panel{padding:0 0 .3in}
-    .template-gengar .resume-side-header{background:var(--resume-accent);color:#fff;padding:.36in .28in .28in}
-    .template-gengar .resume-side-header .resume-contact{color:#fff;line-height:1.45}
-    .template-gengar .resume-side-content{padding:.24in .25in}
-    .template-gengar .resume-main-panel{padding:.34in .4in .31in .31in}
-    .template-gengar .resume-main-panel .resume-featured-summary{
-      background:#ecebff;margin:-.34in -.4in .18in -.31in;padding:.28in .4in .22in .31in
-    }
-    .template-gengar .resume-section{margin-bottom:.11in}
-    .template-gengar .resume-section-title{
-      color:var(--resume-accent);border-bottom:1px solid var(--resume-accent);padding-bottom:.03in
-    }
-
-
-    /* BRONZOR — centered header with section labels in a left rail */
-    .template-bronzor .resume-layout{padding:.2in .3in}
-    .template-bronzor .resume-header{text-align:center;margin-bottom:.035in}
-    .template-bronzor .resume-contact{display:flex;justify-content:center;gap:.08in;flex-wrap:wrap}
-    .template-bronzor .resume-section{display:grid;grid-template-columns:21% 1fr;gap:.12in;border-top:1px solid var(--resume-accent);padding-top:.035in;margin-top:.045in}
-    .template-bronzor .resume-section-title{text-align:right;color:var(--resume-accent);margin:0}
-    .template-bronzor .resume-section-body{min-width:0}
-
-    /* DITGAR — colored identity/sidebar plus featured summary */
-    .template-ditgar .resume-layout{display:grid;grid-template-columns:30% 70%;padding:0;min-height:100%;background:linear-gradient(to right,#eeecff 0,#eeecff 30%,#fff 30%,#fff 100%)}
-    .template-ditgar .resume-side-panel{padding:0}
-    .template-ditgar .resume-side-header{background:var(--resume-accent);color:#fff;padding:.24in .18in .16in}
-    .template-ditgar .resume-side-header .resume-contact{color:#fff}
-    .template-ditgar .resume-side-content{padding:.14in .16in .2in}
-    .template-ditgar .resume-main-panel{padding:.2in .28in .2in .2in}
-    .template-ditgar .resume-featured-summary{background:#eeecff;margin:-.2in -.28in .06in -.2in;padding:.14in .28in .12in .2in}
-    .template-ditgar .resume-section-title{color:var(--resume-accent);border-bottom:1px solid var(--resume-accent);padding-bottom:.012in}
-    .template-ditgar .resume-main-panel .resume-item-head{border-left:3px solid var(--resume-accent);padding-left:.04in}
-
-    /* GLALIE — soft tinted sidebar with centered identity */
-    .template-glalie .resume-layout{display:grid;grid-template-columns:30% 70%;padding:0;min-height:100%;background:linear-gradient(to right,#efeff8 0,#efeff8 30%,#fff 30%,#fff 100%)}
-    .template-glalie .resume-side-panel{padding:.2in .16in;text-align:left}
-    .template-glalie .resume-side-header{text-align:center;margin-bottom:.05in}
-    .template-glalie .resume-side-header .resume-contact{border:1px solid var(--resume-accent);padding:.04in;margin-top:.04in;text-align:left}
-    .template-glalie .resume-main-panel{padding:.2in .26in .18in .18in}
-    .template-glalie .resume-section-title{border-bottom:1px solid var(--resume-accent);padding-bottom:.012in;color:var(--resume-accent)}
-
-    /* KAKUNA — centered identity and centered section headings */
-    .template-kakuna .resume-layout{padding:.2in .28in}
-    .template-kakuna .resume-header{text-align:center;margin-bottom:.03in}
-    .template-kakuna .resume-contact{display:flex;justify-content:center;gap:.08in;flex-wrap:wrap}
-    .template-kakuna .resume-section-title{text-align:center;color:var(--resume-accent);border-bottom:1px solid var(--resume-accent);padding-bottom:.012in}
-
-    /* LAPRAS — rounded card sections */
-    .template-lapras .resume-layout{padding:.17in .22in}
-    .template-lapras .resume-header,.template-lapras .resume-section{border:1px solid #cfd3da;border-radius:9px;background:#fff;padding:.055in .075in}
-    .template-lapras .resume-header{display:flex;justify-content:space-between;gap:.1in;align-items:center;margin-bottom:.055in}
-    .template-lapras .resume-contact{text-align:right;max-width:2.5in}
-    .template-lapras .resume-section{margin-top:.065in;position:relative}
-    .template-lapras .resume-section-title{display:inline-block;background:#fff;margin-top:-.12in;padding:0 .04in;color:var(--resume-accent)}
-
-    /* LEAFISH — tinted intro/header contact band plus two columns */
-    .template-leafish .resume-layout{padding:0}
-    .template-leafish .resume-header-intro{background:#f0efff;padding:.15in .25in .09in}
-    .template-leafish .resume-header{display:flex;justify-content:space-between;gap:.12in;align-items:flex-start}
-    .template-leafish .resume-header-summary{margin-top:.04in}
-    .template-leafish .resume-contact-band{background:#ddd9ff;padding:.05in .25in;display:flex;gap:.08in;flex-wrap:wrap}
-    .template-leafish .resume-columns{grid-template-columns:1fr 28%;gap:.12in;padding:.12in .25in .18in}
-    .template-leafish .resume-section-title{color:var(--resume-accent);border-bottom:1px solid var(--resume-accent);padding-bottom:.012in}
-
-    /* MEOWTH — clean single column with inline item headers */
-    .template-meowth .resume-layout{padding:.2in .28in}
-    .template-meowth .resume-header{display:flex;justify-content:space-between;gap:.12in;align-items:flex-start;margin-bottom:.03in}
-    .template-meowth .resume-contact{text-align:right;max-width:2.65in}
-    .template-meowth .resume-section-title{color:var(--resume-accent);border-bottom:1px solid var(--resume-accent);padding-bottom:.012in}
-
-    /* PIKACHU — left sidebar plus rounded accent identity card */
-    .template-pikachu .resume-layout{padding:.17in .22in}
-    .template-pikachu .resume-columns{grid-template-columns:28% 1fr;gap:.12in}
-    .template-pikachu .resume-main-header{background:var(--resume-accent);color:#fff;border-radius:9px;padding:.1in .12in;margin-bottom:.05in}
-    .template-pikachu .resume-main-header .resume-contact{color:#fff;border-top:1px solid rgba(255,255,255,.6);padding-top:.03in}
-    .template-pikachu .resume-section-title{color:var(--resume-accent);border-bottom:1px solid var(--resume-accent);padding-bottom:.012in}
-
-    /* RHYHORN — traditional header with visible contact separators */
-    .template-rhyhorn .resume-layout{padding:.2in .28in}
-    .template-rhyhorn .resume-header{display:flex;justify-content:space-between;gap:.12in;align-items:center;margin-bottom:.03in}
-    .template-rhyhorn .resume-contact{display:flex;gap:.07in;flex-wrap:wrap;justify-content:flex-end;max-width:3.2in}
-    .template-rhyhorn .resume-section-title{color:var(--resume-accent);border-bottom:1px solid var(--resume-accent);padding-bottom:.012in}
-
-    /* Reactive Resume source-aligned fidelity + readability pass.
-       Layout families follow the current upstream template structure while this static
-       portfolio keeps a single-page Letter resume and the user's own content. */
-    .resume-document{font-family:"IBM Plex Serif",Georgia,serif}
-    .resume-layout{
-      --name-size:24pt;--section-title:12pt;
       font-family:"IBM Plex Serif",Georgia,serif;
-      font-size:10pt;line-height:1.42;color:#111;
+      font-size:9.35pt;line-height:1.4;color:#111;
     }
-    .resume-section-title,.resume-header-name{
-      font-family:"Fira Sans Condensed","Arial Narrow",Arial,sans-serif;
+
+    .resume-columns{
+      display:grid;width:100%;min-width:0;align-items:start
     }
-    .resume-section{margin-bottom:.12in}
+    .resume-main,.resume-sidebar,.resume-header-main,.resume-side-content{min-width:0}
+    .resume-section{break-inside:avoid;margin:0 0 .105in}
     .resume-section:last-child{margin-bottom:0}
     .resume-section-title{
-      font-size:12pt;line-height:1.2;font-weight:600;letter-spacing:.035em;
-      margin:0 0 .055in;
+      font-family:"Fira Sans Condensed","Arial Narrow",Arial,sans-serif;
+      font-size:11.4pt;line-height:1.18;font-weight:600;text-transform:uppercase;
+      letter-spacing:.025em;margin:0 0 .05in;color:var(--resume-accent)
     }
-    .resume-header-name{font-size:24pt;line-height:1.15;font-weight:600;letter-spacing:.01em}
-    .resume-headline{font-size:10pt;line-height:1.35;font-weight:500;margin-top:.035in}
-    .resume-contact{font-size:8.8pt;line-height:1.4;margin-top:.045in}
+    .resume-header{
+      color:#111
+    }
+    .resume-header-name{
+      font-family:"Fira Sans Condensed","Arial Narrow",Arial,sans-serif;
+      font-size:23pt;line-height:1.08;font-weight:600;letter-spacing:.01em;
+      overflow-wrap:normal;word-break:normal;hyphens:none
+    }
+    .resume-headline{
+      font-size:9.4pt;line-height:1.32;font-weight:500;margin-top:.035in;
+      overflow-wrap:normal;word-break:normal;hyphens:none
+    }
+    .resume-contact{
+      font-size:8.6pt;line-height:1.35;color:#555d66;margin-top:.035in;
+      overflow-wrap:normal;word-break:normal;hyphens:none
+    }
     .resume-summary,.resume-item li,.resume-project-text,.resume-project-highlight{
-      text-align:justify;text-justify:inter-word;hyphens:auto;
+      text-align:justify;text-justify:inter-word;hyphens:none;word-break:normal;overflow-wrap:normal
     }
-    .resume-summary{font-size:9.7pt;line-height:1.48}
-    .resume-item{margin-bottom:.105in}
-    .resume-item-head{font-size:10pt;line-height:1.3;gap:.14in}
-    .resume-item-sub{font-size:8.7pt;line-height:1.35;margin-top:.025in}
-    .resume-item ul{margin:.045in 0 0 .17in;padding:0}
-    .resume-item li{font-size:9.1pt;line-height:1.42;margin:0 0 .035in;padding-left:.015in}
+    .resume-summary{font-size:9.25pt;line-height:1.43}
+    .resume-featured-summary{margin-bottom:.11in}
+    .resume-item{margin-bottom:.085in;break-inside:avoid}
+    .resume-item:last-child{margin-bottom:0}
+    .resume-item-head,.resume-education-head{
+      display:flex;justify-content:space-between;align-items:flex-start;gap:.11in;
+      font-weight:600;line-height:1.25
+    }
+    .resume-item-head{font-size:9.55pt}
+    .resume-item-head span:first-child,.resume-education-head span:first-child{min-width:0;flex:1}
+    .resume-item-head span:last-child,.resume-education-head span:last-child{flex:0 0 auto;white-space:nowrap}
+    .resume-item-sub{
+      display:flex;justify-content:space-between;gap:.1in;color:#5d6570;
+      font-size:8.1pt;line-height:1.3;margin-top:.018in
+    }
+    .resume-item-sub span:first-child{min-width:0;flex:1}
+    .resume-item-sub span:last-child{flex:0 0 auto;white-space:nowrap}
+    .resume-item ul{margin:.035in 0 0 .16in;padding:0}
+    .resume-item li{font-size:8.72pt;line-height:1.38;margin:0 0 .027in;padding-left:.01in}
     .resume-item li:last-child{margin-bottom:0}
-    .resume-project{margin-bottom:.085in}
-    .resume-project-title{font-size:9.7pt;line-height:1.3}
-    .resume-project-tech{font-size:8.2pt;line-height:1.35;margin-top:.018in}
-    .resume-project-text{font-size:8.9pt;line-height:1.42;margin-top:.025in}
-    .resume-education-item{margin-bottom:.07in}
-    .resume-education-head{font-size:9.3pt;line-height:1.32}
-    .resume-education-sub{font-size:8.4pt;line-height:1.38;margin-top:.018in}
-    .resume-skill-line,.resume-small{font-size:8.6pt;line-height:1.42;margin:.025in 0}
-    .resume-columns{display:grid;min-width:0}
-    .resume-main,.resume-sidebar,.resume-main-panel,.resume-side-panel{min-width:0}
+
+    .resume-project{margin-bottom:.066in;break-inside:avoid}
+    .resume-project:last-child{margin-bottom:0}
+    .resume-project-title{font-size:9.35pt;line-height:1.25;font-weight:600}
+    .resume-project-tech{font-size:7.85pt;line-height:1.3;color:#68717d;margin-top:.012in}
+    .resume-project-text{font-size:8.55pt;line-height:1.36;margin-top:.02in}
+    .resume-project-highlight{font-size:8.35pt;line-height:1.34;margin-top:.018in;color:#343941}
+
+    .resume-education-item{margin-bottom:.06in;break-inside:avoid}
+    .resume-education-item:last-child{margin-bottom:0}
+    .resume-education-head{font-size:8.9pt;line-height:1.28}
+    .resume-education-sub{font-size:8pt;line-height:1.33;color:#616975;margin-top:.014in}
+    .resume-skill-line,.resume-small{font-size:8.15pt;line-height:1.35;margin:.02in 0}
+    .resume-link{color:inherit;text-decoration:none}
+    .resume-sidebar .resume-education-head{display:block}
+    .resume-sidebar .resume-education-head span:last-child{
+      display:block;white-space:normal;margin-top:.012in;color:#59616c;font-size:.92em
+    }
+    .resume-sidebar .resume-item-sub{display:block}
+    .resume-sidebar .resume-summary,
+    .resume-sidebar .resume-skill-line,
+    .resume-sidebar .resume-small,
+    .resume-sidebar .resume-education-sub{
+      text-align:left;hyphens:none;word-break:normal;overflow-wrap:normal
+    }
+
     .resume-photo{
-      width:.82in;height:.82in;object-fit:cover;flex:0 0 auto;
-      border:0 solid var(--resume-accent);background:#eef1f4;
+      width:.78in;height:.78in;object-fit:cover;flex:0 0 auto;
+      border:1px solid var(--resume-accent);background:#eef1f4
     }
     .resume-photo.round{border-radius:50%}
-    .resume-photo.soft{border-radius:12px}
+    .resume-photo.soft{border-radius:10px}
     .resume-photo.square{border-radius:0}
 
-    /* Structural placement follows Reactive Resume's current template families. */
-    .template-azurill .resume-layout{padding:.28in .38in}
-    .template-azurill .resume-header{display:flex;align-items:center;gap:.16in;border:0;padding:0;margin-bottom:.14in}
-    .template-azurill .resume-header-main{flex:1}.template-azurill .resume-contact{text-align:left;max-width:none}
-    .template-azurill .resume-columns{grid-template-columns:30% 1fr;gap:.22in}
-    .template-azurill .resume-sidebar{border-right:1px solid #d5dbe1;padding-right:.16in}
-    .template-azurill .resume-main{padding-left:.01in}.template-azurill .resume-section-title{color:var(--resume-accent)}
-    .template-azurill .resume-photo{border-radius:50%;border-width:1px}
-
-    .template-bronzor .resume-layout{padding:.28in .36in}
-    .template-bronzor .resume-header{text-align:center;display:block;border:0;padding:0;margin-bottom:.12in}
-    .template-bronzor .resume-header .resume-photo{margin:0 auto .07in;border-radius:50%;border-width:1px}
-    .template-bronzor .resume-contact{text-align:center;max-width:none}
-    .template-bronzor .resume-columns{grid-template-columns:1fr 29%;gap:.22in}
-    .template-bronzor .resume-sidebar{padding-left:.16in}
-    .template-bronzor .resume-section{border-top:1px solid var(--resume-accent);padding-top:.055in}
-    .template-bronzor .resume-section-title{color:var(--resume-accent);font-size:10.5pt}
-
-    .template-chikorita .resume-layout{
-      padding:0;min-height:100%;background:linear-gradient(to right,#fff 0,#fff 70%,var(--resume-accent) 70%,var(--resume-accent) 100%);
+    /* Azurill — full header, left sidebar */
+    .template-azurill .resume-layout{padding:.3in .38in}
+    .template-azurill .resume-header{
+      display:flex;align-items:center;gap:.15in;padding-bottom:.1in;margin-bottom:.13in;
+      border-bottom:1px solid var(--resume-accent)
     }
-    .template-chikorita .resume-columns{grid-template-columns:70% 30%;gap:0;min-height:11in}
-    .template-chikorita .resume-main{padding:.32in .3in .3in .4in}
-    .template-chikorita .resume-sidebar{padding:.32in .28in .3in .22in;color:#fff}
-    .template-chikorita .resume-header{display:flex;align-items:flex-start;gap:.14in;border:0;padding:0;margin-bottom:.14in}
-    .template-chikorita .resume-header-main{flex:1}.template-chikorita .resume-contact{text-align:left;max-width:none}
-    .template-chikorita .resume-photo{border-radius:50%}
-    .template-chikorita .resume-main .resume-section-title{color:var(--resume-accent);border-bottom:1px solid var(--resume-accent);padding-bottom:.025in}
-    .template-chikorita .resume-sidebar .resume-section-title,.template-chikorita .resume-sidebar *{color:#fff!important}
-    .template-chikorita .resume-sidebar .resume-section-title{border-bottom:1px solid rgba(255,255,255,.55);padding-bottom:.025in}
+    .template-azurill .resume-columns{grid-template-columns:minmax(0,30%) minmax(0,1fr);gap:.2in}
+    .template-azurill .resume-sidebar{padding-right:.15in;border-right:1px solid #d6dce2}
+    .template-azurill .resume-main{padding-left:.01in}
+    .template-azurill .resume-item{position:relative;padding-left:.095in;border-left:1px solid #cbd4dd}
+    .template-azurill .resume-item:before{
+      content:"";position:absolute;left:-.031in;top:.05in;width:.056in;height:.056in;border-radius:50%;
+      background:#fff;border:1.2px solid var(--resume-accent)
+    }
 
-    .template-ditgar .resume-layout{padding:0;min-height:100%;background:linear-gradient(to right,#e8f5fb 0,#e8f5fb 30%,#fff 30%,#fff 100%)}
-    .template-ditgar .resume-columns{grid-template-columns:30% 70%;gap:0;min-height:11in}
-    .template-ditgar .resume-sidebar{padding:0}
-    .template-ditgar .resume-side-header{background:var(--resume-accent);color:#fff;padding:.28in .2in .2in}
-    .template-ditgar .resume-side-header *{color:#fff!important}
-    .template-ditgar .resume-side-content{padding:.18in .18in .24in}
-    .template-ditgar .resume-main{padding:.28in .34in .28in .24in}
-    .template-ditgar .resume-featured-summary{background:#e8f5fb;margin:-.28in -.34in .14in -.24in;padding:.22in .34in .17in .24in}
-    .template-ditgar .resume-header{display:block;border:0;padding:0;margin:0}.template-ditgar .resume-photo{border-radius:50%;margin-bottom:.08in}
-    .template-ditgar .resume-main .resume-section-title{color:var(--resume-accent);border-bottom:1px solid var(--resume-accent);padding-bottom:.025in}
-    .template-ditgar .resume-main .resume-item-head{border-left:3px solid var(--resume-accent);padding-left:.05in}
+    /* Bronzor — full header, right sidebar */
+    .template-bronzor .resume-layout{padding:.3in .36in}
+    .template-bronzor .resume-header{text-align:center;margin-bottom:.12in}
+    .template-bronzor .resume-header .resume-photo{margin:0 auto .07in}
+    .template-bronzor .resume-contact{text-align:center}
+    .template-bronzor .resume-columns{grid-template-columns:minmax(0,1fr) minmax(0,29%);gap:.2in}
+    .template-bronzor .resume-sidebar{padding-left:.14in;border-left:1px solid #d7dde3}
+    .template-bronzor .resume-section{padding-top:.045in;border-top:1px solid var(--resume-accent)}
+    .template-bronzor .resume-section-title{font-size:10.8pt}
 
+    /* Chikorita — header in main, solid right sidebar */
+    .template-chikorita .resume-layout{padding:0;background:#fff}
+    .template-chikorita .resume-columns{
+      grid-template-columns:minmax(0,70%) minmax(0,30%);gap:0;min-height:11in
+    }
+    .template-chikorita .resume-main{padding:.32in .28in .3in .38in}
+    .template-chikorita .resume-sidebar{
+      padding:.32in .25in .3in .21in;background:var(--resume-accent);color:#fff;min-height:11in
+    }
+    .template-chikorita .resume-header{display:flex;align-items:flex-start;gap:.13in;margin-bottom:.13in}
+    .template-chikorita .resume-main .resume-section-title{
+      border-bottom:1px solid var(--resume-accent);padding-bottom:.024in
+    }
+    .template-chikorita .resume-sidebar .resume-section-title,
+    .template-chikorita .resume-sidebar .resume-skill-line,
+    .template-chikorita .resume-sidebar .resume-small,
+    .template-chikorita .resume-sidebar .resume-education-head,
+    .template-chikorita .resume-sidebar .resume-education-sub{color:#fff}
+    .template-chikorita .resume-sidebar .resume-section-title{
+      border-bottom:1px solid rgba(255,255,255,.62);padding-bottom:.024in
+    }
+
+    /* Ditgar — tinted left sidebar with identity block + featured summary */
+    .template-ditgar .resume-layout{padding:0;background:#fff}
+    .template-ditgar .resume-columns{
+      grid-template-columns:minmax(0,30%) minmax(0,70%);gap:0;min-height:11in;
+      background:linear-gradient(to right,var(--resume-sidebar-tint) 0,var(--resume-sidebar-tint) 30%,#fff 30%,#fff 100%)
+    }
+    .template-ditgar .resume-sidebar{min-height:11in}
+    .template-ditgar .resume-side-header{
+      background:var(--resume-accent);color:#fff;padding:.26in .2in .19in
+    }
+    .template-ditgar .resume-side-header .resume-header,
+    .template-ditgar .resume-side-header .resume-contact{color:#fff}
+    .template-ditgar .resume-side-content{padding:.18in .18in .25in}
+    .template-ditgar .resume-main{padding:.29in .34in .28in .24in}
+    .template-ditgar .resume-featured-summary{
+      background:var(--resume-sidebar-tint);margin:-.29in -.34in .14in -.24in;padding:.22in .34in .18in .24in
+    }
+    .template-ditgar .resume-main .resume-section-title{
+      border-bottom:1px solid var(--resume-accent);padding-bottom:.024in
+    }
+    .template-ditgar .resume-main .resume-item-head{border-left:3px solid var(--resume-accent);padding-left:.045in}
+
+    /* Ditto — full accent header band + left sidebar */
     .template-ditto .resume-layout{padding:0}
-    .template-ditto .resume-header{background:var(--resume-accent);color:#fff;padding:.25in .38in;display:flex;align-items:center;gap:.18in;border:0;margin:0}
-    .template-ditto .resume-header *{color:#fff!important}.template-ditto .resume-photo{border-radius:50%;border:3px solid #fff}
-    .template-ditto .resume-columns{grid-template-columns:30% 1fr;gap:.2in;padding:.2in .38in .3in}
-    .template-ditto .resume-sidebar{padding-right:.12in}.template-ditto .resume-section-title{color:var(--resume-accent)}
+    .template-ditto .resume-header{
+      display:flex;align-items:center;gap:.16in;background:var(--resume-accent);color:#fff;
+      padding:.24in .38in .22in;margin:0
+    }
+    .template-ditto .resume-header .resume-contact{color:#fff}
+    .template-ditto .resume-columns{
+      grid-template-columns:minmax(0,30%) minmax(0,1fr);gap:.2in;padding:.2in .38in .28in
+    }
+    .template-ditto .resume-sidebar{padding-right:.12in;border-right:1px solid #d8dde2}
 
-    .template-gengar .resume-layout{padding:0;min-height:100%;background:linear-gradient(to right,#e8f5fb 0,#e8f5fb 31%,#fff 31%,#fff 100%)}
-    .template-gengar .resume-columns{grid-template-columns:31% 69%;gap:0;min-height:11in}
-    .template-gengar .resume-sidebar{padding:0}.template-gengar .resume-side-header{background:var(--resume-accent);color:#fff;padding:.32in .24in .24in}
-    .template-gengar .resume-side-header *{color:#fff!important}.template-gengar .resume-photo{border-radius:50%;margin-bottom:.08in}
-    .template-gengar .resume-side-content{padding:.2in .22in}.template-gengar .resume-main{padding:.3in .36in .28in .28in}
-    .template-gengar .resume-featured-summary{background:#e8f5fb;margin:-.3in -.36in .16in -.28in;padding:.22in .36in .18in .28in}
-    .template-gengar .resume-section-title{color:var(--resume-accent);border-bottom:1px solid var(--resume-accent);padding-bottom:.025in}
+    /* Gengar — stronger profile sidebar + featured summary */
+    .template-gengar .resume-layout{padding:0;background:#fff}
+    .template-gengar .resume-columns{
+      grid-template-columns:minmax(0,31%) minmax(0,69%);gap:0;min-height:11in;
+      background:linear-gradient(to right,#edf7fb 0,#edf7fb 31%,#fff 31%,#fff 100%)
+    }
+    .template-gengar .resume-sidebar{min-height:11in}
+    .template-gengar .resume-side-header{
+      background:var(--resume-accent);color:#fff;padding:.3in .22in .22in
+    }
+    .template-gengar .resume-side-header .resume-header,
+    .template-gengar .resume-side-header .resume-contact{color:#fff}
+    .template-gengar .resume-side-content{padding:.2in .2in .25in}
+    .template-gengar .resume-main{padding:.3in .35in .28in .26in}
+    .template-gengar .resume-featured-summary{
+      background:#edf7fb;margin:-.3in -.35in .15in -.26in;padding:.22in .35in .18in .26in
+    }
+    .template-gengar .resume-main .resume-section-title{
+      border-bottom:1px solid var(--resume-accent);padding-bottom:.024in
+    }
 
-    .template-glalie .resume-layout{padding:0;min-height:100%;background:linear-gradient(to right,#eef7fb 0,#eef7fb 30%,#fff 30%,#fff 100%)}
-    .template-glalie .resume-columns{grid-template-columns:30% 70%;gap:0;min-height:11in}
-    .template-glalie .resume-sidebar{padding:.25in .18in}.template-glalie .resume-main{padding:.28in .34in .26in .24in}
-    .template-glalie .resume-header{text-align:center;display:block;border:0;padding:0;margin-bottom:.12in}
-    .template-glalie .resume-photo{border-radius:50%;border:1px solid var(--resume-accent);margin:0 auto .08in}
-    .template-glalie .resume-contact{text-align:left;border:1px solid var(--resume-accent);padding:.05in;max-width:none}
-    .template-glalie .resume-section-title{color:var(--resume-accent);border-bottom:1px solid var(--resume-accent);padding-bottom:.025in}
+    /* Glalie — soft left sidebar */
+    .template-glalie .resume-layout{padding:0;background:#fff}
+    .template-glalie .resume-columns{
+      grid-template-columns:minmax(0,30%) minmax(0,70%);gap:0;min-height:11in;
+      background:linear-gradient(to right,#eef7fb 0,#eef7fb 30%,#fff 30%,#fff 100%)
+    }
+    .template-glalie .resume-sidebar{padding:.25in .19in .28in;min-height:11in}
+    .template-glalie .resume-header{text-align:center;margin-bottom:.12in}
+    .template-glalie .resume-header .resume-photo{margin:0 auto .07in}
+    .template-glalie .resume-contact{
+      text-align:left;border:1px solid var(--resume-accent);padding:.045in .055in
+    }
+    .template-glalie .resume-main{padding:.28in .34in .28in .24in}
+    .template-glalie .resume-section-title{
+      border-bottom:1px solid var(--resume-accent);padding-bottom:.024in
+    }
 
-    .template-kakuna .resume-layout{padding:.28in .36in}
-    .template-kakuna .resume-header{text-align:center;display:block;border:0;padding:0;margin-bottom:.12in}
-    .template-kakuna .resume-photo{margin:0 auto .08in;border-radius:50%;border:1px solid var(--resume-accent)}
-    .template-kakuna .resume-contact{text-align:center;max-width:none}
-    .template-kakuna .resume-columns{grid-template-columns:1fr 28%;gap:.2in}
-    .template-kakuna .resume-section-title{text-align:center;color:var(--resume-accent);border-bottom:1px solid var(--resume-accent);padding-bottom:.025in}
+    /* Kakuna — centered identity, right sidebar */
+    .template-kakuna .resume-layout{padding:.29in .36in}
+    .template-kakuna .resume-header{text-align:center;margin-bottom:.12in}
+    .template-kakuna .resume-header .resume-photo{margin:0 auto .07in}
+    .template-kakuna .resume-contact{text-align:center}
+    .template-kakuna .resume-columns{grid-template-columns:minmax(0,1fr) minmax(0,28%);gap:.2in}
+    .template-kakuna .resume-sidebar{padding-left:.14in;border-left:1px solid #d8dde2}
+    .template-kakuna .resume-section-title{
+      text-align:center;border-bottom:1px solid var(--resume-accent);padding-bottom:.024in
+    }
 
+    /* Lapras — card treatment, right sidebar */
     .template-lapras .resume-layout{padding:.22in .28in}
-    .template-lapras .resume-header,.template-lapras .resume-section{border:1px solid #ccc;border-radius:12px;background:#fff;padding:.085in .1in}
-    .template-lapras .resume-header{display:flex;align-items:center;gap:.12in;margin-bottom:.12in}
-    .template-lapras .resume-photo{border-radius:12px}.template-lapras .resume-columns{grid-template-columns:1fr 28%;gap:.16in}
-    .template-lapras .resume-section-title{display:inline-block;background:#fff;margin-top:-.16in;padding:0 .045in;color:var(--resume-accent)}
+    .template-lapras .resume-header,.template-lapras .resume-section{
+      border:1px solid #cfd4da;border-radius:10px;background:#fff;padding:.075in .09in
+    }
+    .template-lapras .resume-header{display:flex;align-items:center;gap:.13in;margin-bottom:.11in}
+    .template-lapras .resume-columns{grid-template-columns:minmax(0,1fr) minmax(0,28%);gap:.16in}
+    .template-lapras .resume-section{position:relative;margin-bottom:.1in}
+    .template-lapras .resume-section-title{
+      display:inline-block;background:#fff;margin-top:-.145in;padding:0 .04in
+    }
 
+    /* Leafish — intro band + right sidebar */
     .template-leafish .resume-layout{padding:0}
-    .template-leafish .resume-header-intro{background:#eaf7fc;padding:.22in .32in .16in}
-    .template-leafish .resume-header{display:flex;align-items:center;gap:.14in;border:0;padding:0;margin:0}
-    .template-leafish .resume-photo{border-radius:50%}.template-leafish .resume-header-summary{font-size:8.8pt;max-width:3.25in}
-    .template-leafish .resume-contact-band{background:#cdeaf6;padding:.07in .32in;display:flex;gap:.08in;flex-wrap:wrap;font-size:8.6pt}
-    .template-leafish .resume-columns{grid-template-columns:1fr 29%;gap:.18in;padding:.18in .32in .28in}
-    .template-leafish .resume-section-title{color:var(--resume-accent);border-bottom:1px solid var(--resume-accent);padding-bottom:.025in}
+    .template-leafish .resume-header-intro{background:#eaf7fc;padding:.2in .32in .15in}
+    .template-leafish .resume-header{display:flex;align-items:center;gap:.14in}
+    .template-leafish .resume-header-summary{font-size:8.7pt;line-height:1.4;max-width:3.2in}
+    .template-leafish .resume-contact-band{
+      background:#d1edf8;padding:.06in .32in;font-size:8.5pt;color:#42515c
+    }
+    .template-leafish .resume-columns{
+      grid-template-columns:minmax(0,1fr) minmax(0,29%);gap:.18in;padding:.18in .32in .28in
+    }
+    .template-leafish .resume-sidebar{padding-left:.13in;border-left:1px solid #d7dde2}
+    .template-leafish .resume-section-title{
+      border-bottom:1px solid var(--resume-accent);padding-bottom:.024in
+    }
 
-    .template-meowth .resume-layout{padding:.28in .36in}
-    .template-meowth .resume-header{display:flex;align-items:center;gap:.14in;border:0;padding:0;margin-bottom:.12in}
-    .template-meowth .resume-photo{border-radius:12px}.template-meowth .resume-columns{grid-template-columns:29% 1fr;gap:.2in}
-    .template-meowth .resume-sidebar{padding-right:.13in}.template-meowth .resume-section-title{color:var(--resume-accent);border-bottom:1px solid var(--resume-accent);padding-bottom:.025in}
+    /* Meowth — full header + left sidebar */
+    .template-meowth .resume-layout{padding:.29in .36in}
+    .template-meowth .resume-header{
+      display:flex;align-items:center;gap:.14in;margin-bottom:.12in;padding-bottom:.08in;
+      border-bottom:1px solid var(--resume-accent)
+    }
+    .template-meowth .resume-columns{grid-template-columns:minmax(0,29%) minmax(0,1fr);gap:.2in}
+    .template-meowth .resume-sidebar{padding-right:.13in;border-right:1px solid #d7dde2}
 
-    .template-onyx .resume-layout{padding:.28in .36in}
-    .template-onyx .resume-header{display:flex;align-items:center;gap:.14in;border-bottom:1px solid var(--resume-accent);padding-bottom:.12in;margin-bottom:.14in}
-    .template-onyx .resume-photo{border-radius:50%;border:1px solid var(--resume-accent)}
-    .template-onyx .resume-columns{grid-template-columns:1fr 28%;gap:.2in}.template-onyx .resume-sidebar{padding-left:.13in}
-    .template-onyx .resume-section-title{color:var(--resume-accent);border:0;padding:0}
+    /* Onyx — traditional full header + right sidebar */
+    .template-onyx .resume-layout{padding:.29in .36in}
+    .template-onyx .resume-header{
+      display:flex;align-items:center;gap:.14in;padding-bottom:.1in;margin-bottom:.13in;
+      border-bottom:1px solid var(--resume-accent)
+    }
+    .template-onyx .resume-columns{grid-template-columns:minmax(0,1fr) minmax(0,28%);gap:.2in}
+    .template-onyx .resume-sidebar{padding-left:.13in;border-left:1px solid #d8dde2}
 
+    /* Pikachu — left sidebar + accent identity card in main */
     .template-pikachu .resume-layout{padding:.22in .28in}
-    .template-pikachu .resume-columns{grid-template-columns:28% 1fr;gap:.16in}
-    .template-pikachu .resume-sidebar{padding-right:.08in}
-    .template-pikachu .resume-main-header{background:var(--resume-accent);color:#fff;border-radius:12px;padding:.13in .15in;margin-bottom:.13in}
-    .template-pikachu .resume-main-header *{color:#fff!important}.template-pikachu .resume-header{display:flex;align-items:center;gap:.12in;border:0;padding:0;margin:0}
-    .template-pikachu .resume-photo{border-radius:50%;border:2px solid #fff}.template-pikachu .resume-section-title{color:var(--resume-accent);border-bottom:1px solid var(--resume-accent);padding-bottom:.025in}
+    .template-pikachu .resume-columns{grid-template-columns:minmax(0,28%) minmax(0,1fr);gap:.16in}
+    .template-pikachu .resume-sidebar{padding-right:.11in}
+    .template-pikachu .resume-main-header{
+      background:var(--resume-accent);color:#fff;border-radius:10px;padding:.13in .15in;margin-bottom:.13in
+    }
+    .template-pikachu .resume-main-header .resume-header,
+    .template-pikachu .resume-main-header .resume-contact{color:#fff}
+    .template-pikachu .resume-main-header .resume-header{
+      display:flex;align-items:center;gap:.12in
+    }
+    .template-pikachu .resume-section-title{
+      border-bottom:1px solid var(--resume-accent);padding-bottom:.024in
+    }
 
-    .template-rhyhorn .resume-layout{padding:.28in .36in}
-    .template-rhyhorn .resume-header{display:flex;align-items:center;gap:.14in;border:0;padding:0;margin-bottom:.12in}
-    .template-rhyhorn .resume-photo{border-radius:50%}.template-rhyhorn .resume-columns{grid-template-columns:1fr 29%;gap:.2in}
-    .template-rhyhorn .resume-contact{display:flex;gap:.06in;flex-wrap:wrap;max-width:none}
-    .template-rhyhorn .resume-section-title{color:var(--resume-accent);border-bottom:1px solid var(--resume-accent);padding-bottom:.025in}
+    /* Rhyhorn — full header + right sidebar */
+    .template-rhyhorn .resume-layout{padding:.29in .36in}
+    .template-rhyhorn .resume-header{
+      display:flex;align-items:center;gap:.14in;margin-bottom:.12in;padding-bottom:.08in;
+      border-bottom:1px solid var(--resume-accent)
+    }
+    .template-rhyhorn .resume-columns{grid-template-columns:minmax(0,1fr) minmax(0,29%);gap:.2in}
+    .template-rhyhorn .resume-sidebar{padding-left:.13in;border-left:1px solid #d8dde2}
+    .template-rhyhorn .resume-section-title{
+      border-bottom:1px solid var(--resume-accent);padding-bottom:.024in
+    }
 
-    .template-scizor .resume-layout{padding:.28in .36in .3in;border-top:.07in solid var(--resume-accent)}
-    .template-scizor .resume-header{display:flex;align-items:center;gap:.15in;border:0;padding:0 0 .12in;margin-bottom:.1in}
-    .template-scizor .resume-header-main{flex:1}.template-scizor .resume-header-name{font-size:28pt}
-    .template-scizor .resume-name-rule{width:72%;border-bottom:2px solid #d8dce2;margin:.055in 0}
-    .template-scizor .resume-photo{border-radius:0}.template-scizor .resume-columns{grid-template-columns:29% 1fr;gap:.2in}
-    .template-scizor .resume-section{border-top:1px solid #d8dce2;padding-top:.07in}.template-scizor .resume-section-title{color:#15171a}
+    /* Scizor — strong top rule + left sidebar */
+    .template-scizor .resume-layout{padding:.27in .36in .3in;border-top:.065in solid var(--resume-accent)}
+    .template-scizor .resume-header{display:flex;align-items:center;gap:.15in;margin-bottom:.12in}
+    .template-scizor .resume-header-name{font-size:27pt}
+    .template-scizor .resume-name-rule{width:72%;border-bottom:2px solid #d8dde2;margin:.05in 0}
+    .template-scizor .resume-columns{grid-template-columns:minmax(0,29%) minmax(0,1fr);gap:.2in}
+    .template-scizor .resume-sidebar{padding-right:.13in}
+    .template-scizor .resume-section{padding-top:.055in;border-top:1px solid #d8dde2}
+    .template-scizor .resume-section-title{color:#15171a}
 
-    .resume-compact-fit .resume-section{margin-bottom:.09in}
-    .resume-compact-fit .resume-item{margin-bottom:.075in}
-    .resume-compact-fit .resume-item li{line-height:1.36;margin-bottom:.025in}
-    .resume-compact-fit .resume-project{margin-bottom:.055in}
-    .resume-compact-fit .resume-summary{line-height:1.42}
+    .resume-compact-fit .resume-section{margin-bottom:.085in}
+    .resume-compact-fit .resume-item{margin-bottom:.068in}
+    .resume-compact-fit .resume-item li{line-height:1.32;margin-bottom:.02in}
+    .resume-compact-fit .resume-project{margin-bottom:.05in}
+    .resume-compact-fit .resume-summary{line-height:1.36}
+
     .resume-toolbar-group{position:relative}
     .resume-menu{
-      position:absolute;right:0;top:calc(100% + 6px);z-index:80;min-width:190px;padding:6px;
+      position:absolute;right:0;top:calc(100% + 6px);z-index:80;min-width:205px;padding:6px;
       border:1px solid var(--line);border-radius:9px;background:var(--panel);box-shadow:var(--shadow)
     }
     .resume-menu[hidden]{display:none!important}
-    .resume-menu button{width:100%;border:0;background:transparent;color:var(--text);text-align:left;padding:8px 9px;border-radius:6px;cursor:pointer;font-size:11px}
+    .resume-menu button{
+      width:100%;border:0;background:transparent;color:var(--text);text-align:left;
+      padding:8px 9px;border-radius:6px;cursor:pointer;font-size:11px
+    }
     .resume-menu button:hover{background:var(--panel-2)}
     .resume-menu button:disabled{opacity:.45;cursor:not-allowed}
-    .photo-library{max-width:980px;margin:0 auto 12px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;display:none}
-    .photo-library.open{display:block}
-    .photo-library-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}
+
+    .photo-help{font-size:10px;color:var(--muted);line-height:1.45;margin:4px 0 10px}
     .photo-picker{position:relative}
     .photo-picker-button{
-      width:100%;min-height:46px;border:1px solid var(--line);border-radius:8px;background:var(--panel-2);color:var(--text);
-      display:flex;align-items:center;gap:10px;padding:6px 9px;cursor:pointer;text-align:left
+      width:100%;min-height:46px;border:1px solid var(--line);border-radius:8px;background:var(--panel-2);
+      color:var(--text);display:flex;align-items:center;gap:10px;padding:6px 9px;cursor:pointer;text-align:left
     }
     .photo-picker-button .photo-picker-name{flex:1}
     .photo-thumb{width:32px;height:32px;border-radius:6px;object-fit:cover;background:var(--bg);border:1px solid var(--line)}
     .photo-thumb.empty{display:grid;place-items:center;font-size:15px}
     .photo-menu{
-      position:absolute;left:0;right:0;top:calc(100% + 5px);z-index:90;padding:5px;border:1px solid var(--line);
-      border-radius:8px;background:var(--panel);box-shadow:var(--shadow);max-height:260px;overflow:auto
+      position:absolute;left:0;right:0;top:calc(100% + 5px);z-index:90;padding:5px;
+      border:1px solid var(--line);border-radius:8px;background:var(--panel);box-shadow:var(--shadow);
+      max-height:260px;overflow:auto
     }
     .photo-menu[hidden]{display:none!important}
-    .photo-choice{display:grid;grid-template-columns:1fr 38px;align-items:stretch;border-radius:7px;overflow:hidden}
+    .photo-choice{display:grid;grid-template-columns:minmax(0,1fr) 38px;align-items:stretch;border-radius:7px;overflow:hidden}
     .photo-choice+.photo-choice{margin-top:3px}
-    .photo-choice-main{border:0;background:transparent;color:var(--text);display:flex;align-items:center;gap:9px;padding:6px 8px;cursor:pointer;text-align:left}
+    .photo-choice-main{
+      border:0;background:transparent;color:var(--text);display:flex;align-items:center;gap:9px;
+      padding:6px 8px;cursor:pointer;text-align:left;min-width:0
+    }
     .photo-choice-main:hover{background:var(--panel-2)}
+    .photo-choice-main span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     .photo-delete{border:0;background:transparent;color:#ef4444;cursor:pointer;font-size:16px;display:grid;place-items:center}
     .photo-delete:hover{background:#ff2d2d;color:#111;font-weight:900}
-    .photo-library-actions{display:flex;justify-content:flex-end;gap:7px;margin-top:10px}
-    .photo-help{font-size:10px;color:var(--muted);line-height:1.45;margin:4px 0 10px}
 
     @media(max-width:980px){
-      .resume-page-body{padding:8px 8px 35px}
-      .resume-page-tools .desktop-label,.rr-credit{display:none}
-      .resume-page-tools select{max-width:150px}
+      .rr-credit,.desktop-label{display:none}
+      .resume-page-topbar{align-items:flex-start}
+      .resume-page-body{padding-left:10px;padding-right:10px}
     }
-    @media(max-width:700px){
-      .resume-page-topbar{align-items:flex-start;padding:9px 10px}
-      .resume-page-brand{min-width:auto}
-      .resume-page-tools{justify-content:flex-end}
-      .brand-copy-small{display:none}
-    }
+
     @media print{
       html,body{width:8.5in;height:11in;background:#fff!important;margin:0!important;padding:0!important}
-      .resume-page-topbar,.resume-customizer{display:none!important}
+      .resume-page-topbar,.resume-customizer,.photo-library{display:none!important}
       .resume-page-body,.resume-page-stage{
         margin:0!important;padding:0!important;border:0!important;background:#fff!important;
         min-height:0!important;display:block!important;overflow:visible!important
@@ -495,7 +443,7 @@
       .resume-layout{
         transform:scale(var(--resume-content-scale,1))!important;
         transform-origin:top left!important;
-        width:calc(100% / var(--resume-content-scale,1))!important;
+        width:calc(100% / var(--resume-content-scale,1))!important
       }
       @page{size:Letter;margin:0}
     }
