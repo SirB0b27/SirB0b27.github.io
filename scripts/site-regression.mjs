@@ -21,12 +21,15 @@ for (const template of templates) {
   if (!resume.includes(`value="${template}"`)) fail(`Resume template missing: ${template}`);
 }
 
-for (const id of ["photoToggle","photoPanel","photoUpload","photoMenu","printResume","resumeStyle"]) {
+for (const id of ["photoToggle","photoPanel","photoUpload","photoMenu","printResume","resumeStyle","exportPdf","exportWord","exportOdf"]) {
   if (!resume.includes(`id="${id}"`)) fail(`Resume control missing: ${id}`);
 }
 
 if (!resume.includes("indexedDB.open('portfolioResumePhotos'")) fail("Resume photo persistence is missing.");
 if (!resume.includes("text-align:justify")) fail("Resume justified text rule is missing.");
+if (!resume.includes("indexedDB.open('portfolioResumePhotos'")) fail("Resume photo persistence is missing.");
+if (!resume.includes("data-photo-delete")) fail("Resume photo delete control is missing.");
+if (!resume.includes("OpenDocument (.fodt)")) fail("OpenDocument export is missing.");
 if (!resume.includes("@media print")) fail("Resume print CSS is missing.");
 
 for (const id of ["projectPaginationTop","projectPaginationBottom","educationPaginationTop","educationPaginationBottom"]) {
