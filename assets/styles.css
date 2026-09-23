@@ -727,3 +727,45 @@ html[data-theme="light"] .experience-expandable:hover{
     0 0 0 2px color-mix(in srgb,var(--org-accent,var(--accent)) 86%,black),
     0 8px 24px color-mix(in srgb,var(--org-accent,var(--accent)) 14%,transparent)!important;
 }
+
+
+/* Experience card accent: keep the left rail continuous across the full card */
+.experience-expandable{
+  position:relative;
+}
+.experience-expandable::before{
+  content:"";
+  position:absolute;
+  top:0;
+  bottom:0;
+  left:0;
+  width:5px;
+  z-index:4;
+  pointer-events:none;
+  opacity:0;
+  background:color-mix(in srgb,var(--org-accent,var(--accent)) 72%,white);
+  transition:opacity .16s ease;
+}
+html[data-theme="light"] .experience-expandable::before{
+  background:color-mix(in srgb,var(--org-accent,var(--accent)) 86%,black);
+}
+.experience-expandable:hover::before,
+.experience-expandable.expanded::before{
+  opacity:1;
+}
+/* Remove the old header-only accent so there is a single full-height rail. */
+.experience-expandable:hover .experience-card-header,
+html[data-theme="light"] .experience-expandable:hover .experience-card-header{
+  box-shadow:none!important;
+}
+/* The pseudo-element owns the left rail; retain only the outer hover treatment here. */
+.experience-expandable:hover{
+  box-shadow:
+    0 0 0 2px color-mix(in srgb,var(--org-accent,var(--accent)) 72%,white),
+    0 8px 24px color-mix(in srgb,var(--org-accent,var(--accent)) 18%,transparent)!important;
+}
+html[data-theme="light"] .experience-expandable:hover{
+  box-shadow:
+    0 0 0 2px color-mix(in srgb,var(--org-accent,var(--accent)) 86%,black),
+    0 8px 24px color-mix(in srgb,var(--org-accent,var(--accent)) 14%,transparent)!important;
+}
