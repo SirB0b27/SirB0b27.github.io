@@ -30,6 +30,9 @@ if (!resume.includes("text-align:justify")) fail("Resume justified text rule is 
 if (!resume.includes("indexedDB.open('portfolioResumePhotos'")) fail("Resume photo persistence is missing.");
 if (!resume.includes("data-photo-delete")) fail("Resume photo delete control is missing.");
 if (!resume.includes("OpenDocument (.fodt)")) fail("OpenDocument export is missing.");
+if (resume.includes("github.com/SirB0b27") || resume.includes("linkedin.com/in/hemanthvelan27")) fail("Resume should not expose GitHub or LinkedIn contact text.");
+if (!resume.includes("function autoFitContent()")) fail("Resume auto-fit function is missing.");
+if (!resume.includes("--resume-content-scale")) fail("Resume content fit scale is missing.");
 if (!resume.includes("@media print")) fail("Resume print CSS is missing.");
 
 for (const id of ["projectPaginationTop","projectPaginationBottom","educationPaginationTop","educationPaginationBottom"]) {
