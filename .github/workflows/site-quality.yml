@@ -1,0 +1,19 @@
+name: Site Quality
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Content voice audit
+        run: node scripts/content-audit.mjs
+      - name: Static regression test
+        run: node scripts/site-regression.mjs
