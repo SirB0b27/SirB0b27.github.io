@@ -10,8 +10,8 @@
   let personalMenuUnlocked=false;
   const personalExpectedHash='d0f1e3c007d7e9411923d1922fb8364004ca9eaf7b8aee6cb1955104e35f2dca';
   sessionStorage.removeItem('personalSpaceAuth');
-  const routes=['overview','experience','projects','skills','education'];
-  const routeLabels={overview:'Overview',experience:'Experience',projects:'Projects',skills:'Skills & Technologies',education:'Education'};
+  const routes=['overview','experience','projects','skills','education','kaju-questions','kaju-game'];
+  const routeLabels={overview:'Overview',experience:'Experience',projects:'Projects',skills:'Skills & Technologies',education:'Education','kaju-questions':'Birthdays / Kaju / Kajus Questions','kaju-game':'Birthdays / Kaju / Kajus Game'};
   const tags=arr=>'<div class="tag-row">'+arr.map(x=>'<span class="tag">'+x+'</span>').join('')+'</div>';
   const pageHead=(eyebrow,title,desc,actions='')=>'<div class="page-head"><div><div class="eyebrow">'+eyebrow+'</div><h1>'+title+'</h1><p>'+desc+'</p></div>'+(actions?'<div class="page-actions">'+actions+'</div>':'')+'</div>';
   const experienceOrgAccent=(org)=>({
@@ -383,6 +383,7 @@
     const y=window.scrollY+el.getBoundingClientRect().top-topbar-10;
     window.scrollTo({top:y,behavior:smooth?'smooth':'auto'});
     setActive(route,true);
+    if(route==='kaju-questions')openQuizIfNeeded();
     if(innerWidth<760)qs('#sidebar').classList.remove('mobile-open');
   }
 
@@ -403,6 +404,44 @@
     qs('#zoomReadout').textContent=Math.round(zoom*100)+'%';
     localStorage.setItem('portfolioZoomV2',zoom);
   }
+
+
+  // SVG line icon set shared by all top-level and nested navigation entries.
+  const iconPaths={
+    house:'<path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>',
+    briefcase:'<rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18"/>',
+    folder:'<path d="M3 6a2 2 0 0 1 2-2h5l2 3h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+    blocks:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
+    graduation:'<path d="m2 9 10-5 10 5-10 5zM6 11v6c3 3 9 3 12 0v-6M22 9v7"/>',
+    file:'<path d="M6 2h8l5 5v15H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zM14 2v6h5M8 13h8M8 17h8"/>',
+    lock:'<rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
+    github:'<path d="M9 19c-4 1-4-2-6-2m12 4v-3.2a3 3 0 0 0-.8-2.3c2.8-.3 5.8-1.4 5.8-6.3A5 5 0 0 0 18.6 5 4.7 4.7 0 0 0 18.5 1S16 1 14.7 3a13 13 0 0 0-5.4 0C8 1 5.5 1 5.5 1A4.7 4.7 0 0 0 5.4 5 5 5 0 0 0 4 8.2c0 4.9 3 6 5.8 6.3A3 3 0 0 0 9 17v4"/>',
+    cake:'<path d="M4 12h16v9H4zM4 16h16M7 12V8m5 4V8m5 4V8M7 5h.01M12 5h.01M17 5h.01"/>',
+    gift:'<rect x="3" y="9" width="18" height="12" rx="1"/><path d="M12 9v12M3 13h18M2 5h20v4H2zM12 5c-2-6-8-3-5 0m5 0c2-6 8-3 5 0"/>',
+    clipboard:'<rect x="5" y="4" width="14" height="18" rx="2"/><path d="M9 4.5V2h6v2.5M9 11h6M9 15h6"/>',
+    gamepad:'<path d="M6 9h12a4 4 0 0 1 3.8 3l1 5a3 3 0 0 1-4.7 3L15 18H9l-3.1 2A3 3 0 0 1 1.2 17l1-5A4 4 0 0 1 6 9zM6 13h5M8.5 10.5v5M17 13h.01M19 15h.01"/>'
+  };
+  document.querySelectorAll('[data-icon]').forEach(el=>{
+    const body=iconPaths[el.dataset.icon];
+    if(body)el.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+body+'</svg>';
+  });
+  function openQuizIfNeeded(){
+    const frame=qs('#kajuQuizFrame');
+    if(frame && !frame.src)frame.src=frame.dataset.src;
+  }
+  ['birthdayToggle','kajuToggle'].forEach(id=>{
+    const button=qs('#'+id);
+    button?.addEventListener('click',()=>{
+      if(qs('#sidebar').classList.contains('collapsed')){
+        qs('#sidebar').classList.remove('collapsed');
+        return;
+      }
+      const target=qs('#'+button.getAttribute('aria-controls'));
+      const open=button.getAttribute('aria-expanded')!=='true';
+      button.setAttribute('aria-expanded',String(open));
+      target.hidden=!open;
+    });
+  });
 
   renderOverview();
   renderExperience();
@@ -489,6 +528,7 @@
   resetPersonalNav();
 
   const initial=location.hash.replace('#','');
+  if(initial==='kaju-questions')openQuizIfNeeded();
   if(initial==='personal') setTimeout(openPersonalGate,0);
   else if(routes.includes(initial)) setTimeout(()=>scrollToSection(initial,false),0);
   else setActive('overview',false);
