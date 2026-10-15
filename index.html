@@ -38,14 +38,14 @@
     <div class="nav-separator"></div>
     <div class="nav-separator"></div>
     <div class="nav-section birthday-nav-section" aria-label="Birthdays">
-      <button class="nav-item nav-parent" id="birthdayToggle" type="button" aria-expanded="true" aria-controls="birthdayChildren">
-        <span class="nav-icon" data-icon="cake"></span><span class="nav-text">Birthdays</span><span class="nav-chevron" aria-hidden="true">⌄</span>
+      <button class="nav-item nav-parent" id="birthdayToggle" type="button" aria-expanded="false" aria-controls="birthdayChildren">
+        <span class="nav-icon" data-icon="cake"></span><span class="nav-text">Birthdays</span><span class="nav-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
       </button>
-      <div class="nav-children" id="birthdayChildren">
-        <button class="nav-item nav-parent nav-nested" id="kajuToggle" type="button" aria-expanded="true" aria-controls="kajuChildren">
-          <span class="nav-icon" data-icon="gift"></span><span class="nav-text">Kaju</span><span class="nav-chevron" aria-hidden="true">⌄</span>
+      <div class="nav-children" id="birthdayChildren" hidden>
+        <button class="nav-item nav-parent nav-nested" id="kajuToggle" type="button" aria-expanded="false" aria-controls="kajuChildren">
+          <span class="nav-icon" data-icon="gift"></span><span class="nav-text">Kaju</span><span class="nav-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
         </button>
-        <div class="nav-children nav-grandchildren" id="kajuChildren">
+        <div class="nav-children nav-grandchildren" id="kajuChildren" hidden>
           <button class="nav-item nav-nested" data-route="kaju-questions"><span class="nav-icon" data-icon="clipboard"></span><span class="nav-text">Kajus Questions</span></button>
           <button class="nav-item nav-nested" data-route="kaju-game"><span class="nav-icon" data-icon="gamepad"></span><span class="nav-text">Kajus Game</span><span class="nav-badge">Soon</span></button>
         </div>
