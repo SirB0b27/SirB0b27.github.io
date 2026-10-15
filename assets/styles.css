@@ -839,7 +839,9 @@ html[data-theme="light"] .experience-expandable:hover{
 
 /* Public Birthdays section and consistent, custom line icons */
 .nav-icon svg,.placeholder-icon svg{display:block;width:18px;height:18px}
-.nav-chevron{margin-left:auto;color:var(--muted);font-size:16px;transition:transform .18s}
+.nav-chevron{margin-left:auto;color:var(--muted);width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .18s ease}
+.nav-chevron svg{display:block;width:16px;height:16px}
+.nav-parent:hover .nav-chevron{color:var(--text)}
 .nav-parent[aria-expanded="false"] .nav-chevron{transform:rotate(-90deg)}
 .nav-children[hidden]{display:none}
 .nav-children{display:grid;gap:3px}
