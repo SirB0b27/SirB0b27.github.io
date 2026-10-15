@@ -36,20 +36,8 @@
       <a class="nav-item" href="resume/"><span class="nav-icon" data-icon="file"></span><span class="nav-text">Resume</span></a>
     </div>
     <div class="nav-separator"></div>
-    <div class="nav-separator"></div>
-    <div class="nav-section birthday-nav-section" aria-label="Birthdays">
-      <button class="nav-item nav-parent" id="birthdayToggle" type="button" aria-expanded="false" aria-controls="birthdayChildren">
-        <span class="nav-icon" data-icon="cake"></span><span class="nav-text">Birthdays</span><span class="nav-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
-      </button>
-      <div class="nav-children" id="birthdayChildren" hidden>
-        <button class="nav-item nav-parent nav-nested" id="kajuToggle" type="button" aria-expanded="false" aria-controls="kajuChildren">
-          <span class="nav-icon" data-icon="gift"></span><span class="nav-text">Kaju</span><span class="nav-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
-        </button>
-        <div class="nav-children nav-grandchildren" id="kajuChildren" hidden>
-          <button class="nav-item nav-nested" data-route="kaju-questions"><span class="nav-icon" data-icon="clipboard"></span><span class="nav-text">Kajus Questions</span></button>
-          <button class="nav-item nav-nested" data-route="kaju-game"><span class="nav-icon" data-icon="gamepad"></span><span class="nav-text">Kajus Game</span><span class="nav-badge">Soon</span></button>
-        </div>
-      </div>
+    <div class="nav-section">
+      <a class="nav-item" href="birthdays/"><span class="nav-icon" data-icon="cake"></span><span class="nav-text">Birthdays</span></a>
     </div>
     <div class="nav-section" id="personalNavSection">
       <button class="nav-item portfolio-personal-entry" id="personalNavTrigger" type="button" aria-haspopup="dialog">
@@ -71,17 +59,6 @@
       <section class="view" data-view="projects"></section>
       <section class="view" data-view="skills"></section>
       <section class="view" data-view="education"></section>
-      <section class="view birthday-view" data-view="kaju-questions">
-        <div class="page-head"><div><div class="eyebrow">Birthdays / Kaju</div><h1>Kajus Questions</h1><p>The birthday questionnaire, connected to its existing Google Apps Script application.</p></div>
-          <a class="secondary-btn" href="https://script.google.com/macros/s/AKfycbzjfYNyEkHvFwDT4RIoHEc-Oy5aqSgK8D9NnC6fygxMLzZMV80N2VKqbi4Xe8GitAwmLQ/exec" target="_blank" rel="noopener noreferrer">Open Quiz in New Tab ↗</a>
-        </div>
-        <div class="quiz-frame-wrap"><iframe id="kajuQuizFrame" title="Kajus Questions birthday questionnaire" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="clipboard-write" data-src="https://script.google.com/macros/s/AKfycbzjfYNyEkHvFwDT4RIoHEc-Oy5aqSgK8D9NnC6fygxMLzZMV80N2VKqbi4Xe8GitAwmLQ/exec"></iframe></div>
-        <p class="quiz-embed-help">If Google prevents the questionnaire from loading inside this page, use <a href="https://script.google.com/macros/s/AKfycbzjfYNyEkHvFwDT4RIoHEc-Oy5aqSgK8D9NnC6fygxMLzZMV80N2VKqbi4Xe8GitAwmLQ/exec" target="_blank" rel="noopener noreferrer">Open Quiz in New Tab</a>. The existing Google Apps Script deployment may need embedding enabled to display here.</p>
-      </section>
-      <section class="view birthday-view" data-view="kaju-game">
-        <div class="page-head"><div><div class="eyebrow">Birthdays / Kaju</div><h1>Kajus Game</h1><p>This birthday game will be created later.</p></div></div>
-        <div class="kaju-placeholder"><span class="placeholder-icon" data-icon="gamepad"></span><h2>Coming Soon</h2><p>The Kajus Game page is reserved for a future update.</p></div>
-      </section>
     </div>
   </main>
 </div>
