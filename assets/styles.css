@@ -836,3 +836,25 @@ html[data-theme="light"] .experience-expandable:hover{
   .pagination-row{justify-content:stretch}
   .pagination-page,.pagination-arrow{min-width:28px;height:28px;padding:0 6px}
 }
+
+/* Public Birthdays section and consistent, custom line icons */
+.nav-icon svg,.placeholder-icon svg{display:block;width:18px;height:18px}
+.nav-chevron{margin-left:auto;color:var(--muted);font-size:16px;transition:transform .18s}
+.nav-parent[aria-expanded="false"] .nav-chevron{transform:rotate(-90deg)}
+.nav-children[hidden]{display:none}
+.nav-children{display:grid;gap:3px}
+.nav-children .nav-nested{padding-left:24px}
+.nav-grandchildren .nav-nested{padding-left:34px}
+.sidebar.collapsed .nav-children,.sidebar.collapsed .nav-chevron{display:none}
+.birthday-view{min-height:75vh}
+.quiz-frame-wrap{width:100%;height:min(86vh,950px);min-height:580px;border:1px solid var(--line);border-radius:12px;background:#102b50;overflow:hidden}
+.quiz-frame-wrap iframe{display:block;width:100%;height:100%;border:0}
+.quiz-embed-help{font-size:12px;color:var(--muted);line-height:1.6}
+.quiz-embed-help a{color:var(--accent)}
+.kaju-placeholder{display:flex;align-items:center;flex-direction:column;justify-content:center;text-align:center;gap:12px;min-height:390px;border:1px dashed var(--line);background:var(--panel);border-radius:12px}
+.kaju-placeholder .placeholder-icon svg{width:56px;height:56px;color:var(--accent)}
+.kaju-placeholder h2{margin:0}.kaju-placeholder p{margin:0;color:var(--muted)}
+body:has(.sidebar.collapsed) .topbar{grid-template-columns:56px 1fr}
+body:has(.sidebar.collapsed) .topbar-left{padding:0 11px}
+body:has(.sidebar.collapsed) .brand-copy{display:none}
+@media(max-width:760px){.quiz-frame-wrap{height:75vh;min-height:540px}body:has(.sidebar.collapsed) .topbar{grid-template-columns:56px 1fr}}

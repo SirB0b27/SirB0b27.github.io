@@ -25,20 +25,35 @@
       </div>
     </div>
   </header>
-  <aside class="sidebar" id="sidebar">
+  <aside class="sidebar collapsed" id="sidebar">
     <div class="nav-section">
       <div class="nav-label">Portfolio</div>
-      <button class="nav-item active" data-route="overview"><span class="nav-icon">⌂</span><span class="nav-text">Overview</span></button>
-      <button class="nav-item" data-route="experience"><span class="nav-icon">▤</span><span class="nav-text">Experience</span></button>
-      <button class="nav-item" data-route="projects"><span class="nav-icon">◆</span><span class="nav-text">Projects</span><span class="nav-badge" id="projectCountBadge"></span></button>
-      <button class="nav-item" data-route="skills"><span class="nav-icon">◫</span><span class="nav-text">Skills & Technologies</span></button>
-      <button class="nav-item" data-route="education"><span class="nav-icon">◈</span><span class="nav-text">Education</span></button>
-      <a class="nav-item" href="resume/"><span class="nav-icon">▣</span><span class="nav-text">Resume</span></a>
+      <button class="nav-item active" data-route="overview"><span class="nav-icon" data-icon="house"></span><span class="nav-text">Overview</span></button>
+      <button class="nav-item" data-route="experience"><span class="nav-icon" data-icon="briefcase"></span><span class="nav-text">Experience</span></button>
+      <button class="nav-item" data-route="projects"><span class="nav-icon" data-icon="folder"></span><span class="nav-text">Projects</span><span class="nav-badge" id="projectCountBadge"></span></button>
+      <button class="nav-item" data-route="skills"><span class="nav-icon" data-icon="blocks"></span><span class="nav-text">Skills & Technologies</span></button>
+      <button class="nav-item" data-route="education"><span class="nav-icon" data-icon="graduation"></span><span class="nav-text">Education</span></button>
+      <a class="nav-item" href="resume/"><span class="nav-icon" data-icon="file"></span><span class="nav-text">Resume</span></a>
     </div>
     <div class="nav-separator"></div>
+    <div class="nav-separator"></div>
+    <div class="nav-section birthday-nav-section" aria-label="Birthdays">
+      <button class="nav-item nav-parent" id="birthdayToggle" type="button" aria-expanded="true" aria-controls="birthdayChildren">
+        <span class="nav-icon" data-icon="cake"></span><span class="nav-text">Birthdays</span><span class="nav-chevron" aria-hidden="true">⌄</span>
+      </button>
+      <div class="nav-children" id="birthdayChildren">
+        <button class="nav-item nav-parent nav-nested" id="kajuToggle" type="button" aria-expanded="true" aria-controls="kajuChildren">
+          <span class="nav-icon" data-icon="gift"></span><span class="nav-text">Kaju</span><span class="nav-chevron" aria-hidden="true">⌄</span>
+        </button>
+        <div class="nav-children nav-grandchildren" id="kajuChildren">
+          <button class="nav-item nav-nested" data-route="kaju-questions"><span class="nav-icon" data-icon="clipboard"></span><span class="nav-text">Kajus Questions</span></button>
+          <button class="nav-item nav-nested" data-route="kaju-game"><span class="nav-icon" data-icon="gamepad"></span><span class="nav-text">Kajus Game</span><span class="nav-badge">Soon</span></button>
+        </div>
+      </div>
+    </div>
     <div class="nav-section" id="personalNavSection">
       <button class="nav-item portfolio-personal-entry" id="personalNavTrigger" type="button" aria-haspopup="dialog">
-        <span class="nav-icon">▣</span>
+        <span class="nav-icon" data-icon="lock"></span>
         <span class="nav-text">Personal</span>
         <span class="personal-lock" aria-hidden="true">🔒</span>
       </button>
@@ -46,7 +61,7 @@
     <div class="nav-separator"></div>
     <div class="nav-section">
       <div class="nav-label">Links</div>
-      <a class="nav-item" href="https://github.com/SirB0b27" target="_blank" rel="noopener"><span class="nav-icon">↗</span><span class="nav-text">GitHub</span></a>
+      <a class="nav-item" href="https://github.com/SirB0b27" target="_blank" rel="noopener"><span class="nav-icon" data-icon="github"></span><span class="nav-text">GitHub</span></a>
     </div>
   </aside>
   <main class="main" id="main">
@@ -56,6 +71,17 @@
       <section class="view" data-view="projects"></section>
       <section class="view" data-view="skills"></section>
       <section class="view" data-view="education"></section>
+      <section class="view birthday-view" data-view="kaju-questions">
+        <div class="page-head"><div><div class="eyebrow">Birthdays / Kaju</div><h1>Kajus Questions</h1><p>The birthday questionnaire, connected to its existing Google Apps Script application.</p></div>
+          <a class="secondary-btn" href="https://script.google.com/macros/s/AKfycbzjfYNyEkHvFwDT4RIoHEc-Oy5aqSgK8D9NnC6fygxMLzZMV80N2VKqbi4Xe8GitAwmLQ/exec" target="_blank" rel="noopener noreferrer">Open Quiz in New Tab ↗</a>
+        </div>
+        <div class="quiz-frame-wrap"><iframe id="kajuQuizFrame" title="Kajus Questions birthday questionnaire" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="clipboard-write" data-src="https://script.google.com/macros/s/AKfycbzjfYNyEkHvFwDT4RIoHEc-Oy5aqSgK8D9NnC6fygxMLzZMV80N2VKqbi4Xe8GitAwmLQ/exec"></iframe></div>
+        <p class="quiz-embed-help">If Google prevents the questionnaire from loading inside this page, use <a href="https://script.google.com/macros/s/AKfycbzjfYNyEkHvFwDT4RIoHEc-Oy5aqSgK8D9NnC6fygxMLzZMV80N2VKqbi4Xe8GitAwmLQ/exec" target="_blank" rel="noopener noreferrer">Open Quiz in New Tab</a>. The existing Google Apps Script deployment may need embedding enabled to display here.</p>
+      </section>
+      <section class="view birthday-view" data-view="kaju-game">
+        <div class="page-head"><div><div class="eyebrow">Birthdays / Kaju</div><h1>Kajus Game</h1><p>This birthday game will be created later.</p></div></div>
+        <div class="kaju-placeholder"><span class="placeholder-icon" data-icon="gamepad"></span><h2>Coming Soon</h2><p>The Kajus Game page is reserved for a future update.</p></div>
+      </section>
     </div>
   </main>
 </div>
