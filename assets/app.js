@@ -10,8 +10,8 @@
   let personalMenuUnlocked=false;
   const personalExpectedHash='d0f1e3c007d7e9411923d1922fb8364004ca9eaf7b8aee6cb1955104e35f2dca';
   sessionStorage.removeItem('personalSpaceAuth');
-  const routes=['overview','experience','projects','skills','education','kaju-questions','kaju-game'];
-  const routeLabels={overview:'Overview',experience:'Experience',projects:'Projects',skills:'Skills & Technologies',education:'Education','kaju-questions':'Birthdays / Kaju / Kajus Questions','kaju-game':'Birthdays / Kaju / Kajus Game'};
+  const routes=['overview','experience','projects','skills','education'];
+  const routeLabels={overview:'Overview',experience:'Experience',projects:'Projects',skills:'Skills & Technologies',education:'Education'};
   const tags=arr=>'<div class="tag-row">'+arr.map(x=>'<span class="tag">'+x+'</span>').join('')+'</div>';
   const pageHead=(eyebrow,title,desc,actions='')=>'<div class="page-head"><div><div class="eyebrow">'+eyebrow+'</div><h1>'+title+'</h1><p>'+desc+'</p></div>'+(actions?'<div class="page-actions">'+actions+'</div>':'')+'</div>';
   const experienceOrgAccent=(org)=>({
@@ -383,7 +383,6 @@
     const y=window.scrollY+el.getBoundingClientRect().top-topbar-10;
     window.scrollTo({top:y,behavior:smooth?'smooth':'auto'});
     setActive(route,true);
-    if(route==='kaju-questions')openQuizIfNeeded();
     if(innerWidth<760)qs('#sidebar').classList.remove('mobile-open');
   }
 
@@ -425,24 +424,6 @@
     const body=iconPaths[el.dataset.icon];
     if(body)el.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+body+'</svg>';
   });
-  function openQuizIfNeeded(){
-    const frame=qs('#kajuQuizFrame');
-    if(frame && !frame.src)frame.src=frame.dataset.src;
-  }
-  ['birthdayToggle','kajuToggle'].forEach(id=>{
-    const button=qs('#'+id);
-    button?.addEventListener('click',()=>{
-      if(qs('#sidebar').classList.contains('collapsed')){
-        qs('#sidebar').classList.remove('collapsed');
-        return;
-      }
-      const target=qs('#'+button.getAttribute('aria-controls'));
-      const open=button.getAttribute('aria-expanded')!=='true';
-      button.setAttribute('aria-expanded',String(open));
-      target.hidden=!open;
-    });
-  });
-
   renderOverview();
   renderExperience();
   renderProjects();
@@ -528,7 +509,6 @@
   resetPersonalNav();
 
   const initial=location.hash.replace('#','');
-  if(initial==='kaju-questions')openQuizIfNeeded();
   if(initial==='personal') setTimeout(openPersonalGate,0);
   else if(routes.includes(initial)) setTimeout(()=>scrollToSection(initial,false),0);
   else setActive('overview',false);
