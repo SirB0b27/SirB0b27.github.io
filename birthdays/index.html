@@ -29,6 +29,20 @@
 .bd-sidebar.collapsed .bd-subnav{display:none!important}
 .bd-main .page-head{margin-bottom:20px}
 @media(max-width:760px){.bd-main,.bd-main.sidebar-collapsed{margin-left:0}.bd-grid{grid-template-columns:1fr}.bd-frame{height:75vh;min-height:530px}}
+
+/* Full viewport quiz: no outer portfolio chrome or document scrolling. */
+body.bd-quiz-fullscreen{height:100dvh;overflow:hidden;background:#102b50}
+body.bd-quiz-fullscreen .topbar,body.bd-quiz-fullscreen .bd-sidebar{display:none!important}
+body.bd-quiz-fullscreen .bd-main,body.bd-quiz-fullscreen .bd-main.sidebar-collapsed{margin:0!important;padding:0!important;height:100dvh;min-height:0;overflow:hidden}
+body.bd-quiz-fullscreen .bd-main>.workspace{zoom:1!important;padding:0!important;height:100dvh;max-height:100dvh;overflow:hidden}
+body.bd-quiz-fullscreen [data-bd-view="questions"]{height:100dvh;width:100%;padding:0;margin:0;overflow:hidden}
+body.bd-quiz-fullscreen .bd-frame{position:fixed;inset:0;width:100%;height:100dvh;min-height:0;max-height:none;border:0;border-radius:0}
+body.bd-quiz-fullscreen .bd-frame iframe{width:100%;height:100%;display:block}
+.bd-fullscreen-back{display:none;position:fixed;z-index:80;top:10px;left:12px;padding:8px 11px;background:#102b50e8;border:1px solid #6c96bf;color:white;border-radius:999px;box-shadow:0 2px 12px #0005;cursor:pointer;font-size:12px;font-weight:650;gap:6px;align-items:center}
+body.bd-quiz-fullscreen .bd-fullscreen-back{display:inline-flex}
+.bd-fullscreen-back:hover{background:#174c8b}
+.bd-fullscreen-back:focus-visible{outline:3px solid #78b7f0;outline-offset:2px}
+@media(max-width:760px){body.bd-quiz-fullscreen .bd-frame{height:100dvh;min-height:0}}
 </style>
 </head>
 <body>
@@ -63,11 +77,8 @@
 <button class="bd-card" data-bd-route="game"><span class="bd-icon" data-bd-icon="gamepad"></span><h2>Kajus Game</h2><p>A separate birthday game, coming soon.</p><span class="bd-open">View Placeholder →</span></button>
 </div></section>
 <section class="bd-view" data-bd-view="questions" hidden>
-<button class="secondary-btn bd-back" data-bd-route="kaju">← Kaju</button>
-<div class="page-head"><div><div class="eyebrow">Birthdays / Kaju</div><h1>Kajus Questions</h1><p>The existing birthday questionnaire.</p></div>
-<a class="secondary-btn" target="_blank" rel="noopener noreferrer" href="https://script.google.com/macros/s/AKfycbzjfYNyEkHvFwDT4RIoHEc-Oy5aqSgK8D9NnC6fygxMLzZMV80N2VKqbi4Xe8GitAwmLQ/exec">Open Quiz in New Tab ↗</a></div>
+<button class="bd-fullscreen-back" type="button" data-bd-route="kaju" aria-label="Back to Kaju">← Kaju</button>
 <div class="bd-frame"><iframe title="Kajus Questions questionnaire" id="quizFrame" data-src="https://script.google.com/macros/s/AKfycbzjfYNyEkHvFwDT4RIoHEc-Oy5aqSgK8D9NnC6fygxMLzZMV80N2VKqbi4Xe8GitAwmLQ/exec" allow="clipboard-write" referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
-<p class="bd-tip">If the quiz is blocked inside this page, select <a target="_blank" rel="noopener noreferrer" href="https://script.google.com/macros/s/AKfycbzjfYNyEkHvFwDT4RIoHEc-Oy5aqSgK8D9NnC6fygxMLzZMV80N2VKqbi4Xe8GitAwmLQ/exec">Open Quiz in New Tab</a>. Google Apps Script may require an iframe embedding setting.</p>
 </section>
 <section class="bd-view" data-bd-view="game" hidden>
 <button class="secondary-btn bd-back" data-bd-route="kaju">← Kaju</button>
@@ -92,6 +103,7 @@ function applyZoom(){document.documentElement.style.setProperty('--zoom',zoom*1.
 function navigate(route,update=true){
 if(!routes.includes(route))route='home';
 qa('[data-bd-view]').forEach(el=>el.hidden=el.dataset.bdView!==route);
+document.body.classList.toggle('bd-quiz-fullscreen',route==='questions');
 qa('.sidebar [data-bd-route]').forEach(el=>el.classList.toggle('active',el.dataset.bdRoute===route));
 q('#birthdaySubnav').hidden=route==='home';
 q('#kajuSubnav').hidden=!['questions','game'].includes(route);
