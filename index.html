@@ -19,29 +19,13 @@ input{width:100%;padding:13px 12px;background:#101a2b;border:1px solid #54729b;b
 @media(max-width:750px){.grid{grid-template-columns:1fr}.card{min-height:170px}.icon{margin-bottom:14px}body{align-items:start;padding-top:55px}}
 </style></head><body><main><div class="eyebrow">Home / Workspaces</div><h1>Choose a workspace</h1><p>Explore the professional portfolio, birthday projects, or the personal workspace.</p>
 <div class="grid">
-<button type="button" class="card" data-space="portfolio"><span class="icon"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18"/></svg></span><strong>Portfolio</strong><span class="desc">Overview, Experience, Projects, Skills & Technologies, Education and Resume.</span><span class="open">🔒 Enter Portfolio →</span></button>
+<a class="card" href="https://script.google.com/macros/s/AKfycbwktRN7wZNTEOQ4Hn_46BTtroswpBwEXjfBQJ05jF07YgSso4dB7Hu6jk_CrP8AFjjZIA/exec?workspace=Portfolio"><span class="icon"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18"/></svg></span><strong>Portfolio</strong><span class="desc">Overview, Experience, Projects, Skills & Technologies, Education and Resume.</span><span class="open">🔒 Sign in to Portfolio →</span></a>
 <a class="card" href="birthdays/"><span class="icon"><svg viewBox="0 0 24 24"><path d="M4 10h16v11H4zM3 10h18M7 10V7m5 3V7m5 3V7M6 6c-1-2 0-3 1-4 2 1 2 3 0 4m5 0c-1-2 0-3 1-4 2 1 2 3 0 4m5 0c-1-2 0-3 1-4 2 1 2 3 0 4"/></svg></span><strong>Birthdays</strong><span class="desc">Browse Kaju's birthday activities, questionnaire and game.</span><span class="open">Open Birthdays →</span></a>
-<button type="button" class="card" data-space="personal"><span class="icon"><svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span><strong>Personal</strong><span class="desc">Open the separate password-protected personal workspace.</span><span class="open">🔒 Enter Personal →</span></button>
+<a class="card" href="https://script.google.com/macros/s/AKfycbwktRN7wZNTEOQ4Hn_46BTtroswpBwEXjfBQJ05jF07YgSso4dB7Hu6jk_CrP8AFjjZIA/exec?workspace=Personal"><span class="icon"><svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span><strong>Personal</strong><span class="desc">Open the separate password-protected personal workspace.</span><span class="open">🔒 Sign in to Personal →</span></a>
 </div></main>
-<dialog id="gate" aria-labelledby="gateTitle"><form id="gateForm"><div class="eyebrow">Private Workspace</div><h2 id="gateTitle">Portfolio</h2><p>Enter the password to continue.</p><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" required><div id="error" class="error" hidden>Incorrect password.</div><div class="actions"><button class="action" type="button" id="cancel">Cancel</button><button class="action primary" type="submit">Continue</button></div></form></dialog>
 <script>
-(()=>{
-const HASH='d0f1e3c007d7e9411923d1922fb8364004ca9eaf7b8aee6cb1955104e35f2dca';
-const dialog=document.getElementById('gate'),input=document.getElementById('password'),title=document.getElementById('gateTitle'),error=document.getElementById('error');
-let selected='portfolio';
-function openGate(space){selected=space;title.textContent=space==='portfolio'?'Portfolio':'Personal';input.value='';error.hidden=true;dialog.showModal();input.focus()}
-document.querySelectorAll('[data-space]').forEach(b=>b.addEventListener('click',()=>openGate(b.dataset.space)));
-document.getElementById('cancel').addEventListener('click',()=>dialog.close());
-document.getElementById('gateForm').addEventListener('submit',async e=>{
-e.preventDefault();
-const bytes=new TextEncoder().encode(input.value);
-const digest=await crypto.subtle.digest('SHA-256',bytes);
-const hex=[...new Uint8Array(digest)].map(b=>b.toString(16).padStart(2,'0')).join('');
-if(hex!==HASH){error.hidden=false;input.select();return}
-if(selected==='portfolio'){sessionStorage.setItem('portfolioSpaceAuth','1');location.href='portfolio/#overview'}
-else{sessionStorage.setItem('personalSpaceAuth','1');location.href='personal/#home'}
-});
-const requested=location.hash.slice(1).toLowerCase();
-if(requested==='portfolio'||requested==='personal')openGate(requested);
+(()=>{const space=location.hash.slice(1).toLowerCase();
+const destinations={portfolio:"https://script.google.com/macros/s/AKfycbwktRN7wZNTEOQ4Hn_46BTtroswpBwEXjfBQJ05jF07YgSso4dB7Hu6jk_CrP8AFjjZIA/exec?workspace=Portfolio",personal:"https://script.google.com/macros/s/AKfycbwktRN7wZNTEOQ4Hn_46BTtroswpBwEXjfBQJ05jF07YgSso4dB7Hu6jk_CrP8AFjjZIA/exec?workspace=Personal"};
+if(Object.prototype.hasOwnProperty.call(destinations,space))location.replace(destinations[space]);
 })();
 </script></body></html>
