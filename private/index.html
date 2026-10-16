@@ -21,7 +21,7 @@ label{font-size:13px;color:#cfdef3}button{cursor:pointer;font:inherit}button.pri
 <script>
 'use strict';
 /* Intentionally not connected until an HTTPS bridge has been deployed and tested. */
-const API_URL = ''; // Set this to the verified Cloudflare Worker HTTPS URL on a TEST BRANCH ONLY.
+const API_URL = 'https://github-private-workspaces.hemanth2355.workers.dev/';
 const $=id=>document.getElementById(id);const state={space:'Portfolio',token:null,data:null};
 const escapeHTML=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function show(id){['loginPanel','resetPanel','contentPanel'].forEach(x=>$(x).classList.toggle('hidden',x!==id))}
