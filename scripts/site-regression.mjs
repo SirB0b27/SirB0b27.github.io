@@ -11,10 +11,23 @@ const resume = read("resume/index.html");
 const app = read("assets/app.js");
 const personal = read("personal/index.html");
 
-if (index.includes("Personal Analytics</span>") || index.includes("College Projects</span>")) {
-  fail("Public Portfolio sidebar should expose only the Personal entry, not private child links.");
+// The public homepage is a workspace chooser, not the Portfolio sidebar.
+if (!index.includes('data-space="portfolio"') || !index.includes('data-space="personal"') || !index.includes('href="birthdays/"')) {
+  fail("Workspace homepage must show Portfolio, Personal, and Birthdays.");
 }
-if (!index.includes('id="personalNavTrigger"')) fail("Public Personal entry is missing.");
+if (index.includes("Personal Analytics</span>") || index.includes("College Projects</span>")) {
+  fail("Public workspace chooser must not expose private Personal child links.");
+}
+const portfolio = read("portfolio/index.html");
+const portfolioApp = read("portfolio/app.js");
+if (!portfolio.includes('sessionStorage.getItem("portfolioSpaceAuth")') || !portfolio.includes('href="../"')) {
+  fail("Portfolio page is missing its access gate or workspace-home link.");
+}
+if (!portfolio.includes('id="personalNavTrigger"')) fail("Portfolio workspace Personal entry is missing.");
+if (!portfolioApp.includes("personalNavTrigger")) fail("Portfolio workspace Personal navigation handler is missing.");
+if (!index.includes("sessionStorage.setItem('portfolioSpaceAuth','1')") || !index.includes("sessionStorage.setItem('personalSpaceAuth','1')")) {
+  fail("Homepage must unlock both Portfolio and Personal workspaces.");
+}
 
 const templates = ["azurill","bronzor","chikorita","ditgar","ditto","gengar","glalie","kakuna","lapras","leafish","meowth","onyx","pikachu","rhyhorn","scizor"];
 for (const template of templates) {
