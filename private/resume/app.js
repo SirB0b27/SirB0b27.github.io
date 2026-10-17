@@ -103,11 +103,62 @@
     '</div>'
   ).join(''),'resume-education-section');
 
-  const resumeSkillLines=[
+  const baseResumeSkillLines=[
     {label:"Analytics & BI",value:"SQL, Snowflake, Sigma, Tableau, Power BI, Forecasting, KPI Design, Dashboard Design, Reconciliation"},
     {label:"Programming & Data",value:"Python, REST APIs, JavaScript, PostgreSQL, MySQL, MongoDB, Data Modeling, ETL/ELT, Stored Procedures"},
     {label:"Delivery",value:"Business Process Analysis, Requirements Gathering, Decision Support, QA, Process Mapping, Technical Documentation, Stakeholder Collaboration"}
   ];
+  const requirementsInput=document.getElementById('skillsInput');
+  const accentInput=document.getElementById('accentColor');
+  let requirements=localStorage.getItem('resumeJobRequirementsV1')||'';
+  let accent=localStorage.getItem('resumeAccentV1')||'#0084d1';
+  if(!/^#[0-9a-f]{6}$/i.test(accent))accent='#0084d1';
+  root.style.setProperty('--resume-accent',accent);
+  accentInput.value=accent;
+  requirementsInput.value=requirements;
+  const normSkill=x=>String(x).toLowerCase().replace(/[^a-z0-9+#/]+/g,' ').trim();
+  const aliases={
+   'etl/elt':['etl','elt','data pipelines','data integration'],
+   'rest apis':['rest api','api integration','restful api'],
+   'power bi':['powerbi'],
+   'kpi design':['kpi','key performance indicators'],
+   'qa':['quality assurance'],
+   'sql':['sql queries','sql development'],
+   'business process analysis':['process analysis'],
+   'dashboard design':['dashboard development','dashboarding']
+  };
+  function isSkillMatch(skill,posting){
+    const text=' '+normSkill(posting)+' ';
+    const terms=[skill,...(aliases[normSkill(skill)]||[])];
+    return terms.some(term=>{
+      const phrase=normSkill(term);
+      if(!phrase)return false;
+      const index=text.indexOf(' '+phrase+' ');
+      return index>=0;
+    });
+  }
+  function getSkillGroups(){
+    if(!requirements.trim())return baseResumeSkillLines;
+    return baseResumeSkillLines.map(group=>{
+      const skills=group.value.split(', ').filter(skill=>isSkillMatch(skill,requirements));
+      return {label:group.label,value:skills.join(', ')};
+    }).filter(group=>group.value);
+  }
+  function displaySkillsMatch(){
+    const groups=getSkillGroups();
+    const matches=groups.flatMap(g=>g.value.split(', ')).filter(Boolean);
+    document.getElementById('skillsMatches').textContent=requirements.trim()?
+      (matches.length?matches.length+' matching existing skills: '+matches.join(', '):'No matching skills found in the current resume list. The default skills remain visible.'):
+      'No requirements entered. All default resume skills are displayed.';
+  }
+  let resumeSkillLines=baseResumeSkillLines;
+  function applyRequirements(){
+    const matches=getSkillGroups();
+    resumeSkillLines=matches.length?matches:baseResumeSkillLines;
+    displaySkillsMatch();
+    renderTemplate();
+  }
+
   const skillsHTML=()=>section('Technical Skills',resumeSkillLines.map(x=>
     '<div class="resume-skill-line"><strong>'+escapeHTML(x.label)+':</strong> '+escapeHTML(x.value)+'</div>'
   ).join(''),'resume-skills-section');
@@ -458,6 +509,22 @@
     const next=root.dataset.theme==='dark'?'light':'dark';
     root.dataset.theme=next;localStorage.setItem('portfolioTheme',next);
   };
+  accentInput.addEventListener('input',()=>{
+    accent=accentInput.value;
+    root.style.setProperty('--resume-accent',accent);
+    localStorage.setItem('resumeAccentV1',accent);
+    renderTemplate();
+  });
+  const skillsPanel=document.getElementById('skillsPanel');
+  document.getElementById('skillsToggle').onclick=()=>{skillsPanel.classList.toggle('open');panel.classList.remove('open');photoPanel.classList.remove('open')};
+  document.getElementById('skillsClose').onclick=()=>skillsPanel.classList.remove('open');
+  document.getElementById('skillsDone').onclick=()=>skillsPanel.classList.remove('open');
+  document.getElementById('skillsReset').onclick=()=>{requirements='';requirementsInput.value='';localStorage.removeItem('resumeJobRequirementsV1');applyRequirements()};
+  requirementsInput.addEventListener('input',()=>{
+    requirements=requirementsInput.value;
+    localStorage.setItem('resumeJobRequirementsV1',requirements);
+    applyRequirements();
+  });
   document.getElementById('summaryToggle').onclick=()=>{panel.classList.toggle('open');photoPanel.classList.remove('open')};
   document.getElementById('summaryClose').onclick=()=>panel.classList.remove('open');
   document.getElementById('summaryDone').onclick=()=>{setSummary(summaryInput.value);panel.classList.remove('open')};
@@ -499,6 +566,7 @@
     root.dataset.theme=localStorage.getItem('portfolioTheme')||'dark';
     if(!allowedTemplates.includes(template))template='onyx';
     summaryInput.value=customSummary;
+    applyRequirements();
     await refreshPhotoLibrary();
     if(document.fonts?.ready)await document.fonts.ready;
     autoFitContent();
