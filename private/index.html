@@ -91,17 +91,80 @@ const $=id=>document.getElementById(id);const state={space:'Portfolio',token:nul
 const escapeHTML=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function show(id){['loginPanel','resetPanel','contentPanel'].forEach(x=>$(x).classList.toggle('private-hidden',x!==id))}
 function message(s){$('status').textContent=s||''}
-function setSpace(space){state.space=space;state.token=null;state.data=null;$('password').value='';$('sectionsNav').replaceChildren();$('content').replaceChildren();$('sectionNavLabel').textContent=space;$('crumb').textContent='Workspaces / '+space;$('pageTitle').textContent=space;$('pageSubtitle').textContent='Sign in to view protected content.';document.querySelectorAll('[data-space]').forEach(x=>x.classList.toggle('active',x.dataset.space===space));history.replaceState(null,'','?workspace='+encodeURIComponent(space));show('loginPanel');message(API_URL?'':'Backend bridge not configured yet.');}
+function setSpace(space){state.space=space;state.token=null;state.data=null;state.dashboardModels=null;$('password').value='';$('sectionsNav').replaceChildren();$('content').replaceChildren();$('sectionNavLabel').textContent=space;$('crumb').textContent='Workspaces / '+space;$('pageTitle').textContent=space;$('pageSubtitle').textContent='Sign in to view protected content.';document.querySelectorAll('[data-space]').forEach(x=>x.classList.toggle('active',x.dataset.space===space));history.replaceState(null,'','?workspace='+encodeURIComponent(space));show('loginPanel');message(API_URL?'':'Backend bridge not configured yet.');}
 async function call(action,fields={}){if(!/^https:\/\//.test(API_URL))throw Error('Backend bridge not configured.');const response=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,workspace:state.space,...fields}),cache:'no-store',redirect:'follow'});if(!response.ok)throw Error('Request failed ('+response.status+').');const result=await response.json();if(!result.ok)throw Error(result.error||'Request failed.');return result.data}
 async function act(fn){message('Working…');try{await fn();message('')}catch(e){message(e.message)}}
 function renderSection(index){const s=state.data?.sections?.[index];if(!s)return;document.querySelectorAll('[data-section]').forEach(x=>x.classList.toggle('active',Number(x.dataset.section)===index));const output=$('content');output.replaceChildren();const title=document.createElement('h2');title.textContent=s.title;output.append(title);for(const p of s.paragraphs||[]){const el=document.createElement('p');el.className='private-meta';el.textContent=p;output.append(el)}const grid=document.createElement('div');grid.className='private-section-grid';for(const item of s.items||[]){const card=document.createElement('article');card.className='private-item';card.innerHTML='<h3>'+escapeHTML(item.title)+'</h3><p>'+escapeHTML(item.subtitle)+'</p><p>'+escapeHTML(item.description)+'</p><div class="tags">'+(item.tags||[]).map(x=>'<span class="tag">'+escapeHTML(x)+'</span>').join('')+'</div>';grid.append(card)}output.append(grid)}
 function render(data){state.data=data;show('contentPanel');$('pageTitle').textContent=data.title||state.space;$('pageSubtitle').textContent=data.subtitle||'';const nav=$('sectionsNav');nav.replaceChildren();(data.sections||[]).forEach((s,i)=>{const b=document.createElement('button');b.type='button';b.className='nav-item';b.dataset.section=i;b.innerHTML='<span class="nav-icon">•</span><span class="nav-text"></span>';b.querySelector('.nav-text').textContent=s.title;b.onclick=()=>renderSection(i);nav.append(b)});renderSection(0)}
+
+/* Protected dashboard models: do not load legacy /data/*.js public files. */
+async function loadDashboardModels(){
+ const wanted=state.space==='Portfolio'?['portfolio','education']:['analytics'];
+ const result=await Promise.all(wanted.map(async model=>[model,await call('model',{token:state.token,model})]));
+ const models=Object.fromEntries(result);
+ state.dashboardModels=models;
+ const sections=state.space==='Portfolio'?[
+  {title:'Overview',key:'overview'},{title:'Experience',key:'experience'},{title:'Projects',key:'projects'},
+  {title:'Skills & Technologies',key:'skills'},{title:'Education',key:'education'}
+ ]:[{title:'Personal Home',key:'home'},{title:'Personal Analytics',key:'analytics'}];
+ state.data={title:state.space,subtitle:'Original dashboard data loaded securely from Google Drive',sections};
+ show('contentPanel');$('pageTitle').textContent=state.space;$('pageSubtitle').textContent=state.data.subtitle;
+ const nav=$('sectionsNav');nav.replaceChildren();
+ sections.forEach((section,i)=>{const b=document.createElement('button');b.type='button';b.className='nav-item';b.dataset.section=i;
+  b.innerHTML='<span class="nav-icon">•</span><span class="nav-text"></span>';
+  b.querySelector('.nav-text').textContent=section.title;b.onclick=()=>renderDashboardSection(i);nav.append(b)});
+ renderDashboardSection(0);
+}
+function renderDashboardSection(i){
+ const section=state.data.sections[i];if(!section)return;
+ document.querySelectorAll('[data-section]').forEach(b=>b.classList.toggle('active',Number(b.dataset.section)===i));
+ $('crumb').textContent=state.space+' / '+section.title;
+ const content=$('content');content.replaceChildren();
+ const heading=document.createElement('h2');heading.textContent=section.title;content.append(heading);
+ const info=document.createElement('p');info.className='private-meta';
+ info.textContent='Protected dashboard model preview. Full original interactions will be migrated separately.';content.append(info);
+ const models=state.dashboardModels;
+ const portfolio=models.portfolio||{},education=models.education||{},analytics=models.analytics||{};
+ const el=(tag,text,cls)=>{const n=document.createElement(tag);n.textContent=String(text??'');if(cls)n.className=cls;return n};
+ const grid=()=>{const n=document.createElement('div');n.className='private-section-grid';content.append(n);return n};
+ const card=(parent,title,desc,tags)=>{const n=document.createElement('article');n.className='private-item';n.append(el('h3',title),el('p',desc));
+ if(Array.isArray(tags)){const wrap=document.createElement('div');for(const t of tags.slice(0,8))wrap.append(el('span',t,'tag'));n.append(wrap)}parent.append(n)};
+ if(section.key==='overview'){
+  content.append(el('p',portfolio.profile?.summary||''));const g=grid();
+  for(const m of portfolio.metrics||[])card(g,m.label,m.value+' — '+m.note);
+  const sub=el('h3','Project highlights');content.append(sub);const projects=grid();
+  for(const p of (portfolio.projects||[]).slice(0,6))card(projects,p.name,p.summary,p.technologies);
+ }else if(section.key==='experience'){
+  const g=grid();for(const x of portfolio.experience||[])card(g,x.role+' — '+x.org,x.period+' · '+x.location+'\n'+(x.bullets||[]).join(' '),x.tags);
+ }else if(section.key==='projects'){
+  const filter=document.createElement('input');filter.type='search';filter.placeholder='Search projects';filter.setAttribute('aria-label','Search projects');
+  filter.style.cssText='max-width:400px;width:100%;padding:10px;margin:12px 0;background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:8px';
+  content.append(filter);const g=grid();const projects=portfolio.projects||[];
+  function draw(){g.replaceChildren();for(const x of projects.filter(x=>(x.name+' '+x.summary+' '+(x.technologies||[]).join(' ')).toLowerCase().includes(filter.value.toLowerCase())))card(g,x.name,x.category+' · '+x.period+' — '+x.summary,x.technologies)}
+  filter.oninput=draw;draw();
+ }else if(section.key==='skills'){
+  const g=grid();for(const x of portfolio.skills?.categories||portfolio.skills||[]){if(x&&typeof x==='object')card(g,x.label||x.name||x.category,x.value||x.description||'',x.tags)}
+ }else if(section.key==='education'){
+  const g=grid();for(const x of education.programs||[])card(g,x.program||x.degree,x.institution+' · '+x.awarded,[x.degree,x.secondary].filter(Boolean));
+  const sub=el('h3','Course catalog ('+(education.courses||[]).length+')');content.append(sub);const courses=grid();
+  for(const x of education.courses||[])card(courses,x.code+' — '+x.title,x.institution+' · '+x.summary,x.topics);
+ }else if(section.key==='home'){
+  const g=grid();card(g,'Personal Analytics','Review your protected work activity and performance models.');card(g,'College Projects','Coursework documents require a separate protected file migration.');
+ }else if(section.key==='analytics'){
+  const g=grid();for(const m of analytics.metrics||[])card(g,m.label,String(m.value)+' — '+m.note);
+  const sub=el('h3','Documented work activity by year');content.append(sub);const y=grid();
+  for(const x of analytics.workItemsByYear||[])card(y,x.year,x.value+' documented items');
+  const sub2=el('h3','Major project families');content.append(sub2);const f=grid();
+  for(const x of analytics.projectFamilies||[])card(f,x.name,x.period+' · '+x.count+' records');
+ }
+}
+
 document.querySelectorAll('[data-space]').forEach(x=>x.onclick=()=>setSpace(x.dataset.space));
-$('loginForm').onsubmit=e=>{e.preventDefault();act(async()=>{const result=await call('login',{email:$('email').value,password:$('password').value});state.token=result.token;$('password').value='';try{render(await call('content',{token:state.token}))}catch(err){state.token=null;throw err}})};
+$('loginForm').onsubmit=e=>{e.preventDefault();act(async()=>{const result=await call('login',{email:$('email').value,password:$('password').value});state.token=result.token;$('password').value='';try{await loadDashboardModels()}catch(err){state.token=null;throw err}})};
 $('forgot').onclick=()=>{show('resetPanel');$('recovery').value=$('email').value;message('')};$('back').onclick=()=>{show('loginPanel');message('')};
 $('sendCode').onclick=()=>act(async()=>{const result=await call('requestReset',{email:$('recovery').value});message(result.message||'If the email matches, a code will be sent.')});
 $('resetForm').onsubmit=e=>{e.preventDefault();act(async()=>{const result=await call('completeReset',{email:$('recovery').value,code:$('code').value,newPassword:$('newPassword').value});$('code').value='';$('newPassword').value='';show('loginPanel');message(result.message||'Password updated.')})};
-$('logout').onclick=()=>act(async()=>{const token=state.token;state.token=null;state.data=null;$('content').replaceChildren();$('sectionsNav').replaceChildren();show('loginPanel');await call('logout',{token})});
+$('logout').onclick=()=>act(async()=>{const token=state.token;state.token=null;state.data=null;state.dashboardModels=null;$('content').replaceChildren();$('sectionsNav').replaceChildren();show('loginPanel');await call('logout',{token})});
 setSpace(new URLSearchParams(location.search).get('workspace')?.toLowerCase()==='personal'?'Personal':'Portfolio');
 
 const originalSetSpace=setSpace;
