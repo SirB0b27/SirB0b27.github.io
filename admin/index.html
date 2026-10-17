@@ -1,0 +1,25 @@
+<!doctype html><html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Admin | Private Workspaces</title><link rel="stylesheet" href="../assets/styles.css">
+<style>.admin-auth{max-width:480px;margin:45px auto;padding:24px;border:1px solid var(--line);border-radius:14px;background:var(--panel)}.admin-auth label{display:block;margin:14px 0 6px}.admin-auth input{width:100%;padding:12px;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:8px}.admin-auth button{margin-top:15px}.admin-container{max-width:1050px;margin:auto;padding:28px}.admin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.admin-grid article{padding:22px;border-radius:12px;border:1px solid var(--line);background:var(--panel)}@media(max-width:700px){.admin-grid{grid-template-columns:1fr}}</style>
+</head><body><div class="admin-container"><p><a href="../">← Workspace Home</a></p><div class="page-head"><div><div class="eyebrow">Administration</div><h1>Workspace Access</h1><p>Separate administrator authentication for future access settings, scheduling, audit history and calendar.</p></div></div>
+<section class="admin-auth" id="login"><h2>Admin sign in</h2><form id="loginForm"><label for="email">Admin email</label><input id="email" type="email" autocomplete="username" required><label for="password">Admin password</label><input id="password" type="password" autocomplete="current-password" minlength="16" required><button type="submit" class="primary-btn">Sign in</button></form></section>
+<section hidden id="dashboard"><p><button class="secondary-btn" id="logout">Sign out</button></p><div class="admin-grid"><article><h2>Portfolio</h2><p>Access-policy controls are not enabled yet.</p></article><article><h2>Personal</h2><p>Access-policy controls are not enabled yet.</p></article><article><h2>Birthdays</h2><p>Protection of the existing direct quiz URL is still pending.</p></article></div><h2>Change log and calendar</h2><p>Coming after the server-enforced policy engine and audit Sheet are installed. Nothing here changes live protection.</p></section>
+<p role="status" aria-live="polite" id="status"></p></div>
+<script>
+'use strict';
+const API='https://github-private-workspaces.hemanth2355.workers.dev/';
+let token=null;
+const $=id=>document.getElementById(id);
+async function api(action,fields={}){
+ const response=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},cache:'no-store',body:JSON.stringify({workspace:'Portfolio',action,...fields})});
+ if(!response.ok)throw Error('Connection error');
+ const result=await response.json();
+ if(!result.ok)throw Error(result.error||'Request failed');
+ return result.data;
+}
+$('loginForm').addEventListener('submit',async e=>{
+ e.preventDefault();$('status').textContent='Signing in…';
+ try{const result=await api('adminLogin',{email:$('email').value,password:$('password').value});token=result.token;$('password').value='';const status=await api('adminStatus',{token});if(!status?.authenticated)throw Error('Admin session rejected');$('login').hidden=true;$('dashboard').hidden=false;$('status').textContent='';}
+ catch(error){token=null;$('status').textContent=error.message}
+});
+$('logout').onclick=async()=>{const old=token;token=null;$('dashboard').hidden=true;$('login').hidden=false;try{if(old)await api('adminLogout',{token:old})}catch(e){}};
+</script></body></html>
