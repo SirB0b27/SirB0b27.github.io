@@ -43,7 +43,7 @@
 
   function renderOverview(){
     qs('[data-view="overview"]').innerHTML=
-      pageHead('Professional CV',d.profile.name,d.profile.summary,'<a class="primary-btn" href="../?workspace=Portfolio">Open Resume</a>')+
+      pageHead('Professional CV',d.profile.name,d.profile.summary,'<a class="primary-btn" href="../resume/">Open Resume</a>')+
       '<div class="grid kpi-grid">'+d.metrics.map(m=>'<div class="kpi"><div class="kpi-label">'+m.label+'</div><div class="kpi-value">'+m.value+'</div><div class="kpi-note">'+m.note+'</div></div>').join('')+'</div>'+
       '<div class="grid dashboard-grid">'+
         '<div class="panel"><div class="panel-head"><div><div class="panel-title">Professional Scope</div><div class="panel-subtitle">Business Intelligence, Analytics Engineering, Financial Analytics, and Decision Support</div></div></div><div class="panel-body"><div class="stack">'+
