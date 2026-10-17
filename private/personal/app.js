@@ -4,7 +4,7 @@
   const data=window.PERSONAL_ANALYTICS||{};
   // Same-origin assignment entry pages use this flag to confirm they are being
   // rendered inside the authenticated Personal workspace rather than opened directly.
-  window.__collegeProjectsUnlocked=false;
+  window.__collegeProjectsUnlocked=true; // Enables existing public demo wrappers only; NOT authentication.
   window.__personalSpaceUnlocked=true;
   let analyticsRendered=false;
   let currentView='home';
@@ -62,13 +62,25 @@
 
   function showAssignment(n,updateHash=true){
     n=String(assignments[n]?n:1);
-    qa('.assignment-tab').forEach(x=>x.classList.toggle('active',x.dataset.assignment===n));
-    const stage=q('#assignmentStage');stage.replaceChildren();
-    const note=document.createElement('div');note.className='privacy-banner';
-    note.textContent='Assignment previews are temporarily unavailable while the original project files are moved to protected storage.';
-    stage.append(note);
-    q('#assignmentDescription').textContent=assignments[n].desc;
-    const open=q('#openAssignment');if(open){open.removeAttribute('href');open.setAttribute('aria-disabled','true');open.hidden=true}
+    const item=assignments[n];
+    qa('.assignment-tab').forEach(tab=>tab.classList.toggle('active',tab.dataset.assignment===n));
+    const stage=q('#assignmentStage');
+    let frame=q('[data-assignment-frame="'+n+'"]');
+    if(!frame){
+      frame=document.createElement('iframe');
+      frame.className='assignment-frame';
+      frame.dataset.assignmentFrame=n;
+      frame.title='Interactive IT201 Assignment '+n+' — public compatibility demo';
+      frame.referrerPolicy='strict-origin-when-cross-origin';
+      // Legacy same-origin assignment wrappers check their parent for this marker.
+      // This is NOT security and does not restrict direct public GitHub URLs.
+      frame.src=item.src;
+      stage.append(frame);
+    }
+    qa('[data-assignment-frame]').forEach(x=>x.hidden=x.dataset.assignmentFrame!==n);
+    q('#assignmentDescription').textContent=item.desc+' — Interactive public compatibility demo. This page is not protected against direct URL access.';
+    const open=q('#openAssignment');
+    if(open){open.hidden=true;open.removeAttribute('href');open.setAttribute('aria-disabled','true')}
     if(updateHash)history.replaceState(null,'','#college/assignment-'+n);
   }
 
