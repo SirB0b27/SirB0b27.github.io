@@ -23,6 +23,35 @@
 .admin-warning{margin:0}
 #status{min-height:20px}
 @media(max-width:850px){#dashboard>.admin-grid{grid-template-columns:1fr!important}#dashboard article{padding:18px}}
+
+/* Workspace palette: applied consistently to status cards, calendar and details. */
+:root{--workspace-portfolio:#866dff;--workspace-personal:#25b3b1;--workspace-birthdays:#efa64d}
+.workspace-card{border-left:5px solid var(--workspace-color)!important;background:color-mix(in srgb,var(--workspace-color) 13%,var(--panel))!important}
+.workspace-card.portfolio,.calendar-rule.portfolio{--workspace-color:var(--workspace-portfolio)}
+.workspace-card.personal,.calendar-rule.personal{--workspace-color:var(--workspace-personal)}
+.workspace-card.birthdays,.calendar-rule.birthdays{--workspace-color:var(--workspace-birthdays)}
+.workspace-card h2{color:var(--workspace-color)}
+.calendar-legend{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin:10px 0}
+.workspace-dot{display:inline-block;flex:none;width:11px;height:11px;border-radius:50%;vertical-align:middle}
+.workspace-dot.portfolio{background:var(--workspace-portfolio)}
+.workspace-dot.personal{background:var(--workspace-personal)}
+.workspace-dot.birthdays{background:var(--workspace-birthdays)}
+.calendar-dots{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:4px}
+#calendar .calendar-day{min-width:0;min-height:68px;display:flex;flex-direction:column;justify-content:space-between;align-items:stretch;gap:8px;text-align:left;padding:7px;border:1px solid var(--line);border-radius:7px;color:var(--text);background:var(--panel);cursor:pointer}
+#calendar .calendar-day:hover,#calendar .calendar-day:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+#calendar .calendar-day.selected{background:var(--accent-soft);border-color:var(--accent)}
+#calendar .calendar-empty{border:0;min-height:68px}
+#calendar.calendar-day{grid-template-columns:1fr}
+#calendar.calendar-day .calendar-day{min-height:85px}
+.calendar-view-label{margin:0!important;font-size:12px}
+#calendarView{min-height:34px!important;width:auto!important;max-width:125px;padding:5px!important}
+.calendar-details{padding:16px;margin-top:14px;border:1px solid var(--line);border-radius:10px;background:var(--panel-2)}
+.calendar-details h3{margin:0 0 12px}
+.calendar-rule-list{display:grid;gap:9px}
+.calendar-rule{border-left:4px solid var(--workspace-color);padding:12px;background:var(--panel);border-radius:7px;display:grid;grid-template-columns:1fr auto;gap:5px 12px}
+.calendar-rule small{grid-column:1/-1;color:var(--muted)}
+#calendar .calendar-day .workspace-dot{width:10px;height:10px}
+@media(max-width:760px){#calendar .calendar-day{min-height:54px;padding:4px}#calendar .calendar-empty{min-height:54px}.calendar-dots{gap:2px}#calendar .calendar-day .workspace-dot{width:7px;height:7px}}
 </style>
 </head><body><div class="admin-container"><p><a href="../">← Workspace Home</a></p><div class="page-head"><div><div class="eyebrow">Administration</div><h1>Workspace Access</h1><p>Separate administrator authentication for future access settings, scheduling, audit history and calendar.</p></div></div>
 <section class="admin-auth" id="login"><h2>Admin sign in</h2><form id="loginForm"><label for="email">Admin email</label><input id="email" type="email" autocomplete="username" required><label for="password">Admin password</label><input id="password" type="password" autocomplete="current-password" minlength="16" required><button type="submit" class="primary-btn">Sign in</button></form></section>
@@ -38,7 +67,7 @@
 <div id="dateInputs" hidden><label for="policyStart">Start date</label><input type="date" id="policyStart"><label for="policyEnd">End date</label><input type="date" id="policyEnd"></div>
 <label for="policyReason">Reason (optional)</label><input id="policyReason" maxlength="500">
 <button type="submit" class="primary-btn">Record policy</button></form></article>
-<article><h2>Schedule calendar</h2><div class="admin-toolbar"><button type="button" class="secondary-btn" id="prevMonth">←</button><strong id="monthLabel"></strong><button type="button" class="secondary-btn" id="nextMonth">→</button></div><div id="calendar"></div><p class="muted">Dates indicate recorded *preview* rules, not actual public access.</p></article></div>
+<article><h2>Schedule calendar</h2><div class="admin-toolbar"><button type="button" class="secondary-btn" id="prevMonth">←</button><strong id="monthLabel"></strong><label class="calendar-view-label" for="calendarView">View</label><select id="calendarView" aria-label="Calendar view"><option value="month">Monthly</option><option value="week">Weekly</option><option value="day">Daily</option></select><button type="button" class="secondary-btn" id="nextMonth">→</button></div><div class="calendar-legend" aria-label="Workspace colors"><span class="workspace-dot portfolio"></span>Portfolio <span class="workspace-dot personal"></span>Personal <span class="workspace-dot birthdays"></span>Birthdays</div><div id="calendar"></div><section id="calendarDetails" class="calendar-details" hidden aria-live="polite"></section><p class="muted">Dates indicate recorded *preview* rules, not actual public access.</p></article></div>
 <article class="audit-panel"><h2>Change log</h2><div class="table-wrap"><table class="data-table"><thead><tr><th>Time (UTC)</th><th>Workspace</th><th>Action</th><th>Password</th><th>Duration</th><th>Reason</th><th>Manage</th></tr></thead><tbody id="auditRows"></tbody></table></div></article>
 </section>
 <p role="status" aria-live="polite" id="status"></p></div>
@@ -61,32 +90,96 @@ $('loginForm').addEventListener('submit',async e=>{
 });
 $('logout').onclick=async()=>{const old=token;token=null;$('dashboard').hidden=true;$('login').hidden=false;try{if(old)await api('adminLogout',{token:old})}catch(e){}};
 
-let policyData=null,calendarMonth=new Date();calendarMonth=new Date(calendarMonth.getFullYear(),calendarMonth.getMonth(),1);
+
+let policyData=null;
+const WORKSPACE_COLORS={Portfolio:'portfolio',Personal:'personal',Birthdays:'birthdays'};
+let calendarCursor=new Date(), calendarView='month', selectedCalendarDate=null;
+calendarCursor=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth(),calendarCursor.getDate());
 const node=(tag,value)=>{const e=document.createElement(tag);if(value!==undefined)e.textContent=String(value);return e};
 function localDate(day){return day.getFullYear()+'-'+String(day.getMonth()+1).padStart(2,'0')+'-'+String(day.getDate()).padStart(2,'0')}
-function normalizePolicyDate(value){if(/^\d{4}-\d{2}-\d{2}$/.test(String(value||'')))return String(value);const parsed=new Date(value);return Number.isNaN(parsed.getTime())?'':new Intl.DateTimeFormat('en-CA',{timeZone:'America/New_York',year:'numeric',month:'2-digit',day:'2-digit'}).format(parsed)}
-function activePolicies(day){
- const state={Portfolio:{protected:true},Personal:{protected:true},Birthdays:{protected:false}};
+function normalizePolicyDate(value){
+ const raw=String(value||'');
+ if(/^\d{4}-\d{2}-\d{2}$/.test(raw))return raw;
+ const parsed=new Date(value);
+ if(Number.isNaN(parsed.getTime()))return '';
+ const parts=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(parsed);
+ const get=t=>parts.find(x=>x.type===t)?.value||'';
+ return get('year')+'-'+get('month')+'-'+get('day');
+}
+function effectivePolicies(day){
+ const state={Portfolio:{protected:true,source:'default'},Personal:{protected:true,source:'default'},Birthdays:{protected:false,source:'existing-public'}};
  const events=(policyData?.audit||[]).slice().reverse();
  const cancelled=new Set(events.filter(x=>x.action==='CANCEL').map(x=>x.ruleId));
- for(const item of events){if(item.action!=='ADD'||cancelled.has(item.ruleId))continue;
- if(item.mode==='date-range'&&(day<normalizePolicyDate(item.startDate)||day>normalizePolicyDate(item.endDate)))continue;
- state[item.workspace]={protected:item.protected,source:item.mode};}
+ for(const item of events){
+   if(item.action!=='ADD'||cancelled.has(item.ruleId))continue;
+   const from=normalizePolicyDate(item.startDate),to=normalizePolicyDate(item.endDate);
+   if(item.mode==='date-range'&&(!from||!to||day<from||day>to))continue;
+   state[item.workspace]={protected:item.protected,source:item.mode,reason:item.reason,ruleId:item.ruleId,startDate:from,endDate:to};
+ }
  return state;
 }
+function scheduledEvents(day){
+ const audit=(policyData?.audit||[]).slice().reverse();
+ const cancelled=new Set(audit.filter(x=>x.action==='CANCEL').map(x=>x.ruleId));
+ return audit.filter(x=>{
+  if(x.action!=='ADD'||cancelled.has(x.ruleId))return false;
+  const from=normalizePolicyDate(x.startDate),to=normalizePolicyDate(x.endDate);
+  return x.mode==='indefinite'||(from&&to&&day>=from&&day<=to);
+ });
+}
+function calendarDay(day){
+ const iso=localDate(day),entries=scheduledEvents(iso),cell=node('button');
+ cell.type='button';cell.className='calendar-day';cell.setAttribute('aria-label',iso+'; '+entries.length+' scheduled rule(s)');
+ cell.append(node('span',String(day.getDate())));
+ const dots=node('span');dots.className='calendar-dots';
+ for(const name of ['Portfolio','Personal','Birthdays']){
+  if(entries.some(x=>x.workspace===name)){const dot=node('i');dot.className='workspace-dot '+WORKSPACE_COLORS[name];dot.title=name;dots.append(dot)}
+ }
+ cell.append(dots);cell.classList.toggle('selected',selectedCalendarDate===iso);
+ cell.onclick=()=>{selectedCalendarDate=iso;paintCalendar();showCalendarDetails(iso)};
+ return cell;
+}
+function showCalendarDetails(iso){
+ const panel=$('calendarDetails');panel.hidden=false;panel.replaceChildren();
+ panel.append(node('h3','Scheduled rules — '+iso));
+ const entries=scheduledEvents(iso);
+ if(!entries.length){panel.append(node('p','No recorded rules cover this date.'));return}
+ const list=node('div');list.className='calendar-rule-list';
+ for(const item of entries){
+  const card=node('div');card.className='calendar-rule '+WORKSPACE_COLORS[item.workspace];
+  card.append(node('strong',item.workspace),node('span','Password '+(item.protected?'On':'Off')),
+    node('small',item.mode==='indefinite'?'Indefinite':normalizePolicyDate(item.startDate)+' to '+normalizePolicyDate(item.endDate)));
+  if(item.reason)card.append(node('small',item.reason));list.append(card);
+ }
+ panel.append(list);
+}
 function paintCalendar(){
- const c=$('calendar');c.replaceChildren();const year=calendarMonth.getFullYear(),month=calendarMonth.getMonth();
- $('monthLabel').textContent=calendarMonth.toLocaleDateString('en-US',{month:'long',year:'numeric'});
- for(const day of ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']){const x=node('div',day);x.className='day-name';c.append(x)}
- const start=new Date(year,month,1).getDay(),count=new Date(year,month+1,0).getDate();
- for(let i=0;i<start;i++)c.append(node('div'));
- for(let day=1;day<=count;day++){const cell=node('div',day);const active=activePolicies(localDate(new Date(year,month,day)));
- for(const [key,policy] of Object.entries(active)){if(policy.source && policy.source!=='default' && policy.source!=='existing-public'){const x=node('span',key+': '+(policy.protected?'On':'Off'));x.className='calendar-event '+(policy.protected?'protection-on':'protection-off');cell.append(x)}}c.append(cell)}
+ const c=$('calendar');c.replaceChildren();c.className='calendar-'+calendarView;
+ const cursor=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth(),calendarCursor.getDate());
+ let begin,end;
+ if(calendarView==='month'){
+  begin=new Date(cursor.getFullYear(),cursor.getMonth(),1);
+  end=new Date(cursor.getFullYear(),cursor.getMonth()+1,0);
+  $('monthLabel').textContent=cursor.toLocaleDateString('en-US',{month:'long',year:'numeric'});
+ }else if(calendarView==='week'){
+  begin=new Date(cursor);begin.setDate(begin.getDate()-begin.getDay());
+  end=new Date(begin);end.setDate(end.getDate()+6);
+  $('monthLabel').textContent=begin.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' – '+end.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+ }else{
+  begin=cursor;end=cursor;
+  $('monthLabel').textContent=cursor.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+ }
+ if(calendarView!=='day'){
+  for(const name of ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']){const x=node('div',name);x.className='day-name';c.append(x)}
+  if(calendarView==='month')for(let i=0;i<begin.getDay();i++){const placeholder=node('div');placeholder.className='calendar-empty';c.append(placeholder)}
+ }
+ for(let date=new Date(begin);date<=end;date.setDate(date.getDate()+1))c.append(calendarDay(new Date(date)));
+ if(selectedCalendarDate)showCalendarDetails(selectedCalendarDate);
 }
 async function refreshPolicies(){
  const data=await api('adminPolicyStatus',{token});policyData=data;
  const current=$('currentPolicies');current.replaceChildren();
- for(const [name,entry] of Object.entries(data.effective||{})){const card=node('article');card.append(node('h2',name),node('p','Recorded preview: Password '+(entry.protected?'On':'Off')),node('p',entry.source));current.append(card)}
+ for(const [name,entry] of Object.entries(data.effective||{})){const card=node('article');card.classList.add('workspace-card',WORKSPACE_COLORS[name]);card.append(node('h2',name),node('p','Recorded preview: Password '+(entry.protected?'On':'Off')),node('p',entry.source));current.append(card)}
  const body=$('auditRows');body.replaceChildren();
  for(const item of data.audit||[]){const tr=node('tr');for(const v of [item.at,item.workspace,item.action,item.protected?'On':'Off',item.mode==='indefinite'?'Indefinite':normalizePolicyDate(item.startDate)+' to '+normalizePolicyDate(item.endDate),item.reason])tr.append(node('td',v));
  const manage=node('td');if(item.action==='ADD'&&!data.audit.some(x=>x.action==='CANCEL'&&x.ruleId===item.ruleId)){const btn=node('button','Cancel');btn.type='button';btn.className='secondary-btn';btn.onclick=()=>recordAction('adminPolicyCancel',{ruleId:item.ruleId,reason:'Cancelled from admin dashboard'});manage.append(btn)}tr.append(manage);body.append(tr)}
@@ -99,6 +192,12 @@ $('policyForm').onsubmit=e=>{e.preventDefault();const mode=$('policyMode').value
  
  recordAction('adminPolicyAdd',{rule:{workspace:$('policySpace').value,protected:$('policyProtection').value==='true',mode,startDate:mode==='date-range'?startDate:'',endDate:mode==='date-range'?endDate:'',reason:$('policyReason').value}})};
 $('refresh').onclick=async()=>{const b=$('refresh');b.disabled=true;b.textContent='Refreshing…';$('status').textContent='Refreshing from Google Sheets…';try{await refreshPolicies();$('status').textContent='Updated from Google Sheets. Live protection is unchanged.'}catch(e){$('status').textContent='Refresh failed: '+e.message}finally{b.disabled=false;b.textContent='Refresh'}};
-$('prevMonth').onclick=()=>{calendarMonth=new Date(calendarMonth.getFullYear(),calendarMonth.getMonth()-1,1);paintCalendar()};
-$('nextMonth').onclick=()=>{calendarMonth=new Date(calendarMonth.getFullYear(),calendarMonth.getMonth()+1,1);paintCalendar()};
+$('calendarView').onchange=()=>{calendarView=$('calendarView').value;selectedCalendarDate=null;$('calendarDetails').hidden=true;paintCalendar()};
+function moveCalendar(direction){
+ if(calendarView==='month')calendarCursor=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth()+direction,1);
+ else {calendarCursor.setDate(calendarCursor.getDate()+direction*(calendarView==='week'?7:1));calendarCursor=new Date(calendarCursor)}
+ selectedCalendarDate=null;$('calendarDetails').hidden=true;paintCalendar();
+}
+$('prevMonth').onclick=()=>moveCalendar(-1);
+$('nextMonth').onclick=()=>moveCalendar(1);
 </script></body></html>
