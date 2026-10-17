@@ -449,6 +449,7 @@
       @page{size:Letter;margin:0}
     }
   .resume-color-label{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)}#accentColor{width:38px;height:30px;padding:2px;border:1px solid var(--line);border-radius:6px;background:var(--panel);cursor:pointer}#skillsInput{min-height:110px;width:100%;resize:vertical;margin:12px 0;padding:10px;background:var(--panel-2);color:var(--text);border:1px solid var(--line);border-radius:7px}#skillsMatches{margin:8px 0 12px;line-height:1.5}
+.skills-status{display:inline-flex;align-items:center;min-height:26px;padding:4px 9px;font-size:11px;white-space:nowrap;border-radius:16px;background:var(--panel-2);color:var(--muted);border:1px solid var(--line)}.skills-status.filtered{background:var(--accent-soft);color:var(--text);border-color:var(--accent)}
 </style>
 </head>
 <body>
@@ -477,7 +478,7 @@
         <option value="rhyhorn">Rhyhorn</option>
         <option value="scizor">Scizor</option>
       </select>
-      <button class="tool-btn" id="summaryToggle">Edit Summary</button><button class="tool-btn" id="skillsToggle">Job Skills</button><label class="resume-color-label" for="accentColor">Accent <input id="accentColor" type="color" value="#0084d1" aria-label="Resume accent color"></label>
+      <button class="tool-btn" id="summaryToggle">Edit Summary</button><button class="tool-btn" id="skillsToggle">Job Skills</button><span id="skillsStatus" class="skills-status" role="status" aria-live="polite">All skills</span><label class="resume-color-label" for="accentColor">Accent <input id="accentColor" type="color" value="#0084d1" aria-label="Resume accent color"></label>
       <button class="tool-btn" id="photoToggle">Photos</button>
       <div class="resume-toolbar-group">
         <button class="tool-btn" id="exportToggle" type="button" aria-expanded="false">Export ▾</button>

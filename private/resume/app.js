@@ -155,6 +155,13 @@
   function applyRequirements(){
     const matches=getSkillGroups();
     resumeSkillLines=matches.length?matches:baseResumeSkillLines;
+    const count=matches.flatMap(g=>g.value.split(', ')).filter(Boolean).length;
+    const total=baseResumeSkillLines.flatMap(g=>g.value.split(', ')).length;
+    const status=document.getElementById('skillsStatus');
+    const active=requirements.trim().length>0;
+    status.textContent=active?(count?count+'/'+total+' skills matched':'No matching skills'):'All '+total+' skills';
+    status.classList.toggle('filtered',active);
+    document.getElementById('skillsToggle').textContent=active?'Job Skills ('+count+')':'Job Skills';
     displaySkillsMatch();
     renderTemplate();
   }
