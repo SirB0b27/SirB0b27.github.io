@@ -1,8 +1,22 @@
 <!doctype html><html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Admin | Private Workspaces</title><link rel="stylesheet" href="../assets/styles.css">
-<style>.admin-auth{max-width:480px;margin:45px auto;padding:24px;border:1px solid var(--line);border-radius:14px;background:var(--panel)}.admin-auth label{display:block;margin:14px 0 6px}.admin-auth input{width:100%;padding:12px;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:8px}.admin-auth button{margin-top:15px}.admin-container{max-width:1050px;margin:auto;padding:28px}.admin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.admin-grid article{padding:22px;border-radius:12px;border:1px solid var(--line);background:var(--panel)}@media(max-width:700px){.admin-grid{grid-template-columns:1fr}}</style>
+<style>.admin-auth{max-width:480px;margin:45px auto;padding:24px;border:1px solid var(--line);border-radius:14px;background:var(--panel)}.admin-auth label{display:block;margin:14px 0 6px}.admin-auth input{width:100%;padding:12px;background:var(--panel-2);border:1px solid var(--line);color:var(--text);border-radius:8px}.admin-auth button{margin-top:15px}.admin-container{max-width:1050px;margin:auto;padding:28px}.admin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.admin-grid article{padding:22px;border-radius:12px;border:1px solid var(--line);background:var(--panel)}@media(max-width:700px){.admin-grid{grid-template-columns:1fr}}.admin-toolbar{display:flex;align-items:center;gap:10px;margin:12px 0;flex-wrap:wrap}.admin-toolbar button{margin:0}.admin-warning{padding:12px;border:1px solid var(--line);border-radius:8px;background:var(--panel-2)}#dashboard article{background:var(--panel);border:1px solid var(--line);padding:18px;border-radius:12px}#dashboard select,#dashboard input{width:100%;padding:10px;border:1px solid var(--line);border-radius:7px;color:var(--text);background:var(--panel-2)}#dashboard label{display:block;margin:12px 0 5px}.audit-panel{margin-top:18px;overflow:auto}.admin-grid article p{color:var(--muted)}#calendar{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px}#calendar>div{border:1px solid var(--line);border-radius:5px;min-height:52px;padding:4px;font-size:11px;overflow:hidden}#calendar .day-name{min-height:24px;text-align:center;color:var(--muted)}.calendar-event{font-size:9px;display:block;border-radius:4px;background:var(--accent-soft);margin-top:3px;padding:2px}.audit-panel table{width:100%;font-size:12px}.audit-panel td,.audit-panel th{padding:10px;vertical-align:top}#dashboard [hidden]{display:none!important}@media(max-width:760px){#dashboard>.admin-grid{grid-template-columns:1fr!important}#calendar>div{min-height:43px}.audit-panel{overflow-x:auto}}</style>
 </head><body><div class="admin-container"><p><a href="../">← Workspace Home</a></p><div class="page-head"><div><div class="eyebrow">Administration</div><h1>Workspace Access</h1><p>Separate administrator authentication for future access settings, scheduling, audit history and calendar.</p></div></div>
 <section class="admin-auth" id="login"><h2>Admin sign in</h2><form id="loginForm"><label for="email">Admin email</label><input id="email" type="email" autocomplete="username" required><label for="password">Admin password</label><input id="password" type="password" autocomplete="current-password" minlength="16" required><button type="submit" class="primary-btn">Sign in</button></form></section>
-<section hidden id="dashboard"><p><button class="secondary-btn" id="logout">Sign out</button></p><div class="admin-grid"><article><h2>Portfolio</h2><p>Access-policy controls are not enabled yet.</p></article><article><h2>Personal</h2><p>Access-policy controls are not enabled yet.</p></article><article><h2>Birthdays</h2><p>Protection of the existing direct quiz URL is still pending.</p></article></div><h2>Change log and calendar</h2><p>Coming after the server-enforced policy engine and audit Sheet are installed. Nothing here changes live protection.</p></section>
+<section hidden id="dashboard">
+<div class="admin-toolbar"><button class="secondary-btn" id="logout" type="button">Sign out</button><button class="secondary-btn" id="refresh" type="button">Refresh</button></div>
+<p class="admin-warning">Policy preview only: rules are recorded in the audit Sheet but do not change live password protection.</p>
+<div id="currentPolicies" class="admin-grid"></div>
+<div class="admin-grid" style="grid-template-columns: minmax(0,1fr) minmax(0,1fr);margin-top:18px">
+<article><h2>New access rule</h2><form id="policyForm">
+<label for="policySpace">Workspace</label><select id="policySpace" required><option>Portfolio</option><option>Personal</option><option>Birthdays</option></select>
+<label for="policyProtection">Password protection</label><select id="policyProtection"><option value="true">On</option><option value="false">Off</option></select>
+<label for="policyMode">Duration</label><select id="policyMode"><option value="indefinite">Indefinite</option><option value="date-range">Date range</option></select>
+<div id="dateInputs" hidden><label for="policyStart">Start date</label><input type="date" id="policyStart"><label for="policyEnd">End date</label><input type="date" id="policyEnd"></div>
+<label for="policyReason">Reason (optional)</label><input id="policyReason" maxlength="500">
+<button type="submit" class="primary-btn">Record policy</button></form></article>
+<article><h2>Schedule calendar</h2><div class="admin-toolbar"><button type="button" class="secondary-btn" id="prevMonth">←</button><strong id="monthLabel"></strong><button type="button" class="secondary-btn" id="nextMonth">→</button></div><div id="calendar"></div><p class="muted">Dates indicate recorded *preview* rules, not actual public access.</p></article></div>
+<article class="audit-panel"><h2>Change log</h2><div class="table-wrap"><table class="data-table"><thead><tr><th>Time (UTC)</th><th>Workspace</th><th>Action</th><th>Password</th><th>Duration</th><th>Reason</th><th>Manage</th></tr></thead><tbody id="auditRows"></tbody></table></div></article>
+</section>
 <p role="status" aria-live="polite" id="status"></p></div>
 <script>
 'use strict';
@@ -18,8 +32,48 @@ async function api(action,fields={}){
 }
 $('loginForm').addEventListener('submit',async e=>{
  e.preventDefault();$('status').textContent='Signing in…';
- try{const result=await api('adminLogin',{email:$('email').value,password:$('password').value});token=result.token;$('password').value='';const status=await api('adminStatus',{token});if(!status?.authenticated)throw Error('Admin session rejected');$('login').hidden=true;$('dashboard').hidden=false;$('status').textContent='';}
+ try{const result=await api('adminLogin',{email:$('email').value,password:$('password').value});token=result.token;$('password').value='';const status=await api('adminStatus',{token});if(!status?.authenticated)throw Error('Admin session rejected');$('login').hidden=true;$('dashboard').hidden=false;$('status').textContent='';await refreshPolicies();}
  catch(error){token=null;$('status').textContent=error.message}
 });
 $('logout').onclick=async()=>{const old=token;token=null;$('dashboard').hidden=true;$('login').hidden=false;try{if(old)await api('adminLogout',{token:old})}catch(e){}};
+
+let policyData=null,calendarMonth=new Date();calendarMonth=new Date(calendarMonth.getFullYear(),calendarMonth.getMonth(),1);
+const node=(tag,value)=>{const e=document.createElement(tag);if(value!==undefined)e.textContent=String(value);return e};
+function localDate(day){return day.getFullYear()+'-'+String(day.getMonth()+1).padStart(2,'0')+'-'+String(day.getDate()).padStart(2,'0')}
+function activePolicies(day){
+ const state={Portfolio:{protected:true},Personal:{protected:true},Birthdays:{protected:false}};
+ const events=(policyData?.audit||[]).slice().reverse();
+ const cancelled=new Set(events.filter(x=>x.action==='CANCEL').map(x=>x.ruleId));
+ for(const item of events){if(item.action!=='ADD'||cancelled.has(item.ruleId))continue;
+ if(item.mode==='date-range'&&(day<item.startDate||day>item.endDate))continue;
+ state[item.workspace]={protected:item.protected,source:item.mode};}
+ return state;
+}
+function paintCalendar(){
+ const c=$('calendar');c.replaceChildren();const year=calendarMonth.getFullYear(),month=calendarMonth.getMonth();
+ $('monthLabel').textContent=calendarMonth.toLocaleDateString('en-US',{month:'long',year:'numeric'});
+ for(const day of ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']){const x=node('div',day);x.className='day-name';c.append(x)}
+ const start=new Date(year,month,1).getDay(),count=new Date(year,month+1,0).getDate();
+ for(let i=0;i<start;i++)c.append(node('div'));
+ for(let day=1;day<=count;day++){const cell=node('div',day);const active=activePolicies(localDate(new Date(year,month,day)));
+ for(const [key,policy] of Object.entries(active)){if(policy.source){const x=node('span',key+': '+(policy.protected?'On':'Off'));x.className='calendar-event';cell.append(x)}}c.append(cell)}
+}
+async function refreshPolicies(){
+ const data=await api('adminPolicyStatus',{token});policyData=data;
+ const current=$('currentPolicies');current.replaceChildren();
+ for(const [name,entry] of Object.entries(data.effective||{})){const card=node('article');card.append(node('h2',name),node('p','Recorded preview: Password '+(entry.protected?'On':'Off')),node('p',entry.source));current.append(card)}
+ const body=$('auditRows');body.replaceChildren();
+ for(const item of data.audit||[]){const tr=node('tr');for(const v of [item.at,item.workspace,item.action,item.protected?'On':'Off',item.mode==='indefinite'?'Indefinite':item.startDate+' to '+item.endDate,item.reason])tr.append(node('td',v));
+ const manage=node('td');if(item.action==='ADD'&&!data.audit.some(x=>x.action==='CANCEL'&&x.ruleId===item.ruleId)){const btn=node('button','Cancel');btn.type='button';btn.className='secondary-btn';btn.onclick=()=>recordAction('adminPolicyCancel',{ruleId:item.ruleId,reason:'Cancelled from admin dashboard'});manage.append(btn)}tr.append(manage);body.append(tr)}
+ paintCalendar();
+}
+async function recordAction(action,fields){$('status').textContent='Recording…';try{await api(action,{token,...fields});await refreshPolicies();$('status').textContent='Policy event recorded. Live protection is unchanged.'}catch(e){$('status').textContent=e.message}}
+$('policyMode').onchange=()=>{$('dateInputs').hidden=$('policyMode').value==='indefinite'};
+$('policyForm').onsubmit=e=>{e.preventDefault();const mode=$('policyMode').value, startDate=$('policyStart').value,endDate=$('policyEnd').value;
+ if(mode==='date-range'&&(!startDate||!endDate||startDate>endDate)){$('status').textContent='Select a valid start and end date.';return}
+ if(!confirm('Record this preview policy? This does not change live password protection.'))return;
+ recordAction('adminPolicyAdd',{rule:{workspace:$('policySpace').value,protected:$('policyProtection').value==='true',mode,startDate:mode==='date-range'?startDate:'',endDate:mode==='date-range'?endDate:'',reason:$('policyReason').value}})};
+$('refresh').onclick=()=>refreshPolicies().catch(e=>$('status').textContent=e.message);
+$('prevMonth').onclick=()=>{calendarMonth=new Date(calendarMonth.getFullYear(),calendarMonth.getMonth()-1,1);paintCalendar()};
+$('nextMonth').onclick=()=>{calendarMonth=new Date(calendarMonth.getFullYear(),calendarMonth.getMonth()+1,1);paintCalendar()};
 </script></body></html>
