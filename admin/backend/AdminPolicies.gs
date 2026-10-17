@@ -58,13 +58,21 @@ function gpPolicySpace_(value) {
   if(s==='birthdays')return 'Birthdays';
   return gpWorkspace_(s);
 }
+/** Sheets may coerce YYYY-MM-DD strings into Date cells. Normalize the values. */
+function gpPolicyCellDate_(value) {
+  if (!value) return '';
+  if (Object.prototype.toString.call(value)==='[object Date]' && !isNaN(value.getTime()))
+    return Utilities.formatDate(value, GP_POLICY.TZ, 'yyyy-MM-dd');
+  const v=String(value).trim();
+  return /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : '';
+}
 function gpPolicyEvents_() {
   const rows=gpPolicySheet_().getDataRange().getValues();
   return rows.slice(1).filter(x=>x[0]).map(x=>({
     eventId:String(x[0]),at:String(x[1]),actor:String(x[2]),
     action:String(x[3]),ruleId:String(x[4]),workspace:String(x[5]),
     protected:String(x[6])==='true',mode:String(x[7]),
-    startDate:String(x[8]||''),endDate:String(x[9]||''),reason:String(x[10]||'')
+    startDate:gpPolicyCellDate_(x[8]),endDate:gpPolicyCellDate_(x[9]),reason:String(x[10]||'')
   }));
 }
 function gpPolicyCurrent_(events,asOf) {
