@@ -549,22 +549,48 @@
 <script>
 (async()=>{
   const token=sessionStorage.getItem('gpPrivatePortfolioToken')||'';
-  if(!/^[a-f0-9]{96}$/i.test(token)){location.replace('../?workspace=Portfolio');return}
+  const renderError=(message)=>{
+    document.body.style.visibility='visible';
+    const card=document.createElement('section');
+    card.setAttribute('role','alert');
+    card.style.cssText='max-width:590px;margin:80px auto;padding:28px;border:1px solid #59728f;border-radius:14px;background:#192940;color:#f0f6ff;font:16px system-ui';
+    const heading=document.createElement('h2');heading.textContent='Resume could not load';
+    const description=document.createElement('p');description.textContent=message;
+    const retry=document.createElement('button');retry.type='button';retry.textContent='Retry Resume';retry.style.cssText='padding:10px 15px;margin-right:12px';retry.onclick=()=>location.reload();
+    const login=document.createElement('a');login.href='../?workspace=Portfolio';login.textContent='Return to Portfolio login';login.style.color='#afd7ff';
+    card.append(heading,description,retry,login);
+    const main=document.querySelector('main');if(main)main.replaceChildren(card);else document.body.append(card);
+  };
+  if(!/^[a-f0-9]{96}$/i.test(token)){
+    renderError('No Portfolio session was found in this tab. Please sign in to Portfolio and use its Resume link.');
+    return;
+  }
   document.body.style.visibility='hidden';
   try {
     const response=await fetch('https://github-private-workspaces.hemanth2355.workers.dev/',{
       method:'POST',headers:{'Content-Type':'application/json'},cache:'no-store',
       body:JSON.stringify({action:'model',workspace:'Portfolio',token,model:'portfolio'})
     });
-    if(!response.ok)throw Error('Backend unreachable');
+    if(!response.ok)throw Error('The backend returned HTTP '+response.status+'. Please retry.');
     const payload=await response.json();
-    if(!payload.ok||!payload.data?.profile||!Array.isArray(payload.data.projects))throw Error('Invalid session or model');
+    if(!payload.ok){
+      const error=String(payload.error||'');
+      if(/sign in|session expired|session rejected/i.test(error)){
+        sessionStorage.removeItem('gpPrivatePortfolioToken');
+        renderError('Your Portfolio session is no longer valid. Please sign in again.');
+      }else{
+        renderError('The Portfolio data request was rejected. Please retry or contact the administrator.');
+      }
+      return;
+    }
+    if(!payload.data?.profile||!Array.isArray(payload.data.projects))
+      throw Error('The Portfolio data has an unexpected format.');
     window.PORTFOLIO_DATA=payload.data;
     const script=document.createElement('script');script.src='app.js';
     script.onload=()=>{document.body.style.visibility='visible'};
-    script.onerror=()=>{location.replace('../?workspace=Portfolio')};
+    script.onerror=()=>renderError('The Resume rendering script could not be loaded.');
     document.body.append(script);
-  } catch(e){sessionStorage.removeItem('gpPrivatePortfolioToken');location.replace('../?workspace=Portfolio')}
+  }catch(error){renderError(error.message||'The Resume request failed. Please retry.')}
 })();
 </script>
 </body>
