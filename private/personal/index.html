@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Personal | Hemanth Velan</title>
+  
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <style>
+    html:not(.personal-authorized) body{visibility:hidden}
+    .personal-main{margin-left:var(--sidebar);padding-top:var(--topbar);min-height:100vh;transition:margin-left .18s ease}
+    .personal-main.sidebar-collapsed{margin-left:56px}
+    .personal-main .workspace{zoom:var(--personal-zoom,1.25)}
+    .personal-main .page-head h1{font-size:27px}
+    .personal-main .page-head p{font-size:13px;line-height:1.55}
+    .personal-main .panel-title{font-size:13px}
+    .personal-main .panel-subtitle{font-size:11px}
+    .personal-main .kpi-label{font-size:12px}
+    .personal-main .kpi-value{font-size:29px}
+    .personal-main .kpi-note{font-size:11px}
+    .personal-main .private-row{font-size:11px}
+    .personal-main .private-table{font-size:12px}
+    .personal-main .private-table th{font-size:10px}
+    .personal-main .privacy-banner{font-size:11px}
+    .personal-main .assignment-tab{font-size:12px}
+    .personal-main .assignment-meta{font-size:11px}
+    .personal-view[hidden]{display:none!important}
+    .personal-home-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;max-width:1000px}
+    .personal-launch-card{min-height:220px;padding:22px;border:1px solid var(--line);border-radius:12px;background:var(--panel);color:var(--text);text-align:left;cursor:pointer;transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease}
+    .personal-launch-card:hover{transform:translateY(-2px);border-color:var(--accent);box-shadow:0 8px 26px color-mix(in srgb,var(--accent) 15%,transparent)}
+    .personal-launch-icon{width:42px;height:42px;display:grid;place-items:center;margin-bottom:18px;border:1px solid var(--line);border-radius:10px;background:var(--panel-2);font-size:20px}
+    .personal-launch-card h2{margin:0 0 7px;font-size:18px}.personal-launch-card p{margin:0;color:var(--muted);font-size:12px;line-height:1.55}
+    .personal-launch-action{display:inline-block;margin-top:22px;color:var(--accent);font-size:11px;font-weight:750}
+    .personal-back-btn{display:inline-flex;align-items:center;gap:6px}
+    .private-grid{display:grid;gap:12px}.private-two{grid-template-columns:1fr 1fr}.private-kpis{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:12px}
+    .private-chart{height:260px;display:flex;align-items:flex-end;gap:5px;padding:20px 4px 6px;border-bottom:1px solid var(--line)}
+    .private-bar{flex:1;min-width:5px;background:var(--accent);border-radius:4px 4px 0 0;position:relative}
+    .private-bar:hover:after{content:attr(data-label);position:absolute;left:50%;bottom:calc(100% + 7px);transform:translateX(-50%);background:var(--text);color:var(--panel);font-size:10px;padding:5px 7px;border-radius:5px;white-space:nowrap;z-index:4}
+    .private-list{display:grid;gap:7px}.private-row{display:grid;grid-template-columns:minmax(150px,1fr) 3fr 55px;gap:9px;align-items:center;font-size:10px}
+    .private-track{height:9px;background:var(--panel-2);border-radius:99px;overflow:hidden}.private-fill{height:100%;background:var(--accent);border-radius:99px}
+    .private-table{width:100%;border-collapse:collapse;font-size:11px}.private-table th,.private-table td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line-2)}
+    .private-table th{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;background:var(--panel-2)}
+    .privacy-banner{padding:11px 13px;border:1px solid var(--line);border-left:4px solid var(--accent);background:var(--panel-2);border-radius:8px;font-size:10px;color:var(--muted);line-height:1.5;margin-bottom:12px}
+    .course-panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+    .course-head{padding:15px 16px;border-bottom:1px solid var(--line)}.course-head h2{font-size:20px;margin:4px 0 0}.course-head p{font-size:11px;color:var(--muted);margin:5px 0 0}
+    .assignment-tabs{display:flex;gap:2px;overflow:auto;padding:10px 10px 0;background:var(--panel-2);border-bottom:1px solid var(--line)}
+    .assignment-tab{border:1px solid transparent;border-bottom:0;background:transparent;color:var(--muted);padding:9px 13px;border-radius:7px 7px 0 0;cursor:pointer;white-space:nowrap}
+    .assignment-tab.active{background:var(--panel);color:var(--text);border-color:var(--line);font-weight:700}
+    .assignment-meta{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:10px 13px;border-bottom:1px solid var(--line);font-size:10px;color:var(--muted)}
+    .assignment-stage{height:calc(100vh - 300px);min-height:540px;background:#fff;position:relative}
+    .assignment-frame{width:100%;height:100%;border:0;background:#fff;position:absolute;inset:0}
+    .personal-exit{color:var(--text)!important;font-weight:700}
+    .personal-exit .nav-icon{font-size:16px}
+    @media(max-width:1000px){.private-kpis,.private-two{grid-template-columns:1fr 1fr}}
+    @media(max-width:760px){
+      .personal-main{margin-left:0}.personal-main.sidebar-collapsed{margin-left:0}
+      .personal-home-grid,.private-kpis,.private-two{grid-template-columns:1fr}
+      .workspace{padding:14px 12px 34px}.assignment-stage{height:calc(100vh - 275px);min-height:460px}
+      .assignment-meta{align-items:flex-start;flex-direction:column}.private-row{grid-template-columns:120px 1fr 40px}
+    }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="icon-btn" id="menuToggle" aria-label="Toggle navigation">☰</button>
+      <div class="brand-copy"><div class="brand-title">Personal</div><div class="brand-sub">Private Workspace</div></div>
+    </div>
+    <div class="topbar-main">
+      <div class="crumb" id="personalCrumb">Personal / Home</div>
+      <div class="toolbar">
+        <button class="icon-btn desktop-optional" id="zoomOut" title="Zoom out">−</button>
+        <span class="zoom-readout desktop-optional" id="zoomReadout">100%</span>
+        <button class="icon-btn desktop-optional" id="zoomIn" title="Zoom in">+</button>
+        <button class="tool-btn desktop-optional" id="fitWidth" type="button">Fit Width</button>
+        <button class="icon-btn" id="themeToggle" title="Toggle theme">◐</button>
+      </div>
+    </div>
+  </header>
+
+  <aside class="sidebar" id="personalSidebar">
+    <div class="nav-section">
+<div class="nav-label">Workspaces</div>
+<a class="nav-item" href="../"><span class="nav-icon">⌂</span><span class="nav-text">Workspace Home</span></a>
+<a class="nav-item" id="portfolioBack" href="../private/?workspace=Portfolio"><span class="nav-icon">▣</span><span class="nav-text">Portfolio 🔒</span></a>
+<a class="nav-item" href="../birthdays/"><span class="nav-icon">♧</span><span class="nav-text">Birthdays</span></a>
+</div>
+<div class="nav-separator"></div>
+    <div class="nav-section">
+      <div class="nav-label">Personal</div>
+      <button class="nav-item active" data-personal-route="home"><span class="nav-icon">⌂</span><span class="nav-text">Personal Home</span></button>
+      <button class="nav-item" data-personal-route="analytics"><span class="nav-icon">▦</span><span class="nav-text">Personal Analytics</span></button>
+      <button class="nav-item" data-personal-route="college"><span class="nav-icon">◧</span><span class="nav-text">College Projects</span></button>
+    </div>
+  </aside>
+
+  <main class="personal-main" id="personalMain">
+    <div class="workspace">
+      <section class="personal-view" data-personal-view="home">
+        <div class="page-head"><div><div class="eyebrow">Personal Workspace</div><h1>Personal</h1><p>Select the private area you want to open. Both sections stay inside this workspace so you can move between them without returning to the public Portfolio.</p></div></div>
+        <div class="personal-home-grid">
+          <button class="personal-launch-card" data-open-view="analytics">
+            <div class="personal-launch-icon">▦</div>
+            <h2>Personal Analytics</h2>
+            <p>Review personal performance aggregates, work activity trends, stakeholder exposure, project breadth, and professional growth.</p>
+            <span class="personal-launch-action">Open Personal Analytics →</span>
+          </button>
+          <button class="personal-launch-card" data-open-view="college">
+            <div class="personal-launch-icon">◧</div>
+            <h2>College Projects</h2>
+            <p>Browse archived coursework in place, switch assignments with tabs, and keep previously opened assignment previews loaded during the session.</p>
+            <span class="personal-launch-action">Open College Projects →</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="personal-view" data-personal-view="analytics" hidden>
+        <div class="page-head">
+          <div><div class="eyebrow">Personal Analytics</div><h1>Work Growth & Performance</h1><p>Aggregated trends for reviewing professional growth, project breadth, stakeholder exposure, and work activity over time.</p></div>
+          <button class="secondary-btn personal-back-btn" data-back-home>← Personal Home</button>
+        </div>
+        <div class="privacy-banner" id="privacyBanner"></div>
+        <div class="private-grid private-kpis" id="metricGrid"></div>
+        <div class="panel" style="margin-bottom:12px">
+          <div class="panel-head"><div><div class="panel-title">Documented Work Activity</div><div class="panel-subtitle">Monthly Structured Work Items</div></div></div>
+          <div class="panel-body"><div class="private-chart" id="monthlyChart"></div><div class="chart-axis"><span>Dec 2023</span><span>Sep 2026</span></div></div>
+        </div>
+        <div class="private-grid private-two" style="margin-bottom:12px">
+          <div class="panel"><div class="panel-head"><div><div class="panel-title">Work Items by Year</div><div class="panel-subtitle">Weekly Work Notes</div></div></div><div class="panel-body private-list" id="workYear"></div></div>
+          <div class="panel"><div class="panel-head"><div><div class="panel-title">Work-Linked Records by Year</div><div class="panel-subtitle">Connected Work Items</div></div></div><div class="panel-body private-list" id="jiraYear"></div></div>
+        </div>
+        <div class="private-grid private-two" style="margin-bottom:12px">
+          <div class="panel"><div class="panel-head"><div><div class="panel-title">Stakeholder Exposure by Seniority</div><div class="panel-subtitle">Work-Linked Records by Current Roster-Matched Level</div></div></div><div class="panel-body private-list" id="stakeholderTickets"></div></div>
+          <div class="panel"><div class="panel-head"><div><div class="panel-title">Unique Matched Stakeholders</div><div class="panel-subtitle">Anonymized Current-Roster Matches</div></div></div><div class="panel-body private-list" id="uniqueStakeholders"></div></div>
+        </div>
+        <div class="private-grid private-two">
+          <div class="panel"><div class="panel-head"><div><div class="panel-title">Stakeholder Function Breadth</div><div class="panel-subtitle">Unique Matched Stakeholders by Business Function</div></div></div><div class="panel-body private-list" id="functions"></div></div>
+          <div class="panel"><div class="panel-head"><div><div class="panel-title">Major Project Families</div><div class="panel-subtitle">Grouped Work-Linked Records</div></div></div><div class="table-wrap"><table class="private-table"><thead><tr><th>Project Family</th><th>Period</th><th>Records</th></tr></thead><tbody id="projectFamilies"></tbody></table></div></div>
+        </div>
+      </section>
+
+      <section class="personal-view" data-personal-view="college" hidden>
+        <div class="page-head">
+          <div><div class="eyebrow">College Projects</div><h1>Coursework Archive</h1><p>Assignments render inside this workspace. Once an assignment is opened, its preview remains loaded while you switch between tabs.</p></div>
+          <button class="secondary-btn personal-back-btn" data-back-home>← Personal Home</button>
+        </div>
+        <section class="course-panel">
+          <div class="course-head"><div class="eyebrow">College Coursework</div><h2>IT 201</h2><p>The course label is kept here for organization, while the Portfolio navigation stays independent of the original class structure.</p></div>
+          <div class="assignment-tabs" role="tablist">
+            <button class="assignment-tab active" data-assignment="1">Assignment 1</button>
+            <button class="assignment-tab" data-assignment="2">Assignment 2</button>
+            <button class="assignment-tab" data-assignment="3">Assignment 3</button>
+            <button class="assignment-tab" data-assignment="4">Assignment 4</button>
+            <button class="assignment-tab" data-assignment="5">Assignment 5</button>
+          </div>
+          <div class="assignment-meta"><span id="assignmentDescription">HTML/CSS heritage page</span><span>Direct View: <a id="openAssignment" target="_blank" rel="noopener">Open assignment ↗</a></span></div>
+          <div class="assignment-stage" id="assignmentStage"></div>
+        </section>
+      </section>
+    </div>
+  </main>
+</div>
+<script>
+(async()=>{
+ const token=sessionStorage.getItem('gpPrivatePersonalToken')||'';
+ if(!/^[a-f0-9]{96}$/i.test(token)){location.replace('../?workspace=Personal');return}
+ try{
+  const response=await fetch('https://github-private-workspaces.hemanth2355.workers.dev/',{
+   method:'POST',headers:{'Content-Type':'application/json'},cache:'no-store',
+   body:JSON.stringify({action:'model',workspace:'Personal',token,model:'analytics'})
+  });
+  if(!response.ok)throw Error('Backend unavailable');
+  const result=await response.json();
+  if(!result.ok||!result.data||!Array.isArray(result.data.metrics))throw Error('Unauthorized');
+  window.PERSONAL_ANALYTICS=result.data;
+  document.documentElement.classList.add('personal-authorized');
+  const script=document.createElement('script');script.src='app.js';document.body.append(script);
+ }catch(e){sessionStorage.removeItem('gpPrivatePersonalToken');location.replace('../?workspace=Personal')}
+})();
+</script>
+>
+</body>
+</html>
