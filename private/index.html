@@ -160,7 +160,7 @@ function renderDashboardSection(i){
 }
 
 document.querySelectorAll('[data-space]').forEach(x=>x.onclick=()=>setSpace(x.dataset.space));
-$('loginForm').onsubmit=e=>{e.preventDefault();act(async()=>{const result=await call('login',{email:$('email').value,password:$('password').value});state.token=result.token;$('password').value='';try{await loadDashboardModels()}catch(err){state.token=null;throw err}})};
+$('loginForm').onsubmit=e=>{e.preventDefault();act(async()=>{const result=await call('login',{email:$('email').value,password:$('password').value});state.token=result.token;$('password').value='';if(state.space==='Portfolio'){sessionStorage.setItem('gpPrivatePortfolioToken',state.token);location.assign('portfolio/#overview');return}try{await loadDashboardModels()}catch(err){state.token=null;throw err}})};
 $('forgot').onclick=()=>{show('resetPanel');$('recovery').value=$('email').value;message('')};$('back').onclick=()=>{show('loginPanel');message('')};
 $('sendCode').onclick=()=>act(async()=>{const result=await call('requestReset',{email:$('recovery').value});message(result.message||'If the email matches, a code will be sent.')});
 $('resetForm').onsubmit=e=>{e.preventDefault();act(async()=>{const result=await call('completeReset',{email:$('recovery').value,code:$('code').value,newPassword:$('newPassword').value});$('code').value='';$('newPassword').value='';show('loginPanel');message(result.message||'Password updated.')})};

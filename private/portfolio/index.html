@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Hemanth Velan — Business Intelligence, analytics, data science, and project portfolio.">
+  <title>Hemanth Velan | Portfolio</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="icon-btn" id="menuToggle" aria-label="Toggle navigation">☰</button>
+      <div class="brand-copy"><div class="brand-title">Hemanth Velan</div><div class="brand-sub">Portfolio Workspace</div></div>
+    </div>
+    <div class="topbar-main">
+      <div class="crumb" id="crumb">Portfolio / Overview</div>
+      <div class="toolbar">
+        <button class="icon-btn desktop-optional" id="zoomOut" title="Zoom out">−</button>
+        <span class="zoom-readout desktop-optional" id="zoomReadout">100%</span>
+        <button class="icon-btn desktop-optional" id="zoomIn" title="Zoom in">+</button>
+        <button class="tool-btn desktop-optional" id="fitWidth">Fit Width</button>
+        <button class="icon-btn" id="themeToggle" title="Toggle theme">◐</button>
+      </div>
+    </div>
+  </header>
+  <aside class="sidebar collapsed" id="sidebar">
+    <div class="nav-section">
+      <div class="nav-label">Portfolio</div>
+      <a class="nav-item" href="../../"><span class="nav-icon" data-icon="house"></span><span class="nav-text">Workspace Home</span></a>
+      <button class="nav-item active" data-route="overview"><span class="nav-icon" data-icon="house"></span><span class="nav-text">Overview</span></button>
+      <button class="nav-item" data-route="experience"><span class="nav-icon" data-icon="briefcase"></span><span class="nav-text">Experience</span></button>
+      <button class="nav-item" data-route="projects"><span class="nav-icon" data-icon="folder"></span><span class="nav-text">Projects</span><span class="nav-badge" id="projectCountBadge"></span></button>
+      <button class="nav-item" data-route="skills"><span class="nav-icon" data-icon="blocks"></span><span class="nav-text">Skills & Technologies</span></button>
+      <button class="nav-item" data-route="education"><span class="nav-icon" data-icon="graduation"></span><span class="nav-text">Education</span></button>
+      <a class="nav-item" href="../?workspace=Portfolio"><span class="nav-icon" data-icon="file"></span><span class="nav-text">Resume</span></a>
+    </div>
+    <div class="nav-separator"></div>
+    <div class="nav-section">
+      <a class="nav-item" href="../../birthdays/"><span class="nav-icon" data-icon="cake"></span><span class="nav-text">Birthdays</span></a>
+    </div>
+    <div class="nav-section" id="personalNavSection">
+      <button class="nav-item portfolio-personal-entry" id="personalNavTrigger" type="button" aria-haspopup="dialog">
+        <span class="nav-icon" data-icon="lock"></span>
+        <span class="nav-text">Personal</span>
+        <span class="personal-lock" aria-hidden="true">🔒</span>
+      </button>
+    </div>
+    <div class="nav-separator"></div>
+    <div class="nav-section">
+      <div class="nav-label">Links</div>
+      <a class="nav-item" href="https://github.com/SirB0b27" target="_blank" rel="noopener"><span class="nav-icon" data-icon="github"></span><span class="nav-text">GitHub</span></a>
+    </div>
+  </aside>
+  <main class="main" id="main">
+    <div class="workspace" id="workspace">
+      <section class="view active" data-view="overview"></section>
+      <section class="view" data-view="experience"></section>
+      <section class="view" data-view="projects"></section>
+      <section class="view" data-view="skills"></section>
+      <section class="view" data-view="education"></section>
+    </div>
+  </main>
+</div>
+
+
+<script>
+'use strict';
+(async()=>{
+  const worker='https://github-private-workspaces.hemanth2355.workers.dev/';
+  const token=sessionStorage.getItem('gpPrivatePortfolioToken')||'';
+  if(!/^[0-9a-f]{96}$/i.test(token)){location.replace('../?workspace=Portfolio');return}
+  document.body.style.visibility='hidden';
+  async function fetchModel(model){
+    const response=await fetch(worker,{method:'POST',headers:{'Content-Type':'application/json'},cache:'no-store',body:JSON.stringify({action:'model',workspace:'Portfolio',token,model})});
+    if(!response.ok)throw Error('Backend unavailable');
+    const payload=await response.json();
+    if(!payload.ok)throw Error('Session rejected');
+    return payload.data;
+  }
+  try {
+    const [data,education]=await Promise.all([fetchModel('portfolio'),fetchModel('education')]);
+    if(!data?.profile||!Array.isArray(data.projects)||!education?.programs)throw Error('Model schema mismatch');
+    window.PORTFOLIO_DATA=data;
+    window.EDUCATION_CATALOG=education;
+    const script=document.createElement('script');script.src='app.js';script.onload=()=>{document.body.style.visibility='visible'};
+    script.onerror=()=>{location.replace('../?workspace=Portfolio')};
+    document.body.append(script);
+  }catch(error){
+    sessionStorage.removeItem('gpPrivatePortfolioToken');
+    location.replace('../?workspace=Portfolio');
+  }
+})();
+</script>
+</body>
+</html>
