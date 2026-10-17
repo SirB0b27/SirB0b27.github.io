@@ -8,6 +8,7 @@
  * Execute setupWorkspacePolicyStore() manually as the script owner once.
  */
 const GP_POLICY = Object.freeze({
+  FOLDER_ID: '1oy3SUFPha8QU-bafZC_QGO5DV1jXz-pY',
   PROP: 'GP_ADMIN_POLICY_SPREADSHEET_ID',
   SHEET: 'Policy Events',
   TZ: 'America/New_York',
@@ -33,6 +34,10 @@ function setupWorkspacePolicyStore() {
   try {
     if (props.getProperty(GP_POLICY.PROP)) return;
     const book=SpreadsheetApp.create('Github Pages - Workspace Access Audit');
+    // SpreadsheetApp.create puts new Sheets in My Drive root. Move it into
+    // Github Pages / Authentication immediately after creation.
+    const folder=DriveApp.getFolderById(GP_POLICY.FOLDER_ID);
+    DriveApp.getFileById(book.getId()).moveTo(folder);
     const sheet=book.getSheets()[0];
     sheet.setName(GP_POLICY.SHEET);
     sheet.appendRow(GP_POLICY.HEADER);
@@ -145,3 +150,6 @@ function gpTestPolicySchedule_() {
     during.Personal.protected||after.Birthdays.protected)throw Error('Policy schedule test FAILED');
   Logger.log('PASS: date window, indefinite, default policy evaluation');
 }
+
+/** Public wrapper: Apps Script's Run menu omits functions ending in underscore. */
+function gpTestPolicySchedule() { gpTestPolicySchedule_(); }
