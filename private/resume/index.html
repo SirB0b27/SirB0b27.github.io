@@ -448,7 +448,8 @@
       }
       @page{size:Letter;margin:0}
     }
-  </style>
+  .resume-color-label{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)}#accentColor{width:38px;height:30px;padding:2px;border:1px solid var(--line);border-radius:6px;background:var(--panel);cursor:pointer}#skillsInput{min-height:110px;width:100%;resize:vertical;margin:12px 0;padding:10px;background:var(--panel-2);color:var(--text);border:1px solid var(--line);border-radius:7px}#skillsMatches{margin:8px 0 12px;line-height:1.5}
+</style>
 </head>
 <body>
 <div class="resume-page-shell">
@@ -476,7 +477,7 @@
         <option value="rhyhorn">Rhyhorn</option>
         <option value="scizor">Scizor</option>
       </select>
-      <button class="tool-btn" id="summaryToggle">Edit Summary</button>
+      <button class="tool-btn" id="summaryToggle">Edit Summary</button><button class="tool-btn" id="skillsToggle">Job Skills</button><label class="resume-color-label" for="accentColor">Accent <input id="accentColor" type="color" value="#0084d1" aria-label="Resume accent color"></label>
       <button class="tool-btn" id="photoToggle">Photos</button>
       <div class="resume-toolbar-group">
         <button class="tool-btn" id="exportToggle" type="button" aria-expanded="false">Export ▾</button>
@@ -514,7 +515,7 @@
       </div>
     </section>
 
-    <section class="photo-library" id="photoPanel">
+    <section class="resume-customizer" id="skillsPanel"><div class="resume-customizer-head"><div><div class="resume-customizer-title">Job Posting Skill Requirements</div><div class="brand-sub">Paste requirements from a job posting. Existing resume skills that match are prioritized; missing skills are never invented.</div></div><button class="icon-btn" id="skillsClose" aria-label="Close skills editor">×</button></div><textarea id="skillsInput" aria-label="Job posting skill requirements" placeholder="e.g. SQL, Python, Tableau, data modeling"></textarea><div id="skillsMatches" class="brand-sub" aria-live="polite"></div><div class="resume-customizer-actions"><button class="secondary-btn" id="skillsReset">Clear requirements</button><button class="primary-btn" id="skillsDone">Done</button></div></section><section class="photo-library" id="photoPanel">
       <div class="photo-library-head">
         <div>
           <div class="resume-customizer-title">Resume Photos</div>
