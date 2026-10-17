@@ -1,0 +1,571 @@
+<!doctype html>
+<!--
+  Resume layout presets are static GitHub Pages adaptations inspired by the MIT-licensed
+  Reactive Resume project (https://github.com/reactive-resume/reactive-resume).
+  The layouts below are original HTML/CSS implementations for this portfolio and are not
+  a bundled copy of Reactive Resume's React application.
+-->
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Hemanth Velan — one-page resume">
+  <title>Resume | Hemanth Velan</title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Serif:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --resume-preview-scale:1.25;
+      --resume-content-scale:1;
+      --resume-accent:#0084d1;
+      --resume-muted:#59606b;
+      --resume-divider:#d7dbe2;
+      --resume-sidebar-tint:#e9f5fb;
+    }
+
+    body{overflow-x:hidden}
+    .resume-page-shell{min-height:100vh;background:var(--bg)}
+    .resume-page-topbar{
+      min-height:58px;display:flex;align-items:center;justify-content:space-between;gap:14px;
+      padding:8px 16px;background:var(--panel);border-bottom:1px solid var(--line);
+      position:sticky;top:0;z-index:30
+    }
+    .resume-page-brand{display:flex;align-items:center;gap:10px;min-width:180px}
+    .resume-page-tools{display:flex;align-items:center;justify-content:flex-end;gap:6px;flex-wrap:wrap}
+    .resume-page-tools select{
+      height:32px;border:1px solid var(--line);border-radius:7px;background:var(--panel);
+      color:var(--text);padding:0 9px;font-size:11px;max-width:190px
+    }
+    .resume-zoom-readout{font-size:11px;color:var(--muted);min-width:44px;text-align:center}
+    .rr-credit{font-size:9px;color:var(--muted);white-space:nowrap}
+    .resume-page-body{padding:12px 20px 40px}
+
+    .resume-customizer,.photo-library{
+      max-width:980px;margin:0 auto 12px;background:var(--panel);border:1px solid var(--line);
+      border-radius:10px;padding:12px;display:none
+    }
+    .resume-customizer.open,.photo-library.open{display:block}
+    .resume-customizer-head,.photo-library-head{
+      display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:8px
+    }
+    .resume-customizer-title{font-size:12px;font-weight:750}
+    .resume-customizer textarea{
+      width:100%;min-height:96px;resize:vertical;background:var(--panel-2);color:var(--text);
+      border:1px solid var(--line);border-radius:7px;padding:9px 10px;font-size:11px;line-height:1.45
+    }
+    .resume-customizer-actions,.photo-library-actions{
+      display:flex;justify-content:flex-end;gap:7px;margin-top:8px
+    }
+
+    .resume-page-stage{
+      display:flex;justify-content:center;align-items:flex-start;overflow:visible;
+      padding:14px 0 70px;background:transparent;border:0;min-height:calc(100vh - 70px)
+    }
+    .resume-document{
+      width:8.5in;height:11in;min-width:8.5in;min-height:11in;
+      background:#fff;color:#111;box-shadow:0 10px 34px rgba(0,0,0,.22);
+      transform:scale(var(--resume-preview-scale));transform-origin:top center;
+      overflow:hidden;font-family:"IBM Plex Serif",Georgia,serif;
+      -webkit-print-color-adjust:exact;print-color-adjust:exact
+    }
+    .resume-document *{box-sizing:border-box}
+    .resume-layout{
+      width:calc(100% / var(--resume-content-scale,1));
+      min-height:calc(100% / var(--resume-content-scale,1));
+      transform:scale(var(--resume-content-scale,1));
+      transform-origin:top left;
+      font-family:"IBM Plex Serif",Georgia,serif;
+      font-size:9.35pt;line-height:1.4;color:#111;
+    }
+
+    .resume-columns{
+      display:grid;width:100%;min-width:0;align-items:start
+    }
+    .resume-main,.resume-sidebar,.resume-header-main,.resume-side-content{min-width:0}
+    .resume-section{break-inside:avoid;margin:0 0 .105in}
+    .resume-section:last-child{margin-bottom:0}
+    .resume-section-title{
+      font-family:"Fira Sans Condensed","Arial Narrow",Arial,sans-serif;
+      font-size:11.4pt;line-height:1.18;font-weight:600;text-transform:uppercase;
+      letter-spacing:.025em;margin:0 0 .05in;color:var(--resume-accent)
+    }
+    .resume-header{
+      color:#111
+    }
+    .resume-header-name{
+      font-family:"Fira Sans Condensed","Arial Narrow",Arial,sans-serif;
+      font-size:23pt;line-height:1.08;font-weight:600;letter-spacing:.01em;
+      overflow-wrap:normal;word-break:normal;hyphens:none
+    }
+    .resume-headline{
+      font-size:9.4pt;line-height:1.32;font-weight:500;margin-top:.035in;
+      overflow-wrap:normal;word-break:normal;hyphens:none
+    }
+    .resume-contact{
+      font-size:8.6pt;line-height:1.35;color:#555d66;margin-top:.035in;
+      overflow-wrap:normal;word-break:normal;hyphens:none
+    }
+    .resume-summary,.resume-item li,.resume-project-text,.resume-project-highlight{
+      text-align:justify;text-justify:inter-word;hyphens:none;word-break:normal;overflow-wrap:normal
+    }
+    .resume-summary{font-size:9.25pt;line-height:1.43}
+    .resume-featured-summary{margin-bottom:.11in}
+    .resume-item{margin-bottom:.085in;break-inside:avoid}
+    .resume-item:last-child{margin-bottom:0}
+    .resume-item-head,.resume-education-head{
+      display:flex;justify-content:space-between;align-items:flex-start;gap:.11in;
+      font-weight:600;line-height:1.25
+    }
+    .resume-item-head{font-size:9.55pt}
+    .resume-item-head span:first-child,.resume-education-head span:first-child{min-width:0;flex:1}
+    .resume-item-head span:last-child,.resume-education-head span:last-child{flex:0 0 auto;white-space:nowrap}
+    .resume-item-sub{
+      display:flex;justify-content:space-between;gap:.1in;color:#5d6570;
+      font-size:8.1pt;line-height:1.3;margin-top:.018in
+    }
+    .resume-item-sub span:first-child{min-width:0;flex:1}
+    .resume-item-sub span:last-child{flex:0 0 auto;white-space:nowrap}
+    .resume-item ul{margin:.035in 0 0 .16in;padding:0}
+    .resume-item li{font-size:8.72pt;line-height:1.38;margin:0 0 .027in;padding-left:.01in}
+    .resume-item li:last-child{margin-bottom:0}
+
+    .resume-project{margin-bottom:.066in;break-inside:avoid}
+    .resume-project:last-child{margin-bottom:0}
+    .resume-project-title{font-size:9.35pt;line-height:1.25;font-weight:600}
+    .resume-project-tech{font-size:7.85pt;line-height:1.3;color:#68717d;margin-top:.012in}
+    .resume-project-text{font-size:8.55pt;line-height:1.36;margin-top:.02in}
+    .resume-project-highlight{font-size:8.35pt;line-height:1.34;margin-top:.018in;color:#343941}
+
+    .resume-education-item{margin-bottom:.06in;break-inside:avoid}
+    .resume-education-item:last-child{margin-bottom:0}
+    .resume-education-head{font-size:8.9pt;line-height:1.28}
+    .resume-education-sub{font-size:8pt;line-height:1.33;color:#616975;margin-top:.014in}
+    .resume-skill-line,.resume-small{font-size:8.15pt;line-height:1.35;margin:.02in 0}
+    .resume-link{color:inherit;text-decoration:none}
+    .resume-sidebar .resume-education-head{display:block}
+    .resume-sidebar .resume-education-head span:last-child{
+      display:block;white-space:normal;margin-top:.012in;color:#59616c;font-size:.92em
+    }
+    .resume-sidebar .resume-item-sub{display:block}
+    .resume-sidebar .resume-summary,
+    .resume-sidebar .resume-skill-line,
+    .resume-sidebar .resume-small,
+    .resume-sidebar .resume-education-sub{
+      text-align:left;hyphens:none;word-break:normal;overflow-wrap:normal
+    }
+
+    .resume-photo{
+      width:.78in;height:.78in;object-fit:cover;flex:0 0 auto;
+      border:1px solid var(--resume-accent);background:#eef1f4
+    }
+    .resume-photo.round{border-radius:50%}
+    .resume-photo.soft{border-radius:10px}
+    .resume-photo.square{border-radius:0}
+
+    /* Azurill — full header, left sidebar */
+    .template-azurill .resume-layout{padding:.3in .38in}
+    .template-azurill .resume-header{
+      display:flex;align-items:center;gap:.15in;padding-bottom:.1in;margin-bottom:.13in;
+      border-bottom:1px solid var(--resume-accent)
+    }
+    .template-azurill .resume-columns{grid-template-columns:minmax(0,30%) minmax(0,1fr);gap:.2in}
+    .template-azurill .resume-sidebar{padding-right:.15in;border-right:1px solid #d6dce2}
+    .template-azurill .resume-main{padding-left:.01in}
+    .template-azurill .resume-item{position:relative;padding-left:.095in;border-left:1px solid #cbd4dd}
+    .template-azurill .resume-item:before{
+      content:"";position:absolute;left:-.031in;top:.05in;width:.056in;height:.056in;border-radius:50%;
+      background:#fff;border:1.2px solid var(--resume-accent)
+    }
+
+    /* Bronzor — full header, right sidebar */
+    .template-bronzor .resume-layout{padding:.3in .36in}
+    .template-bronzor .resume-header{text-align:center;margin-bottom:.12in}
+    .template-bronzor .resume-header .resume-photo{margin:0 auto .07in}
+    .template-bronzor .resume-contact{text-align:center}
+    .template-bronzor .resume-columns{grid-template-columns:minmax(0,1fr) minmax(0,29%);gap:.2in}
+    .template-bronzor .resume-sidebar{padding-left:.14in;border-left:1px solid #d7dde3}
+    .template-bronzor .resume-section{padding-top:.045in;border-top:1px solid var(--resume-accent)}
+    .template-bronzor .resume-section-title{font-size:10.8pt}
+
+    /* Chikorita — header in main, solid right sidebar */
+    .template-chikorita .resume-layout{padding:0;background:#fff}
+    .template-chikorita .resume-columns{
+      grid-template-columns:minmax(0,70%) minmax(0,30%);gap:0;min-height:11in
+    }
+    .template-chikorita .resume-main{padding:.32in .28in .3in .38in}
+    .template-chikorita .resume-sidebar{
+      padding:.32in .25in .3in .21in;background:var(--resume-accent);color:#fff;min-height:11in
+    }
+    .template-chikorita .resume-header{display:flex;align-items:flex-start;gap:.13in;margin-bottom:.13in}
+    .template-chikorita .resume-main .resume-section-title{
+      border-bottom:1px solid var(--resume-accent);padding-bottom:.024in
+    }
+    .template-chikorita .resume-sidebar .resume-section-title,
+    .template-chikorita .resume-sidebar .resume-skill-line,
+    .template-chikorita .resume-sidebar .resume-small,
+    .template-chikorita .resume-sidebar .resume-education-head,
+    .template-chikorita .resume-sidebar .resume-education-head span:last-child,
+    .template-chikorita .resume-sidebar .resume-education-sub{color:#fff}
+    .template-chikorita .resume-sidebar .resume-section-title{
+      border-bottom:1px solid rgba(255,255,255,.62);padding-bottom:.024in
+    }
+
+    /* Ditgar — tinted left sidebar with identity block + featured summary */
+    .template-ditgar .resume-layout{padding:0;background:#fff}
+    .template-ditgar .resume-columns{
+      grid-template-columns:minmax(0,30%) minmax(0,70%);gap:0;min-height:11in;
+      background:linear-gradient(to right,var(--resume-sidebar-tint) 0,var(--resume-sidebar-tint) 30%,#fff 30%,#fff 100%)
+    }
+    .template-ditgar .resume-sidebar{min-height:11in}
+    .template-ditgar .resume-side-header{
+      background:var(--resume-accent);color:#fff;padding:.26in .2in .19in
+    }
+    .template-ditgar .resume-side-header .resume-header,
+    .template-ditgar .resume-side-header .resume-contact{color:#fff}
+    .template-ditgar .resume-side-content{padding:.18in .18in .25in}
+    .template-ditgar .resume-main{padding:.29in .34in .28in .24in}
+    .template-ditgar .resume-featured-summary{
+      background:var(--resume-sidebar-tint);margin:-.29in -.34in .14in -.24in;padding:.22in .34in .18in .24in
+    }
+    .template-ditgar .resume-main .resume-section-title{
+      border-bottom:1px solid var(--resume-accent);padding-bottom:.024in
+    }
+    .template-ditgar .resume-main .resume-item-head{border-left:3px solid var(--resume-accent);padding-left:.045in}
+
+    /* Ditto — full accent header band + left sidebar */
+    .template-ditto .resume-layout{padding:0}
+    .template-ditto .resume-header{
+      display:flex;align-items:center;gap:.16in;background:var(--resume-accent);color:#fff;
+      padding:.24in .38in .22in;margin:0
+    }
+    .template-ditto .resume-header .resume-contact{color:#fff}
+    .template-ditto .resume-columns{
+      grid-template-columns:minmax(0,30%) minmax(0,1fr);gap:.2in;padding:.2in .38in .28in
+    }
+    .template-ditto .resume-sidebar{padding-right:.12in;border-right:1px solid #d8dde2}
+
+    /* Gengar — stronger profile sidebar + featured summary */
+    .template-gengar .resume-layout{padding:0;background:#fff}
+    .template-gengar .resume-columns{
+      grid-template-columns:minmax(0,31%) minmax(0,69%);gap:0;min-height:11in;
+      background:linear-gradient(to right,#edf7fb 0,#edf7fb 31%,#fff 31%,#fff 100%)
+    }
+    .template-gengar .resume-sidebar{min-height:11in}
+    .template-gengar .resume-side-header{
+      background:var(--resume-accent);color:#fff;padding:.3in .22in .22in
+    }
+    .template-gengar .resume-side-header .resume-header,
+    .template-gengar .resume-side-header .resume-contact{color:#fff}
+    .template-gengar .resume-side-content{padding:.2in .2in .25in}
+    .template-gengar .resume-main{padding:.3in .35in .28in .26in}
+    .template-gengar .resume-featured-summary{
+      background:#edf7fb;margin:-.3in -.35in .15in -.26in;padding:.22in .35in .18in .26in
+    }
+    .template-gengar .resume-main .resume-section-title{
+      border-bottom:1px solid var(--resume-accent);padding-bottom:.024in
+    }
+
+    /* Glalie — soft left sidebar */
+    .template-glalie .resume-layout{padding:0;background:#fff}
+    .template-glalie .resume-columns{
+      grid-template-columns:minmax(0,30%) minmax(0,70%);gap:0;min-height:11in;
+      background:linear-gradient(to right,#eef7fb 0,#eef7fb 30%,#fff 30%,#fff 100%)
+    }
+    .template-glalie .resume-sidebar{padding:.25in .19in .28in;min-height:11in}
+    .template-glalie .resume-header{text-align:center;margin-bottom:.12in}
+    .template-glalie .resume-header .resume-photo{margin:0 auto .07in}
+    .template-glalie .resume-contact{
+      text-align:left;border:1px solid var(--resume-accent);padding:.045in .055in
+    }
+    .template-glalie .resume-main{padding:.28in .34in .28in .24in}
+    .template-glalie .resume-section-title{
+      border-bottom:1px solid var(--resume-accent);padding-bottom:.024in
+    }
+
+    /* Kakuna — centered identity, right sidebar */
+    .template-kakuna .resume-layout{padding:.29in .36in}
+    .template-kakuna .resume-header{text-align:center;margin-bottom:.12in}
+    .template-kakuna .resume-header .resume-photo{margin:0 auto .07in}
+    .template-kakuna .resume-contact{text-align:center}
+    .template-kakuna .resume-columns{grid-template-columns:minmax(0,1fr) minmax(0,28%);gap:.2in}
+    .template-kakuna .resume-sidebar{padding-left:.14in;border-left:1px solid #d8dde2}
+    .template-kakuna .resume-section-title{
+      text-align:center;border-bottom:1px solid var(--resume-accent);padding-bottom:.024in
+    }
+
+    /* Lapras — card treatment, right sidebar */
+    .template-lapras .resume-layout{padding:.22in .28in}
+    .template-lapras .resume-header,.template-lapras .resume-section{
+      border:1px solid #cfd4da;border-radius:10px;background:#fff;padding:.075in .09in
+    }
+    .template-lapras .resume-header{display:flex;align-items:center;gap:.13in;margin-bottom:.11in}
+    .template-lapras .resume-columns{grid-template-columns:minmax(0,1fr) minmax(0,28%);gap:.16in}
+    .template-lapras .resume-section{position:relative;margin-bottom:.1in}
+    .template-lapras .resume-section-title{
+      display:inline-block;background:#fff;margin-top:-.145in;padding:0 .04in
+    }
+
+    /* Leafish — intro band + right sidebar */
+    .template-leafish .resume-layout{padding:0}
+    .template-leafish .resume-header-intro{background:#eaf7fc;padding:.2in .32in .15in}
+    .template-leafish .resume-header{display:flex;align-items:center;gap:.14in}
+    .template-leafish .resume-header-summary{font-size:8.7pt;line-height:1.4;max-width:3.2in}
+    .template-leafish .resume-contact-band{
+      background:#d1edf8;padding:.06in .32in;font-size:8.5pt;color:#42515c
+    }
+    .template-leafish .resume-columns{
+      grid-template-columns:minmax(0,1fr) minmax(0,29%);gap:.18in;padding:.18in .32in .28in
+    }
+    .template-leafish .resume-sidebar{padding-left:.13in;border-left:1px solid #d7dde2}
+    .template-leafish .resume-section-title{
+      border-bottom:1px solid var(--resume-accent);padding-bottom:.024in
+    }
+
+    /* Meowth — full header + left sidebar */
+    .template-meowth .resume-layout{padding:.29in .36in}
+    .template-meowth .resume-header{
+      display:flex;align-items:center;gap:.14in;margin-bottom:.12in;padding-bottom:.08in;
+      border-bottom:1px solid var(--resume-accent)
+    }
+    .template-meowth .resume-columns{grid-template-columns:minmax(0,29%) minmax(0,1fr);gap:.2in}
+    .template-meowth .resume-sidebar{padding-right:.13in;border-right:1px solid #d7dde2}
+
+    /* Onyx — traditional full header + right sidebar */
+    .template-onyx .resume-layout{padding:.29in .36in}
+    .template-onyx .resume-header{
+      display:flex;align-items:center;gap:.14in;padding-bottom:.1in;margin-bottom:.13in;
+      border-bottom:1px solid var(--resume-accent)
+    }
+    .template-onyx .resume-columns{grid-template-columns:minmax(0,1fr) minmax(0,28%);gap:.2in}
+    .template-onyx .resume-sidebar{padding-left:.13in;border-left:1px solid #d8dde2}
+
+    /* Pikachu — left sidebar + accent identity card in main */
+    .template-pikachu .resume-layout{padding:.22in .28in}
+    .template-pikachu .resume-columns{grid-template-columns:minmax(0,28%) minmax(0,1fr);gap:.16in}
+    .template-pikachu .resume-sidebar{padding-right:.11in}
+    .template-pikachu .resume-main-header{
+      background:var(--resume-accent);color:#fff;border-radius:10px;padding:.13in .15in;margin-bottom:.13in
+    }
+    .template-pikachu .resume-main-header .resume-header,
+    .template-pikachu .resume-main-header .resume-contact{color:#fff}
+    .template-pikachu .resume-main-header .resume-header{
+      display:flex;align-items:center;gap:.12in
+    }
+    .template-pikachu .resume-section-title{
+      border-bottom:1px solid var(--resume-accent);padding-bottom:.024in
+    }
+
+    /* Rhyhorn — full header + right sidebar */
+    .template-rhyhorn .resume-layout{padding:.29in .36in}
+    .template-rhyhorn .resume-header{
+      display:flex;align-items:center;gap:.14in;margin-bottom:.12in;padding-bottom:.08in;
+      border-bottom:1px solid var(--resume-accent)
+    }
+    .template-rhyhorn .resume-columns{grid-template-columns:minmax(0,1fr) minmax(0,29%);gap:.2in}
+    .template-rhyhorn .resume-sidebar{padding-left:.13in;border-left:1px solid #d8dde2}
+    .template-rhyhorn .resume-section-title{
+      border-bottom:1px solid var(--resume-accent);padding-bottom:.024in
+    }
+
+    /* Scizor — strong top rule + left sidebar */
+    .template-scizor .resume-layout{padding:.27in .36in .3in;border-top:.065in solid var(--resume-accent)}
+    .template-scizor .resume-header{display:flex;align-items:center;gap:.15in;margin-bottom:.12in}
+    .template-scizor .resume-header-name{font-size:27pt}
+    .template-scizor .resume-name-rule{width:72%;border-bottom:2px solid #d8dde2;margin:.05in 0}
+    .template-scizor .resume-columns{grid-template-columns:minmax(0,29%) minmax(0,1fr);gap:.2in}
+    .template-scizor .resume-sidebar{padding-right:.13in}
+    .template-scizor .resume-section{padding-top:.055in;border-top:1px solid #d8dde2}
+    .template-scizor .resume-section-title{color:#15171a}
+
+    .resume-compact-fit .resume-section{margin-bottom:.085in}
+    .resume-compact-fit .resume-item{margin-bottom:.068in}
+    .resume-compact-fit .resume-item li{line-height:1.32;margin-bottom:.02in}
+    .resume-compact-fit .resume-project{margin-bottom:.05in}
+    .resume-compact-fit .resume-summary{line-height:1.36}
+
+    .resume-toolbar-group{position:relative}
+    .resume-menu{
+      position:absolute;right:0;top:calc(100% + 6px);z-index:80;min-width:205px;padding:6px;
+      border:1px solid var(--line);border-radius:9px;background:var(--panel);box-shadow:var(--shadow)
+    }
+    .resume-menu[hidden]{display:none!important}
+    .resume-menu button{
+      width:100%;border:0;background:transparent;color:var(--text);text-align:left;
+      padding:8px 9px;border-radius:6px;cursor:pointer;font-size:11px
+    }
+    .resume-menu button:hover{background:var(--panel-2)}
+    .resume-menu button:disabled{opacity:.45;cursor:not-allowed}
+
+    .photo-help{font-size:10px;color:var(--muted);line-height:1.45;margin:4px 0 10px}
+    .photo-picker{position:relative}
+    .photo-picker-button{
+      width:100%;min-height:46px;border:1px solid var(--line);border-radius:8px;background:var(--panel-2);
+      color:var(--text);display:flex;align-items:center;gap:10px;padding:6px 9px;cursor:pointer;text-align:left
+    }
+    .photo-picker-button .photo-picker-name{flex:1}
+    .photo-thumb{width:32px;height:32px;border-radius:6px;object-fit:cover;background:var(--bg);border:1px solid var(--line)}
+    .photo-thumb.empty{display:grid;place-items:center;font-size:15px}
+    .photo-menu{
+      position:absolute;left:0;right:0;top:calc(100% + 5px);z-index:90;padding:5px;
+      border:1px solid var(--line);border-radius:8px;background:var(--panel);box-shadow:var(--shadow);
+      max-height:260px;overflow:auto
+    }
+    .photo-menu[hidden]{display:none!important}
+    .photo-choice{display:grid;grid-template-columns:minmax(0,1fr) 38px;align-items:stretch;border-radius:7px;overflow:hidden}
+    .photo-choice+.photo-choice{margin-top:3px}
+    .photo-choice-main{
+      border:0;background:transparent;color:var(--text);display:flex;align-items:center;gap:9px;
+      padding:6px 8px;cursor:pointer;text-align:left;min-width:0
+    }
+    .photo-choice-main:hover{background:var(--panel-2)}
+    .photo-choice-main span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .photo-delete{border:0;background:transparent;color:#ef4444;cursor:pointer;font-size:16px;display:grid;place-items:center}
+    .photo-delete:hover{background:#ff2d2d;color:#111;font-weight:900}
+
+    @media(max-width:980px){
+      .rr-credit,.desktop-label{display:none}
+      .resume-page-topbar{align-items:flex-start}
+      .resume-page-body{padding-left:10px;padding-right:10px}
+    }
+
+    @media print{
+      html,body{width:8.5in;height:11in;background:#fff!important;margin:0!important;padding:0!important}
+      .resume-page-topbar,.resume-customizer,.photo-library{display:none!important}
+      .resume-page-body,.resume-page-stage{
+        margin:0!important;padding:0!important;border:0!important;background:#fff!important;
+        min-height:0!important;display:block!important;overflow:visible!important
+      }
+      .resume-document{
+        width:8.5in!important;height:11in!important;min-width:8.5in!important;min-height:11in!important;
+        box-shadow:none!important;transform:none!important;margin:0!important;overflow:hidden!important
+      }
+      .resume-layout{
+        transform:scale(var(--resume-content-scale,1))!important;
+        transform-origin:top left!important;
+        width:calc(100% / var(--resume-content-scale,1))!important
+      }
+      @page{size:Letter;margin:0}
+    }
+  </style>
+</head>
+<body>
+<div class="resume-page-shell">
+  <header class="resume-page-topbar">
+    <div class="resume-page-brand">
+      <a class="icon-btn" href="../portfolio/" aria-label="Back to portfolio">←</a>
+      <div class="brand-copy-small"><div class="brand-title">Resume</div><div class="brand-sub">One-Page Resume Builder</div></div>
+    </div>
+    <div class="resume-page-tools">
+      <span class="rr-credit">Reactive Resume–Inspired Layouts</span>
+      <select id="resumeStyle" aria-label="Resume Template">
+        <option value="azurill">Azurill</option>
+        <option value="bronzor">Bronzor</option>
+        <option value="chikorita">Chikorita</option>
+        <option value="ditgar">Ditgar</option>
+        <option value="ditto">Ditto</option>
+        <option value="gengar">Gengar</option>
+        <option value="glalie">Glalie</option>
+        <option value="kakuna">Kakuna</option>
+        <option value="lapras">Lapras</option>
+        <option value="leafish">Leafish</option>
+        <option value="meowth">Meowth</option>
+        <option value="onyx">Onyx</option>
+        <option value="pikachu">Pikachu</option>
+        <option value="rhyhorn">Rhyhorn</option>
+        <option value="scizor">Scizor</option>
+      </select>
+      <button class="tool-btn" id="summaryToggle">Edit Summary</button>
+      <button class="tool-btn" id="photoToggle">Photos</button>
+      <div class="resume-toolbar-group">
+        <button class="tool-btn" id="exportToggle" type="button" aria-expanded="false">Export ▾</button>
+        <div class="resume-menu" id="exportMenu" hidden>
+          <button id="exportPdf" type="button">PDF / Print</button>
+          <button id="exportWord" type="button">Microsoft Word (.doc)</button>
+          <button id="exportOdf" type="button">OpenDocument (.fodt)</button>
+          <button id="exportHtml" type="button">HTML</button>
+          <button type="button" disabled title="Microsoft Publisher uses a proprietary format that cannot be generated reliably in-browser.">Publisher (.pub) — manual</button>
+        </div>
+      </div>
+      <button class="icon-btn" id="zoomOut" title="Zoom out">−</button>
+      <span class="resume-zoom-readout" id="zoomReadout">100%</span>
+      <button class="icon-btn" id="zoomIn" title="Zoom in">+</button>
+      <button class="tool-btn desktop-label" id="fitPage">Fit Page</button>
+      <button class="tool-btn desktop-label" id="fitWidth">Fit Width</button>
+      <button class="primary-btn" id="printResume">Print / Save PDF</button>
+      <button class="icon-btn" id="themeToggle" title="Toggle Light/Dark Mode">◐</button>
+    </div>
+  </header>
+
+  <main class="resume-page-body">
+    <section class="resume-customizer" id="summaryPanel">
+      <div class="resume-customizer-head">
+        <div>
+          <div class="resume-customizer-title">Custom Resume Summary</div>
+          <div class="brand-sub">Type your own summary. It updates every template immediately and is stored only in this browser.</div>
+        </div>
+        <button class="icon-btn" id="summaryClose" aria-label="Close summary editor">×</button>
+      </div>
+      <textarea id="summaryInput" aria-label="Custom resume summary"></textarea>
+      <div class="resume-customizer-actions">
+        <button class="secondary-btn" id="summaryReset">Reset to default</button>
+        <button class="primary-btn" id="summaryDone">Done</button>
+      </div>
+    </section>
+
+    <section class="photo-library" id="photoPanel">
+      <div class="photo-library-head">
+        <div>
+          <div class="resume-customizer-title">Resume Photos</div>
+          <div class="brand-sub">Photos stay in this browser. Add multiple photos, pick the one to use, or delete photos you no longer want.</div>
+        </div>
+        <button class="icon-btn" id="photoClose" aria-label="Close photo library">×</button>
+      </div>
+      <div class="photo-help">A selected photo is used by templates that include profile imagery. Choose “No photo” to keep the resume text-only.</div>
+      <div class="photo-picker">
+        <button class="photo-picker-button" id="photoPickerButton" type="button" aria-expanded="false">
+          <span class="photo-thumb empty" id="selectedPhotoThumb">＋</span>
+          <span class="photo-picker-name" id="selectedPhotoName">No photo</span>
+          <span aria-hidden="true">▾</span>
+        </button>
+        <div class="photo-menu" id="photoMenu" hidden></div>
+      </div>
+      <input id="photoUpload" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+      <div class="photo-library-actions">
+        <button class="secondary-btn" id="addPhoto" type="button">Add Photo</button>
+        <button class="primary-btn" id="photoDone" type="button">Done</button>
+      </div>
+    </section>
+
+    <div class="resume-page-stage" id="stage">
+      <article class="resume-document template-onyx" id="resumeDocument">
+        <div class="resume-layout" id="resumeLayout"></div>
+      </article>
+    </div>
+  </main>
+</div>
+
+<script>
+(async()=>{
+  const token=sessionStorage.getItem('gpPrivatePortfolioToken')||'';
+  if(!/^[a-f0-9]{96}$/i.test(token)){location.replace('../?workspace=Portfolio');return}
+  document.body.style.visibility='hidden';
+  try {
+    const response=await fetch('https://github-private-workspaces.hemanth2355.workers.dev/',{
+      method:'POST',headers:{'Content-Type':'application/json'},cache:'no-store',
+      body:JSON.stringify({action:'model',workspace:'Portfolio',token,model:'portfolio'})
+    });
+    if(!response.ok)throw Error('Backend unreachable');
+    const payload=await response.json();
+    if(!payload.ok||!payload.data?.profile||!Array.isArray(payload.data.projects))throw Error('Invalid session or model');
+    window.PORTFOLIO_DATA=payload.data;
+    const script=document.createElement('script');script.src='app.js';
+    script.onload=()=>{document.body.style.visibility='visible'};
+    script.onerror=()=>{location.replace('../?workspace=Portfolio')};
+    document.body.append(script);
+  } catch(e){sessionStorage.removeItem('gpPrivatePortfolioToken');location.replace('../?workspace=Portfolio')}
+})();
+</script>
+</body>
+</html>
