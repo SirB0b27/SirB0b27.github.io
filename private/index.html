@@ -143,7 +143,7 @@ function renderDashboardSection(i){
   function draw(){g.replaceChildren();for(const x of projects.filter(x=>(x.name+' '+x.summary+' '+(x.technologies||[]).join(' ')).toLowerCase().includes(filter.value.toLowerCase())))card(g,x.name,x.category+' · '+x.period+' — '+x.summary,x.technologies)}
   filter.oninput=draw;draw();
  }else if(section.key==='skills'){
-  const g=grid();for(const x of portfolio.skills?.categories||portfolio.skills||[]){if(x&&typeof x==='object')card(g,x.label||x.name||x.category,x.value||x.description||'',x.tags)}
+  const g=grid();for(const x of (Array.isArray(portfolio.skills?.categories)?portfolio.skills.categories:Array.isArray(portfolio.skills)?portfolio.skills:[])){if(x&&typeof x==='object')card(g,x.label||x.name||x.category,x.value||x.description||'',x.tags)}
  }else if(section.key==='education'){
   const g=grid();for(const x of education.programs||[])card(g,x.program||x.degree,x.institution+' · '+x.awarded,[x.degree,x.secondary].filter(Boolean));
   const sub=el('h3','Course catalog ('+(education.courses||[]).length+')');content.append(sub);const courses=grid();
