@@ -120,13 +120,19 @@ function effectivePolicies(day){
  return state;
 }
 function scheduledEvents(day){
+ // Only the latest applicable, uncancelled rule per workspace should be visible.
+ // The log is returned newest-first; restore append order before evaluating.
  const audit=(policyData?.audit||[]).slice().reverse();
  const cancelled=new Set(audit.filter(x=>x.action==='CANCEL').map(x=>x.ruleId));
- return audit.filter(x=>{
-  if(x.action!=='ADD'||cancelled.has(x.ruleId))return false;
-  const from=normalizePolicyDate(x.startDate),to=normalizePolicyDate(x.endDate);
-  return x.mode==='indefinite'||(from&&to&&day>=from&&day<=to);
- });
+ const latest=new Map();
+ for(const item of audit){
+  if(item.action!=='ADD'||cancelled.has(item.ruleId)||!WORKSPACE_COLORS[item.workspace])continue;
+  const from=normalizePolicyDate(item.startDate),to=normalizePolicyDate(item.endDate);
+  if(item.mode==='date-range'&&(!from||!to||day<from||day>to))continue;
+  if(item.mode!=='indefinite'&&item.mode!=='date-range')continue;
+  latest.set(item.workspace,item);
+ }
+ return ['Portfolio','Personal','Birthdays'].filter(name=>latest.has(name)).map(name=>latest.get(name));
 }
 function calendarDay(day){
  const iso=localDate(day),entries=scheduledEvents(iso),cell=node('button');
