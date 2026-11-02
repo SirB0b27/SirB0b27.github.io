@@ -61,12 +61,7 @@ body.bd-quiz-fullscreen .bd-fullscreen-back{display:inline-flex}
 <div class="nav-separator"></div>
 <div class="nav-section"><div class="nav-label">Game Show</div>
 <button class="nav-item" data-bd-route="home"><span class="bd-nav-icon" data-bd-icon="house"></span><span class="nav-text">Game Show Home</span></button>
-<div class="bd-subnav" id="groupSubnav" hidden>
-<button class="nav-item" data-bd-route="kaushik"><span class="bd-nav-icon" data-bd-icon="gift"></span><span class="nav-text">Kaushik</span></button>
-<div class="bd-subnav bd-third" id="kaushikSubnav" hidden>
-<button class="nav-item" data-bd-route="surveys"><span class="bd-nav-icon" data-bd-icon="clipboard"></span><span class="nav-text">Kaushik Surveys</span></button>
-<button class="nav-item" data-bd-route="game"><span class="bd-nav-icon" data-bd-icon="gamepad"></span><span class="nav-text">Game</span><span class="nav-badge">Soon</span></button>
-</div></div></div></aside>
+<div class="bd-subnav" id="groupSubnav"><button class="nav-item" data-bd-route="members"><span class="bd-nav-icon" data-bd-icon="clipboard"></span><span class="nav-text">Surveys</span></button><button class="nav-item" data-bd-route="game"><span class="bd-nav-icon" data-bd-icon="gamepad"></span><span class="nav-text">Game</span><span class="nav-badge">Soon</span></button></div></div></aside>e>
 <main class="bd-main" id="main"><div class="workspace">
 <section class="bd-view" data-bd-view="home">
 <div class="page-head"><div><div class="eyebrow">Game Show</div><h1>Game Show</h1><p>Choose a member's surveys, or open the shared game.</p></div></div>
@@ -80,7 +75,7 @@ body.bd-quiz-fullscreen .bd-fullscreen-back{display:inline-flex}
 <button class="bd-card" data-bd-route="game"><span class="bd-icon" data-bd-icon="gamepad"></span><h2>Game</h2><p>One shared game for everyone, coming soon.</p><span class="bd-open">View Placeholder →</span></button>
 </div></section>
 <section class="bd-view" data-bd-view="surveys" hidden>
-<button class="bd-fullscreen-back" type="button" data-bd-route="kaushik" aria-label="Back to Kaushik">← Kaushik</button>
+<button class="bd-fullscreen-back" type="button" data-bd-route="members" aria-label="Back to Surveys">← Kaushik</button>
 <div class="bd-frame"><iframe title="Kaushik Surveys questionnaire" id="quizFrame" data-src="https://script.google.com/macros/s/AKfycbzjfYNyEkHvFwDT4RIoHEc-Oy5aqSgK8D9NnC6fygxMLzZMV80N2VKqbi4Xe8GitAwmLQ/exec" allow="clipboard-write" referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
 </section>
 <section class="bd-view" data-bd-view="game" hidden>
@@ -110,7 +105,7 @@ qa('[data-bd-view]').forEach(el=>el.hidden=el.dataset.bdView!==route);
 document.body.classList.toggle('bd-quiz-fullscreen',route==='surveys');
 qa('.sidebar [data-bd-route]').forEach(el=>el.classList.toggle('active',el.dataset.bdRoute===route));
 q('#groupSubnav').hidden=false;
-q('#kaushikSubnav').hidden=true;
+
 q('#crumb').textContent={home:'Game Show / Home',members:'Game Show / Surveys',member:'Game Show / Surveys / '+selectedMember,kaushik:'Game Show / Surveys / Kaushik',surveys:'Game Show / Surveys / Kaushik',game:'Game Show / Game'}[route];
 if(route==='surveys'&&!q('#quizFrame').src)q('#quizFrame').src=q('#quizFrame').dataset.src;
 if(update)history.pushState(null,'','#'+route);
