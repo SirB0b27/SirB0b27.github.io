@@ -63,7 +63,7 @@ body.bd-quiz-fullscreen .bd-fullscreen-back{display:inline-flex}
 <button class="nav-item" data-bd-route="home"><span class="bd-nav-icon" data-bd-icon="house"></span><span class="nav-text">Game Show Home</span></button>
 <div class="bd-subnav" id="groupSubnav" hidden>
 <button class="nav-item" data-bd-route="kaushik"><span class="bd-nav-icon" data-bd-icon="gift"></span><span class="nav-text">Kaushik</span></button>
-<div class="bd-subnav bd-third" id="kajuSubnav" hidden>
+<div class="bd-subnav bd-third" id="kaushikSubnav" hidden>
 <button class="nav-item" data-bd-route="surveys"><span class="bd-nav-icon" data-bd-icon="clipboard"></span><span class="nav-text">Kaushik Surveys</span></button>
 <button class="nav-item" data-bd-route="game"><span class="bd-nav-icon" data-bd-icon="gamepad"></span><span class="nav-text">Game</span><span class="nav-badge">Soon</span></button>
 </div></div></div></aside>
@@ -84,8 +84,8 @@ body.bd-quiz-fullscreen .bd-fullscreen-back{display:inline-flex}
 <div class="bd-frame"><iframe title="Kaushik Surveys questionnaire" id="quizFrame" data-src="https://script.google.com/macros/s/AKfycbzjfYNyEkHvFwDT4RIoHEc-Oy5aqSgK8D9NnC6fygxMLzZMV80N2VKqbi4Xe8GitAwmLQ/exec" allow="clipboard-write" referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
 </section>
 <section class="bd-view" data-bd-view="game" hidden>
-<button class="secondary-btn bd-back" data-bd-route="kaushik">← Kaushik</button>
-<div class="page-head"><div><div class="eyebrow">Game Show / Kaushik</div><h1>Game</h1><p>Reserved for the group's shared game.</p></div></div>
+<button class="secondary-btn bd-back" data-bd-route="home">← Game Show</button>
+<div class="page-head"><div><div class="eyebrow">Game Show</div><h1>Game</h1><p>Reserved for the group's shared game.</p></div></div>
 <div class="bd-coming"><span data-bd-icon="gamepad"></span><h2>Coming Soon</h2><p>We'll build this game in a later update.</p></div>
 </section>
 </div></main></div>
@@ -109,8 +109,8 @@ qa('[data-bd-view]').forEach(el=>el.hidden=el.dataset.bdView!==route);
 document.body.classList.toggle('bd-quiz-fullscreen',route==='surveys');
 qa('.sidebar [data-bd-route]').forEach(el=>el.classList.toggle('active',el.dataset.bdRoute===route));
 q('#groupSubnav').hidden=route==='home';
-q('#kajuSubnav').hidden=!['surveys','game'].includes(route);
-q('#crumb').textContent={home:'Game Show / Home',kaushik:'Game Show / Kaushik',surveys:'Game Show / Kaushik / Kaushik Surveys',game:'Game Show / Kaushik / Game'}[route];
+q('#kaushikSubnav').hidden=!['surveys','game'].includes(route);
+q('#crumb').textContent={home:'Game Show / Home',kaushik:'Game Show / Kaushik',surveys:'Game Show / Kaushik / Kaushik Surveys',game:'Game Show / Game'}[route];
 if(route==='surveys'&&!q('#quizFrame').src)q('#quizFrame').src=q('#quizFrame').dataset.src;
 if(update)history.pushState(null,'','#'+route);
 if(innerWidth<760)q('#sidebar').classList.remove('mobile-open');
