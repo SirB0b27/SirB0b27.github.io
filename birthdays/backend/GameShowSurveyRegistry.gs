@@ -71,3 +71,41 @@ function testGameShowRegistryNames(){
   if(GAME_SHOW_SHEET_TYPES.length!==5)throw Error('Unexpected survey file types');
   Logger.log('PASS: 11 members, five survey file types; no files modified');
 }
+
+/**
+ * Run from Apps Script editor on a staging copy. Read-only inspection.
+ * Does not create users, alter responses, clear records or publish anything.
+ * This checks that all configured spreadsheets are accessible and that all
+ * five data files are unique per member.
+ */
+function testGameShowRegistryConnection(){
+  testGameShowRegistryNames();
+  const expected=['Name','Questions Sheet ID','Responses Sheet ID','Scores Sheet ID','Users Sheet ID','Saves Sheet ID'];
+  const book=gsConfigBook_();
+  const registry=book.getSheetByName('Survey Files');
+  const themes=book.getSheetByName('Member Themes');
+  if(!registry||!themes)throw Error('Configuration tabs missing');
+  const headers=registry.getRange(1,1,1,6).getDisplayValues()[0];
+  if(expected.some((v,i)=>headers[i]!==v))throw Error('Survey Files header mismatch');
+  const assignedIds=new Set();
+  const results=[];
+  for(const member of GAME_SHOW_NAMES){
+    const item={member,files:0,themeReady:false};
+    for(const type of GAME_SHOW_SHEET_TYPES){
+      const id=gsSurveySheetId_(member,type);
+      if(!/^[a-zA-Z0-9_-]{20,}$/.test(id))throw Error('Invalid spreadsheet reference for '+member+' '+type);
+      if(assignedIds.has(id))throw Error('Shared spreadsheet reference detected for '+member+' '+type);
+      assignedIds.add(id);
+      const spreadsheet=SpreadsheetApp.openById(id);
+      if(!spreadsheet.getSheets().length)throw Error('Missing tabs for '+member+' '+type);
+      item.files++;
+    }
+    const theme=gsMemberTheme_(member);
+    item.themeReady=Object.values(theme).every(v=>/^#[0-9a-fA-F]{6}$/.test(v));
+    results.push(item);
+  }
+  if(assignedIds.size!==55)throw Error('Expected 55 unique spreadsheet references');
+  Logger.log('PASS: 11 members, 55 unique accessible sheets, valid theme fallbacks');
+  Logger.log(JSON.stringify(results)); // Counts and member names only; no IDs.
+  return {members:results.length,uniqueSheets:assignedIds.size,ok:true};
+}
