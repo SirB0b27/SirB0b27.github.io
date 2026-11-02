@@ -109,3 +109,30 @@ function testGameShowRegistryConnection(){
   Logger.log(JSON.stringify(results)); // Counts and member names only; no IDs.
   return {members:results.length,uniqueSheets:assignedIds.size,ok:true};
 }
+
+/**
+ * ONE-TIME SETUP. In the Apps Script editor, run setupGameShowEnvironment().
+ * Finds the uniquely named workbook in the executing user's Drive and sets
+ * the required script property. No manual spreadsheet IDs needed.
+ * Re-running is safe and does not modify any Sheet contents.
+ */
+function setupGameShowEnvironment(){
+  const title='Chatting Chaunties - Member Themes';
+  const matches=DriveApp.getFilesByName(title);
+  const candidates=[];
+  while(matches.hasNext()){
+    const file=matches.next();
+    if(file.getMimeType()===MimeType.GOOGLE_SHEETS&&!file.isTrashed())
+      candidates.push(file);
+  }
+  if(candidates.length!==1)
+    throw Error('Expected exactly one accessible configuration spreadsheet named "'+title+'"; found '+candidates.length);
+  const file=candidates[0];
+  const book=SpreadsheetApp.openById(file.getId());
+  if(!book.getSheetByName('Member Themes')||!book.getSheetByName('Survey Files'))
+    throw Error('Configuration spreadsheet is missing a required tab');
+  PropertiesService.getScriptProperties().setProperty('GAME_SHOW_CONFIG_SHEET_ID',file.getId());
+  const result=testGameShowRegistryConnection();
+  Logger.log('Environment configured successfully. '+result.members+' members, '+result.uniqueSheets+' spreadsheets verified.');
+  return {configured:true,members:result.members,spreadsheets:result.uniqueSheets};
+}
