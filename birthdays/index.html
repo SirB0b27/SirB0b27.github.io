@@ -43,6 +43,28 @@ body.bd-quiz-fullscreen .bd-fullscreen-back{display:inline-flex}
 .bd-fullscreen-back:hover{background:#174c8b}
 .bd-fullscreen-back:focus-visible{outline:3px solid #78b7f0;outline-offset:2px}
 @media(max-width:760px){body.bd-quiz-fullscreen .bd-frame{height:100dvh;min-height:0}}
+
+/* Compact member picker: alphabetic, three columns desktop, responsive. */
+.bd-member-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;max-width:1100px}
+.bd-member-tile{width:100%;min-height:68px;display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--panel);border:1px solid var(--line);border-radius:11px;color:var(--text);text-align:left;cursor:pointer;transition:border-color .15s,background .15s,transform .15s}
+.bd-member-tile:hover{border-color:var(--accent);background:var(--panel-2);transform:translateY(-1px)}
+.bd-member-tile:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.bd-member-avatar{width:34px;height:34px;flex:0 0 34px;display:grid;place-items:center;border-radius:9px;background:var(--panel-2);border:1px solid var(--line);color:var(--accent);font-weight:800;font-size:14px}
+.bd-member-name{font-size:14px;font-weight:700;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bd-member-arrow{margin-left:auto;color:var(--accent);font-size:17px}
+@media(max-width:900px){.bd-member-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:530px){.bd-member-grid{grid-template-columns:1fr}.bd-member-tile{min-height:54px;padding:9px 12px}}
+/* Opaque overlay ensures the previous member cannot flash through while iframe navigates. */
+.bd-frame{position:relative}
+.bd-frame iframe{visibility:hidden}
+.bd-frame.bd-frame-ready iframe{visibility:visible}
+.bd-frame-loading{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;color:#e8f1ff;background:#102b50;text-align:center}
+.bd-frame-loading[hidden]{display:none!important}
+.bd-loader-ring{width:30px;height:30px;border:3px solid #7196bc66;border-top-color:#94c6f3;border-radius:50%;animation:bd-ring-spin .85s linear infinite}
+@keyframes bd-ring-spin{to{transform:rotate(360deg)}}
+.bd-frame-loading strong{font-size:17px}
+.bd-frame-loading span{font-size:12px;color:#aec9e7}
+
 </style>
 </head>
 <body>
@@ -67,7 +89,19 @@ body.bd-quiz-fullscreen .bd-fullscreen-back{display:inline-flex}
 <div class="page-head"><div><div class="eyebrow">Game Show</div><h1>Game Show</h1><p>Choose a member's surveys, or open the shared game.</p></div></div>
 <div class="bd-grid"><button class="bd-card" data-bd-route="members"><span class="bd-icon" data-bd-icon="clipboard"></span><h2>Surveys</h2><p>Choose a person from the group.</p><span class="bd-open">Choose member →</span></button><button class="bd-card" data-bd-route="game"><span class="bd-icon" data-bd-icon="gamepad"></span><h2>Game</h2><p>One shared game for everyone.</p><span class="bd-open">Open Game →</span></button></div>
 </section>
-<section class="bd-view" data-bd-view="members" hidden><button class="secondary-btn bd-back" data-bd-route="home">← Game Show</button><div class="page-head"><div><div class="eyebrow">Game Show</div><h1>Surveys</h1><p>Select a person.</p></div></div><div class="bd-grid"><button class="bd-card" data-member="Hemanth"><span class="bd-icon" data-bd-icon="clipboard"></span><h2>Hemanth</h2><p>Open this member's survey.</p><span class="bd-open">View Hemanth →</span></button><button class="bd-card" data-member="Chahana"><span class="bd-icon" data-bd-icon="clipboard"></span><h2>Chahana</h2><p>Open this member's survey.</p><span class="bd-open">View Chahana →</span></button><button class="bd-card" data-member="Apurva"><span class="bd-icon" data-bd-icon="clipboard"></span><h2>Apurva</h2><p>Open this member's survey.</p><span class="bd-open">View Apurva →</span></button><button class="bd-card" data-member="Sreekanth"><span class="bd-icon" data-bd-icon="clipboard"></span><h2>Sreekanth</h2><p>Open this member's survey.</p><span class="bd-open">View Sreekanth →</span></button><button class="bd-card" data-member="Sai"><span class="bd-icon" data-bd-icon="clipboard"></span><h2>Sai</h2><p>Open this member's survey.</p><span class="bd-open">View Sai →</span></button><button class="bd-card" data-member="Sid"><span class="bd-icon" data-bd-icon="clipboard"></span><h2>Sid</h2><p>Open this member's survey.</p><span class="bd-open">View Sid →</span></button><button class="bd-card" data-member="Akshay"><span class="bd-icon" data-bd-icon="clipboard"></span><h2>Akshay</h2><p>Open this member's survey.</p><span class="bd-open">View Akshay →</span></button><button class="bd-card" data-member="Neha"><span class="bd-icon" data-bd-icon="clipboard"></span><h2>Neha</h2><p>Open this member's survey.</p><span class="bd-open">View Neha →</span></button><button class="bd-card" data-member="Ishaan"><span class="bd-icon" data-bd-icon="clipboard"></span><h2>Ishaan</h2><p>Open this member's survey.</p><span class="bd-open">View Ishaan →</span></button><button class="bd-card" data-member="Sreeja"><span class="bd-icon" data-bd-icon="clipboard"></span><h2>Sreeja</h2><p>Open this member's survey.</p><span class="bd-open">View Sreeja →</span></button><button class="bd-card" data-member="Kaushik"><span class="bd-icon" data-bd-icon="clipboard"></span><h2>Kaushik</h2><p>Open this member's survey.</p><span class="bd-open">View Kaushik →</span></button></div></section><section class="bd-view" data-bd-view="member" hidden><button class="secondary-btn bd-back" data-bd-route="members">← Surveys</button><div class="page-head"><div><div class="eyebrow">Game Show / Surveys</div><h1 id="selectedMember">Member</h1><p>Survey data prepared; backend connection and questions pending.</p></div></div></section><section class="bd-view" data-bd-view="kaushik" hidden>
+<section class="bd-view" data-bd-view="members" hidden><button class="secondary-btn bd-back" data-bd-route="home">← Game Show</button><div class="page-head"><div><div class="eyebrow">Game Show</div><h1>Surveys</h1><p>Choose a person to open their survey.</p></div></div><div class="bd-member-grid">
+<button class="bd-member-tile" type="button" data-member="Akshay" aria-label="Open Akshay's Survey"><span class="bd-member-avatar" aria-hidden="true">A</span><span class="bd-member-name">Akshay</span><span class="bd-member-arrow" aria-hidden="true">→</span></button>
+<button class="bd-member-tile" type="button" data-member="Apurva" aria-label="Open Apurva's Survey"><span class="bd-member-avatar" aria-hidden="true">A</span><span class="bd-member-name">Apurva</span><span class="bd-member-arrow" aria-hidden="true">→</span></button>
+<button class="bd-member-tile" type="button" data-member="Chahana" aria-label="Open Chahana's Survey"><span class="bd-member-avatar" aria-hidden="true">C</span><span class="bd-member-name">Chahana</span><span class="bd-member-arrow" aria-hidden="true">→</span></button>
+<button class="bd-member-tile" type="button" data-member="Hemanth" aria-label="Open Hemanth's Survey"><span class="bd-member-avatar" aria-hidden="true">H</span><span class="bd-member-name">Hemanth</span><span class="bd-member-arrow" aria-hidden="true">→</span></button>
+<button class="bd-member-tile" type="button" data-member="Ishaan" aria-label="Open Ishaan's Survey"><span class="bd-member-avatar" aria-hidden="true">I</span><span class="bd-member-name">Ishaan</span><span class="bd-member-arrow" aria-hidden="true">→</span></button>
+<button class="bd-member-tile" type="button" data-member="Kaushik" aria-label="Open Kaushik's Survey"><span class="bd-member-avatar" aria-hidden="true">K</span><span class="bd-member-name">Kaushik</span><span class="bd-member-arrow" aria-hidden="true">→</span></button>
+<button class="bd-member-tile" type="button" data-member="Neha" aria-label="Open Neha's Survey"><span class="bd-member-avatar" aria-hidden="true">N</span><span class="bd-member-name">Neha</span><span class="bd-member-arrow" aria-hidden="true">→</span></button>
+<button class="bd-member-tile" type="button" data-member="Sai" aria-label="Open Sai's Survey"><span class="bd-member-avatar" aria-hidden="true">S</span><span class="bd-member-name">Sai</span><span class="bd-member-arrow" aria-hidden="true">→</span></button>
+<button class="bd-member-tile" type="button" data-member="Sid" aria-label="Open Sid's Survey"><span class="bd-member-avatar" aria-hidden="true">S</span><span class="bd-member-name">Sid</span><span class="bd-member-arrow" aria-hidden="true">→</span></button>
+<button class="bd-member-tile" type="button" data-member="Sreeja" aria-label="Open Sreeja's Survey"><span class="bd-member-avatar" aria-hidden="true">S</span><span class="bd-member-name">Sreeja</span><span class="bd-member-arrow" aria-hidden="true">→</span></button>
+<button class="bd-member-tile" type="button" data-member="Sreekanth" aria-label="Open Sreekanth's Survey"><span class="bd-member-avatar" aria-hidden="true">S</span><span class="bd-member-name">Sreekanth</span><span class="bd-member-arrow" aria-hidden="true">→</span></button>
+</div></section><section class="bd-view" data-bd-view="member" hidden><button class="secondary-btn bd-back" data-bd-route="members">← Surveys</button><div class="page-head"><div><div class="eyebrow">Game Show / Surveys</div><h1 id="selectedMember">Member</h1><p>Survey data prepared; backend connection and questions pending.</p></div></div></section><section class="bd-view" data-bd-view="kaushik" hidden>
 <button class="secondary-btn bd-back" data-bd-route="home">← Game Show</button>
 <div class="page-head"><div><div class="eyebrow">Game Show / Kaushik</div><h1>Kaushik</h1><p>Choose an activity below.</p></div></div>
 <div class="bd-grid">
@@ -76,7 +110,7 @@ body.bd-quiz-fullscreen .bd-fullscreen-back{display:inline-flex}
 </div></section>
 <section class="bd-view" data-bd-view="surveys" hidden>
 <button class="bd-fullscreen-back" type="button" data-bd-route="members" aria-label="Back to Surveys">← Surveys</button>
-<div class="bd-frame"><iframe title="Member survey questionnaire" id="quizFrame" data-src="https://script.google.com/macros/s/AKfycbwcQ6dewTq525Tifgkk6Jd2gJZuFhHd93bp2hGkx9XIGO74SzWH6kU9yIv8axjsXdtfIw/exec" allow="clipboard-write" referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
+<div class="bd-frame" id="quizContainer"><div class="bd-frame-loading" id="quizLoading" role="status" aria-live="polite"><div class="bd-loader-ring" aria-hidden="true"></div><strong id="quizLoadingTitle">Loading survey…</strong><span>Opening your survey securely</span></div><iframe title="Member survey questionnaire" id="quizFrame" allow="clipboard-write" referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
 </section>
 <section class="bd-view" data-bd-view="game" hidden>
 <button class="secondary-btn bd-back" data-bd-route="home">← Game Show</button>
@@ -96,7 +130,7 @@ gamepad:'<path d="M6 9h12a4 4 0 0 1 3.8 3l1 5a3 3 0 0 1-4.7 3L15 18H9l-3.1 2A3 3
 };
 qa('[data-bd-icon]').forEach(el=>{el.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true">'+icon[el.dataset.bdIcon]+'</svg>'});
 const routes=['home','members','member','kaushik','surveys','game'];
-const members=['Hemanth','Chahana','Apurva','Sreekanth','Sai','Sid','Akshay','Neha','Ishaan','Sreeja','Kaushik'];
+const members=["Akshay","Apurva","Chahana","Hemanth","Ishaan","Kaushik","Neha","Sai","Sid","Sreeja","Sreekanth"];
 const surveyBase="https://script.google.com/macros/s/AKfycbwcQ6dewTq525Tifgkk6Jd2gJZuFhHd93bp2hGkx9XIGO74SzWH6kU9yIv8axjsXdtfIw/exec";
 function memberUrl(name){return surveyBase+'?member='+encodeURIComponent(name)}
 function requestedRoute(){const hash=decodeURIComponent(location.hash.slice(1));const match=/^surveys\/([^/]+)$/.exec(hash);if(match&&members.includes(match[1])){selectedMember=match[1];return 'surveys'}return hash}
@@ -114,14 +148,35 @@ q('#groupSubnav').hidden=false;
 q('#crumb').textContent={home:'Game Show / Home',members:'Game Show / Surveys',member:'Game Show / Surveys / '+selectedMember,kaushik:'Game Show / Surveys / Kaushik',surveys:'Game Show / Surveys / '+selectedMember,game:'Game Show / Game'}[route];
 if(route==='surveys'){
  const frame=q('#quizFrame');
+ const container=q('#quizContainer');
+ const loading=q('#quizLoading');
  const target=memberUrl(selectedMember);
- if(frame.dataset.activeUrl!==target){frame.src=target;frame.dataset.activeUrl=target;}
  frame.title=selectedMember+"'s Survey";
+ if(frame.dataset.activeUrl!==target){
+   container.classList.remove('bd-frame-ready');
+   loading.hidden=false;
+   q('#quizLoadingTitle').textContent="Loading "+selectedMember+"'s Survey…";
+   frame.dataset.activeUrl=target;
+   frame.src=target;
+ }else if(frame.dataset.loadedUrl===target){
+   container.classList.add('bd-frame-ready');
+   loading.hidden=true;
+ }
 }
 if(update)history.pushState(null,'','#'+(route==='surveys'?'surveys/'+encodeURIComponent(selectedMember):route));
 if(innerWidth<760)q('#sidebar').classList.remove('mobile-open');
 window.scrollTo({top:0,behavior:'auto'});
 }
+q('#quizFrame').addEventListener('load',()=>{
+ const frame=q('#quizFrame');
+ // Ignore stale frame loads and avoid revealing content while another route is visible.
+ if(frame.src!==frame.dataset.activeUrl)return;
+ frame.dataset.loadedUrl=frame.dataset.activeUrl;
+ if(!document.querySelector('[data-bd-view="surveys"]').hidden){
+   q('#quizContainer').classList.add('bd-frame-ready');
+   q('#quizLoading').hidden=true;
+ }
+});
 document.addEventListener('click',e=>{
 const member=e.target.closest('[data-member]');if(member){selectedMember=member.dataset.member;navigate('surveys');return}
 const dest=e.target.closest('[data-bd-route]');if(dest){navigate(dest.dataset.bdRoute);return}
@@ -132,7 +187,7 @@ if(e.target.closest('#fitWidth')){zoom=.8;applyZoom()}
 if(e.target.closest('#themeToggle')){const mode=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=mode;localStorage.setItem('portfolioTheme',mode)}
 });
 window.addEventListener('hashchange',()=>navigate(requestedRoute(),false));
-window.addEventListener('popstate',()=>navigate(location.hash.slice(1),false));
+window.addEventListener('popstate',()=>navigate(requestedRoute(),false));
 document.documentElement.dataset.theme=localStorage.getItem('portfolioTheme')||'dark';
 applyZoom();navigate(requestedRoute()||'home',false);
 })();
