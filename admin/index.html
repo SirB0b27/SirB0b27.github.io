@@ -68,6 +68,7 @@
 <div class="admin-toolbar"><button class="secondary-btn" id="logout" type="button">Sign out</button><button class="secondary-btn" id="refresh" type="button">Refresh</button><button class="secondary-btn" id="ccOpenGameShow" type="button">Game Show Monitoring</button></div>
 <section id="ccGameShowPanel" hidden>
 <div class="cc-admin-breadcrumb"><button type="button" class="secondary-btn" id="ccBackToPolicies">← Access Settings</button><strong>Game Show Admin</strong><span>Participants · Saved answers · Finalization · Readiness</span></div>
+<p id="ccAdminBridgeStatus" role="status" aria-live="polite">Open Game Show Monitoring to verify the shared admin session.</p>
 <iframe id="ccAdminGameFrame" title="Game Show administration" class="cc-admin-frame" referrerpolicy="strict-origin-when-cross-origin" allow="clipboard-write"></iframe>
 </section>
 <p class="admin-warning">Policy preview only: rules are recorded in the audit Sheet but do not change live password protection.</p>
@@ -139,6 +140,7 @@ $('ccOpenGameShow').addEventListener('click',()=>{
  if(!token)return;
  $('dashboard').classList.add('cc-show-game-show');
  $('ccGameShowPanel').hidden=false;
+ $('ccAdminBridgeStatus').textContent='Verifying Game Show administrator session…';
  const frame=$('ccAdminGameFrame');
  if(!frame.getAttribute('src'))frame.src=CC_GAME_ADMIN_URL;
 });
@@ -148,6 +150,14 @@ $('ccBackToPolicies').addEventListener('click',()=>{
 });
 window.addEventListener('message',event=>{
  if(!token||!ccTrustedScriptOrigin(event.origin)||!ccInsideGameFrame(event.source))return;
+ if(event.data?.type==='CC_ADMIN_SESSION_VERIFIED'){
+   $('ccAdminBridgeStatus').textContent='Game Show administrator verified. Read-only monitoring is available.';
+   return;
+ }
+ if(event.data?.type==='CC_ADMIN_SESSION_FAILED'){
+   $('ccAdminBridgeStatus').textContent='Game Show admin verification failed. Check the Apps Script execution log.';
+   return;
+ }
  if(event.data?.type!=='CC_ADMIN_PORTAL_READY')return;
  // Tokens never enter URLs, logs, localStorage, or the iframe src attribute.
  event.source.postMessage({type:'CC_WORKSPACE_ADMIN_SESSION',token},event.origin);
