@@ -123,7 +123,7 @@ if(innerWidth<760)q('#sidebar').classList.remove('mobile-open');
 window.scrollTo({top:0,behavior:'auto'});
 }
 document.addEventListener('click',e=>{
-const member=e.target.closest('[data-member]');if(member){selectedMember=member.dataset.member;navigate('surveys')return}
+const member=e.target.closest('[data-member]');if(member){selectedMember=member.dataset.member;navigate('surveys');return}
 const dest=e.target.closest('[data-bd-route]');if(dest){navigate(dest.dataset.bdRoute);return}
 if(e.target.closest('#menuToggle')){if(innerWidth<760)q('#sidebar').classList.toggle('mobile-open');else{q('#sidebar').classList.toggle('collapsed');q('#main').classList.toggle('sidebar-collapsed',q('#sidebar').classList.contains('collapsed'))}}
 if(e.target.closest('#zoomOut')){zoom=Math.max(.6,+(zoom-.05).toFixed(2));applyZoom()}
