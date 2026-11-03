@@ -105,11 +105,11 @@ body.bd-quiz-fullscreen .bd-fullscreen-back{display:inline-flex}
 <div class="nav-separator"></div>
 <div class="nav-section"><div class="nav-label">Game Show</div>
 <button class="nav-item" data-bd-route="home"><span class="bd-nav-icon" data-bd-icon="house"></span><span class="nav-text">Game Show Home</span></button>
-<div class="bd-subnav" id="groupSubnav"><button class="nav-item" data-bd-route="members"><span class="bd-nav-icon" data-bd-icon="clipboard"></span><span class="nav-text">Surveys</span></button><button class="nav-item" data-bd-route="game"><span class="bd-nav-icon" data-bd-icon="gamepad"></span><span class="nav-text">Game</span><span class="nav-badge">Soon</span></button></div></div></aside>
+<div class="bd-subnav" id="groupSubnav"><button class="nav-item" data-bd-route="members"><span class="bd-nav-icon" data-bd-icon="clipboard"></span><span class="nav-text">Surveys</span></button><button class="nav-item" data-bd-route="game"><span class="bd-nav-icon" data-bd-icon="gamepad"></span><span class="nav-text">Games</span><span class="nav-badge">Public</span></button></div></div></aside>
 <main class="bd-main" id="main"><div class="workspace">
 <section class="bd-view" data-bd-view="home">
 <div class="page-head"><div><div class="eyebrow">Game Show</div><h1>Game Show</h1><p>Choose a member's surveys, or open the shared game.</p></div></div>
-<div class="bd-grid"><button class="bd-card" data-bd-route="members"><span class="bd-icon" data-bd-icon="clipboard"></span><h2>Surveys</h2><p>Choose a person from the group.</p><span class="bd-open">Choose member →</span></button><button class="bd-card" data-bd-route="game"><span class="bd-icon" data-bd-icon="gamepad"></span><h2>Game</h2><p>One shared game for everyone.</p><span class="bd-open">Open Game →</span></button></div>
+<div class="bd-grid"><button class="bd-card" data-bd-route="members"><span class="bd-icon" data-bd-icon="clipboard"></span><h2>Surveys</h2><p>Choose a person from the group.</p><span class="bd-open">Choose member →</span></button><button class="bd-card" data-bd-route="game"><span class="bd-icon" data-bd-icon="gamepad"></span><h2>Games</h2><p>Play Bounce in your browser. No account needed.</p><span class="bd-open">Open Games →</span></button></div>
 </section>
 <section class="bd-view" data-bd-view="members" hidden><button class="secondary-btn bd-back" data-bd-route="home">← Game Show</button><div class="page-head"><div><div class="eyebrow">Game Show</div><h1>Surveys</h1><p>Choose a person to open their survey.</p></div></div><div class="bd-member-grid">
 <button class="bd-member-tile" type="button" data-member="Akshay" data-progress-ready="false" data-completed="unknown" aria-label="Open Akshay's Survey"><span class="bd-member-header"><span class="bd-member-avatar" aria-hidden="true">A</span><span class="bd-member-name">Akshay</span><span class="bd-member-arrow" aria-hidden="true">→</span></span><span class="bd-member-readiness"><span class="bd-member-progress-line"><span class="bd-member-readiness-line">Survey readiness</span><span class="bd-member-readiness-count">— / 31</span></span><span class="bd-member-readiness-track" aria-hidden="true"><span class="bd-member-readiness-fill"></span></span></span><span class="bd-member-progress"><span class="bd-member-progress-line"><span>Questions answered</span><span class="bd-member-progress-count">— / —</span></span><span class="bd-member-track" aria-hidden="true"><span class="bd-member-fill"></span></span></span><span class="bd-member-footer"><span class="bd-member-completion" aria-hidden="true"></span><span class="bd-member-status">Completion not linked yet</span></span></button>
@@ -128,7 +128,7 @@ body.bd-quiz-fullscreen .bd-fullscreen-back{display:inline-flex}
 <div class="page-head"><div><div class="eyebrow">Game Show / Kaushik</div><h1>Kaushik</h1><p>Choose an activity below.</p></div></div>
 <div class="bd-grid">
 <button class="bd-card" data-bd-route="surveys"><span class="bd-icon" data-bd-icon="clipboard"></span><h2>Kaushik's Survey</h2><p>Open Kaushik's survey.</p><span class="bd-open">Open Kaushik's Survey →</span></button>
-<button class="bd-card" data-bd-route="game"><span class="bd-icon" data-bd-icon="gamepad"></span><h2>Game</h2><p>One shared game for everyone, coming soon.</p><span class="bd-open">View Placeholder →</span></button>
+<button class="bd-card" data-bd-route="game"><span class="bd-icon" data-bd-icon="gamepad"></span><h2>Games</h2><p>Play Bounce in your browser without signing in.</p><span class="bd-open">Open Games →</span></button>
 </div></section>
 <section class="bd-view" data-bd-view="surveys" hidden>
 <button class="bd-fullscreen-back" type="button" data-bd-route="members" aria-label="Back to Surveys">← Surveys</button>
@@ -136,8 +136,8 @@ body.bd-quiz-fullscreen .bd-fullscreen-back{display:inline-flex}
 </section>
 <section class="bd-view" data-bd-view="game" hidden>
 <button class="secondary-btn bd-back" data-bd-route="home">← Game Show</button>
-<div class="page-head"><div><div class="eyebrow">Game Show</div><h1>Game</h1><p>Reserved for the group's shared game.</p></div></div>
-<div class="bd-coming"><span data-bd-icon="gamepad"></span><h2>Coming Soon</h2><p>We'll build this game in a later update.</p></div>
+<div class="page-head"><div><div class="eyebrow">Game Show</div><h1>Games</h1><p>Public browser games run separately from the survey application.</p></div></div>
+<div class="bd-coming"><span data-bd-icon="gamepad"></span><h2>Bounce is ready</h2><p>No login or Apps Script required.</p><a class="primary-btn" href="../games/bounce/" style="display:inline-block;margin-top:8px">Play Bounce →</a><a class="secondary-btn" href="../games/" style="display:inline-block;margin-top:8px">All Games</a></div>
 </section>
 </div></main></div>
 <script>
