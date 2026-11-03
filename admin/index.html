@@ -88,6 +88,29 @@
 'use strict';
 const API='https://github-private-workspaces.hemanth2355.workers.dev/';
 let token=null;
+
+/* Reopen an admin session in the same browser tab without prompting again.
+   Server adminStatus is authoritative; expired or rotated sessions are removed.
+   This is tab-scoped only. Do not use localStorage for administrator tokens. */
+async function ccRestoreAdminSession(){
+ let saved='';
+ try{saved=sessionStorage.getItem('ccAdminSession')||''}catch(e){}
+ if(!/^[a-f0-9]{96}$/i.test(saved))return;
+ try{
+   const result=await api('adminStatus',{token:saved});
+   if(!result?.authenticated)throw Error('Admin session expired');
+   token=saved;
+   $('login').hidden=true;
+   $('dashboard').hidden=false;
+   $('status').textContent='';
+   await refreshPolicies();
+ }catch(e){
+   token=null;
+   try{sessionStorage.removeItem('ccAdminSession')}catch(_){}
+   $('dashboard').hidden=true;
+   $('login').hidden=false;
+ }
+}
 const $=id=>document.getElementById(id);
 async function api(action,fields={}){
  const response=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},cache:'no-store',body:JSON.stringify({workspace:'Portfolio',action,...fields})});
@@ -132,10 +155,10 @@ window.addEventListener('message',event=>{
 
 $('loginForm').addEventListener('submit',async e=>{
  e.preventDefault();$('status').textContent='Signing in…';
- try{const result=await api('adminLogin',{email:$('email').value,password:$('password').value});token=result.token;$('password').value='';const status=await api('adminStatus',{token});if(!status?.authenticated)throw Error('Admin session rejected');$('login').hidden=true;$('dashboard').hidden=false;$('status').textContent='';await refreshPolicies();}
+ try{const result=await api('adminLogin',{email:$('email').value,password:$('password').value});token=result.token;$('password').value='';const status=await api('adminStatus',{token});if(!status?.authenticated)throw Error('Admin session rejected');try{sessionStorage.setItem('ccAdminSession',token)}catch(e){}$('login').hidden=true;$('dashboard').hidden=false;$('status').textContent='';await refreshPolicies();}
  catch(error){token=null;$('status').textContent=error.message}
 });
-$('logout').onclick=async()=>{const old=token;token=null;$('ccAdminGameFrame').removeAttribute('src');$('ccGameShowPanel').hidden=true;$('dashboard').classList.remove('cc-show-game-show');$('dashboard').hidden=true;$('login').hidden=false;try{if(old)await api('adminLogout',{token:old})}catch(e){}};
+$('logout').onclick=async()=>{const old=token;token=null;try{sessionStorage.removeItem('ccAdminSession')}catch(e){}$('ccAdminGameFrame').removeAttribute('src');$('ccGameShowPanel').hidden=true;$('dashboard').classList.remove('cc-show-game-show');$('dashboard').hidden=true;$('login').hidden=false;try{if(old)await api('adminLogout',{token:old})}catch(e){}};
 
 
 let policyData=null;
@@ -253,4 +276,5 @@ function moveCalendar(direction){
 }
 $('prevMonth').onclick=()=>moveCalendar(-1);
 $('nextMonth').onclick=()=>moveCalendar(1);
+ccRestoreAdminSession();
 </script></body></html>
