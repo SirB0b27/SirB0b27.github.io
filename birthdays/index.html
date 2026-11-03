@@ -260,7 +260,8 @@ q('#quizFrame').addEventListener('load',()=>{
  // Fallback avoids an indefinite loading screen for older deployments/errors.
  if(ccLoadFallback)clearTimeout(ccLoadFallback);
  ccLoadFallback=setTimeout(()=>{
-  if(!document.querySelector('[data-bd-view="surveys"]').hidden&&frame.src===frame.dataset.activeUrl)ccRevealSurvey();
+  if(!document.querySelector('[data-bd-view="surveys"]').hidden&&frame.src===frame.dataset.activeUrl)
+    q('#quizLoadingTitle').textContent="Preparing "+selectedMember+"'s Survey…";
  },5000);
 });
 function ccScriptOrigin(origin){
