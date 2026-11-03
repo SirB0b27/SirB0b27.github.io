@@ -156,6 +156,8 @@ if(route==='surveys'){
    container.classList.remove('bd-frame-ready');
    loading.hidden=false;
    q('#quizLoadingTitle').textContent="Loading "+selectedMember+"'s Survey…";
+   if(ccLoadFallback){clearTimeout(ccLoadFallback);ccLoadFallback=null;}
+   frame.dataset.loadedUrl='';
    frame.dataset.activeUrl=target;
    frame.src=target;
  }else if(frame.dataset.loadedUrl===target){
@@ -167,15 +169,35 @@ if(update)history.pushState(null,'','#'+(route==='surveys'?'surveys/'+encodeURIC
 if(innerWidth<760)q('#sidebar').classList.remove('mobile-open');
 window.scrollTo({top:0,behavior:'auto'});
 }
+// iframe 'load' happens before the survey UI is necessarily initialized.
+// The Apps Script frontend sends a readiness signal after rendering its first screen.
+let ccLoadFallback=null;
+function ccRevealSurvey(){
+ const frame=q('#quizFrame');
+ frame.dataset.loadedUrl=frame.dataset.activeUrl||'';
+ q('#quizContainer').classList.add('bd-frame-ready');
+ q('#quizLoading').hidden=true;
+ if(ccLoadFallback){clearTimeout(ccLoadFallback);ccLoadFallback=null;}
+}
 q('#quizFrame').addEventListener('load',()=>{
  const frame=q('#quizFrame');
- // Ignore stale frame loads and avoid revealing content while another route is visible.
  if(frame.src!==frame.dataset.activeUrl)return;
- frame.dataset.loadedUrl=frame.dataset.activeUrl;
- if(!document.querySelector('[data-bd-view="surveys"]').hidden){
-   q('#quizContainer').classList.add('bd-frame-ready');
-   q('#quizLoading').hidden=true;
- }
+ q('#quizLoadingTitle').textContent="Preparing "+selectedMember+"'s Survey…";
+ // Fallback avoids an indefinite loading screen for older deployments/errors.
+ if(ccLoadFallback)clearTimeout(ccLoadFallback);
+ ccLoadFallback=setTimeout(()=>{
+  if(!document.querySelector('[data-bd-view="surveys"]').hidden&&frame.src===frame.dataset.activeUrl)ccRevealSurvey();
+ },20000);
+});
+window.addEventListener('message',event=>{
+ const frame=q('#quizFrame');
+ if(event.source!==frame.contentWindow)return;
+ const host=(()=>{try{return new URL(event.origin).hostname}catch{return ''}})();
+ if(host!=='script.google.com'&&host!=='script.googleusercontent.com'&&!host.endsWith('.script.googleusercontent.com'))return;
+ if(event.data?.type!=='CC_SURVEY_READY'||event.data?.member!==selectedMember)return;
+ if(document.querySelector('[data-bd-view="surveys"]').hidden)return;
+ if(frame.src!==memberUrl(selectedMember))return;
+ ccRevealSurvey();
 });
 document.addEventListener('click',e=>{
 const member=e.target.closest('[data-member]');if(member){selectedMember=member.dataset.member;navigate('surveys');return}
