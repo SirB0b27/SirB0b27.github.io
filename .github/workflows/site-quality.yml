@@ -20,6 +20,9 @@ jobs:
       - name: Static regression test
         run: node scripts/site-regression.mjs
 
+      - name: D&D progression regression test
+        run: node --test scripts/dnd-engine-regression.test.cjs
+
       - name: Install browser test dependency
         run: |
           npm install --no-save playwright
