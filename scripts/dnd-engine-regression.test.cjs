@@ -1,0 +1,30 @@
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+
+global.window = {};
+eval(fs.readFileSync('dnd/engine.js', 'utf8'));
+const E = window.DndEngine;
+
+function character(className = 'Blood Hunter') {
+  const info = E.CLASSES[className];
+  const scores = {strength:16,dexterity:16,constitution:16,intelligence:16,wisdom:14,charisma:16};
+  return E.recalc({id:`test-${className}`,name:`${className} Test`,race:'Human',character_class:className,
+    classes:[{name:className,level:1,subclass:info.sub===1?info.subs[0]:''}],subclass:info.sub===1?info.subs[0]:'',level:1,
+    ability_scores:scores,base_ability_scores:{...scores},current_hp:info.die+3,max_hp:info.die+3,temporary_hp:0,speed:30,
+    movement:{walk:30,swim:0,fly:0,long_jump:16,high_jump:6},saving_throw_proficiencies:[],skill_proficiencies:[],inventory:[],
+    feature_records:[],features:[],spells:[],prepared_spells:[],spell_metadata:{},spell_slots_max:{},spell_slots_used:{},active_spells:[],conditions:[]});
+}
+
+test('Blood Hunter Lycan 6 into Paladin 4 remains valid', () => {
+  const row=character(),tough={name:'Tough',description:'Hit point maximum increases.',effects:{hp_per_level:2}},alert={name:'Alert',description:'Always on the lookout.',effects:{}};
+  for(let next=2;next<=6;next++) E.applyLevelUp(row,{className:'Blood Hunter',hpMode:'average',subclass:next===3?'Order of the Lycan':'',asiType:next===4?'feat':''},next===4?tough:null);
+  for(let next=1;next<=4;next++) E.applyLevelUp(row,{className:'Paladin',hpMode:'average',subclass:next===3?'Vengeance':'',asiType:next===4?'feat':''},next===4?alert:null);
+  assert.equal(row.level,10);assert.deepEqual(row.classes.map(x=>[x.name,x.level]),[['Blood Hunter',6],['Paladin',4]]);
+  assert.ok(row.feature_records.some(x=>x.name==='Hybrid Transformation'));assert.ok(row.feature_records.some(x=>x.name==='Divine Smite'));
+  assert.equal(row.feature_records.find(x=>x.name==='Tough').description,tough.description);assert.deepEqual(row.spell_slots_max,{'1':3});
+});
+
+test('every class reaches level 20 with subclass, ASI, and derived values', () => {
+  for(const [name,info] of Object.entries(E.CLASSES)){const row=character(name);for(let next=2;next<=20;next++)E.applyLevelUp(row,{className:name,hpMode:'average',subclass:next===info.sub?info.subs[0]:'',asiType:next%4===0?'ability':'',ability:'constitution'},null);assert.equal(row.level,20,name);assert.ok(row.classes[0].subclass,name);assert.equal(row.derived.proficiency_bonus,6,name);}
+});
