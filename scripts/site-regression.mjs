@@ -18,7 +18,7 @@ const dndEngine = read("dnd/engine.js");
 if (!index.includes('href="dnd/"') || !index.includes("D&amp;D Character Vault")) {
   fail("Workspace homepage is missing the D&D Character Vault entry.");
 }
-if (!dnd.includes('<script src="config.js"></script>') || !dnd.includes('<script src="engine.js"></script>') || !dnd.includes('<script src="app.js"></script>')) {
+if (!dnd.includes('<script src="config.js"></script>') || !dnd.includes('<script src="engine.js') || !dnd.includes('<script src="app.js')) {
   fail("D&D frontend scripts are missing or loaded in the wrong order.");
 }
 for (const marker of ["applyLevelUp", "acBreakdown", "spellSlots", "Order of the Lycan"]) {
