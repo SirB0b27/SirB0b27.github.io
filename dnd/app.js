@@ -1,607 +1,207 @@
 (() => {
   'use strict';
-
-  const CONFIG = window.DND_CONFIG || {};
-  const TABS = [
-    ['equipment', 'Equipment'], ['spells', 'Spells'], ['inventory', 'Inventory'],
-    ['group-items', 'Group Items'], ['features', 'Features'], ['subclass', 'Subclass'],
-    ['feats', 'Feats'], ['notes', 'Notes'], ['details', 'Character Details'],
-    ['magic-items', 'All Magic Items'], ['class-info', 'Class Info'],
-    ['roll20', 'Roll20 Information'], ['magic-spells', 'All Magic Spells'], ['change-log', 'Change Log'],
-  ];
-  const ABILITIES = ['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'];
-  const CONDITIONS = ['Blinded', 'Charmed', 'Deafened', 'Frightened', 'Grappled', 'Incapacitated', 'Invisible', 'Paralyzed', 'Petrified', 'Poisoned', 'Prone', 'Restrained', 'Stunned', 'Unconscious'];
-  const shareToken = new URLSearchParams(location.search).get('share') || '';
-  const publicStorageKey = `dndPublicSession:${shareToken.slice(0, 16)}`;
-  const state = {
-    token: sessionStorage.getItem('dndSession') || '',
-    shareToken,
-    publicToken: shareToken ? sessionStorage.getItem(publicStorageKey) || '' : '',
-    publicCharacter: null,
-    publicSession: null,
-    characters: [],
-    character: null,
-    activeTab: 'equipment',
-    activeRarity: '',
-    references: {},
-    shareSessions: [],
-    mergeReview: null,
-    mergeCategory: '',
-    mergeResolutions: {},
-  };
-
+  const CONFIG = window.DND_CONFIG || {}, E = window.DndEngine;
+  const TABS = [['equipment','Equipment'],['spells','Spells'],['inventory','Inventory'],['group-items','Group Items'],['features','Features'],['subclass','Subclass'],['feats','Feats'],['notes','Notes'],['details','Character Details'],['magic-items','All Magic Items'],['class-info','Class Info'],['roll20','Roll20 Information'],['magic-spells','All Magic Spells'],['change-log','Change Log']];
+  const CONDITIONS = ['Blinded','Charmed','Deafened','Frightened','Grappled','Incapacitated','Invisible','Paralyzed','Petrified','Poisoned','Prone','Restrained','Stunned','Unconscious'];
+  const COINS = ['cp','sp','ep','gp','pp'];
+  const shareToken = new URLSearchParams(location.search).get('share') || '', publicStorageKey = `dndPublicSession:${shareToken.slice(0,16)}`;
+  const state = {token:sessionStorage.getItem('dndSession') || '',shareToken,publicToken:shareToken ? sessionStorage.getItem(publicStorageKey) || '' : '',characters:[],character:null,selected:new Set(),anchor:null,activeTab:'equipment',activeRarity:'',references:{},publicCharacter:null,publicSession:null,shareSessions:[],mergeReview:null,mergeCategory:'',levelStage:'choices',demo:false,demoStore:null};
   const $ = id => document.getElementById(id);
-  const escapeHtml = value => String(value ?? '').replace(/[&<>'"]/g, character => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[character]));
-  const title = value => String(value || '').replace(/\b\w/g, letter => letter.toUpperCase());
-  const modifier = score => Math.floor((Number(score || 10) - 10) / 2);
+  const esc = value => String(value ?? '').replace(/[&<>'"]/g,c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+  const title = value => String(value || '').replaceAll('_',' ').replace(/\b\w/g,c => c.toUpperCase());
   const signed = value => Number(value) >= 0 ? `+${Number(value)}` : String(Number(value));
+  const clone = E.clone, initials = name => String(name || '?').split(/\s+/).filter(Boolean).slice(0,2).map(p => p[0]).join('').toUpperCase();
+  const empty = (heading='Nothing here yet',copy='This section is ready for data.') => `<div class="empty"><div><strong>${esc(heading)}</strong><span>${esc(copy)}</span></div></div>`;
+  const field = (label,name,value='',type='text',extra='') => `<label>${esc(label)}<input name="${esc(name)}" type="${type}" value="${esc(value)}" ${extra}></label>`;
+  const button = (label,action,id='',kind='') => `<button class="button ${kind}" type="button" data-action="${esc(action)}" ${id ? `data-id="${esc(id)}"` : ''}>${esc(label)}</button>`;
+  let toastTimer;
+  function toast(message,error=false){$('toast').textContent=message;$('toast').classList.toggle('error',error);$('toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('show'),3200);}
 
-  async function api(action, payload = {}) {
-    if (!CONFIG.apiUrl) throw new Error('The staging API URL has not been configured.');
-    const response = await fetch(CONFIG.apiUrl, {
-      method: 'POST',
-      headers: {'content-type': 'application/json'},
-      body: JSON.stringify({action, token: state.token, ...payload}),
-    });
-    const result = await response.json().catch(() => ({ok: false, error: 'Invalid server response.'}));
-    if (!response.ok || !result.ok) throw new Error(result.error || 'Request failed.');
-    return result.data;
-  }
-
-  function showLogin(message = '') {
-    $('loginView').classList.remove('hidden');
-    $('vaultView').classList.add('hidden');
-    $('publicLoginView').classList.add('hidden');
-    $('publicView').classList.add('hidden');
-    $('shareButton').classList.add('hidden');
-    $('loginError').textContent = message;
-  }
-
-  function showVault() {
-    $('loginView').classList.add('hidden');
-    $('publicLoginView').classList.add('hidden');
-    $('publicView').classList.add('hidden');
-    $('vaultView').classList.remove('hidden');
-    $('shareButton').classList.remove('hidden');
-  }
-
-  function showPublicLogin(message = '') {
-    $('loginView').classList.add('hidden');
-    $('vaultView').classList.add('hidden');
-    $('publicView').classList.add('hidden');
-    $('publicLoginView').classList.remove('hidden');
-    $('shareButton').classList.add('hidden');
-    $('globalSearch').closest('.global-search').classList.add('hidden');
-    $('publicLoginError').textContent = message;
-  }
-
-  function showPublicView() {
-    $('loginView').classList.add('hidden');
-    $('vaultView').classList.add('hidden');
-    $('publicLoginView').classList.add('hidden');
-    $('publicView').classList.remove('hidden');
-    $('shareButton').classList.add('hidden');
-    $('globalSearch').closest('.global-search').classList.add('hidden');
-  }
-
-  async function loadLibrary() {
-    state.characters = await api('listCharacters');
-    $('characterCount').textContent = state.characters.length;
-    renderLibrary();
-    if (state.characters.length) await selectCharacter(state.characters[0].id);
-  }
-
-  function renderLibrary() {
-    $('characterList').innerHTML = state.characters.map(character => `
-      <button class="character-button ${state.character?.id === character.id ? 'active' : ''}" data-character="${escapeHtml(character.id)}" type="button">
-        <strong>${escapeHtml(character.name)}</strong>
-        <span>Level ${escapeHtml(character.level)} · ${escapeHtml(character.race)} ${escapeHtml(character.characterClass)}</span>
-      </button>`).join('');
-    document.querySelectorAll('[data-character]').forEach(button => button.addEventListener('click', () => selectCharacter(button.dataset.character)));
-  }
-
-  async function selectCharacter(id) {
-    state.character = await api('getCharacter', {characterId: id});
-    renderLibrary();
-    renderHeader();
-    renderTabs();
-    renderActiveTab();
-  }
-
-  function publicShareUrl(token) {
-    const url = new URL(location.href);
-    url.search = '';
-    url.hash = '';
-    url.searchParams.set('share', token);
-    return url.toString();
-  }
-
-  async function loadShareSessions() {
-    if (!state.character) return;
-    state.shareSessions = await api('listPublicSessions', {characterId: state.character.id});
-    renderShareSessions();
-  }
-
-  function renderShareSessions() {
-    $('shareSessionList').innerHTML = state.shareSessions.length ? state.shareSessions.map(session => `
-      <article class="session-card ${session.enabled ? 'active' : ''}">
-        <div><strong>${session.enabled ? 'Active public session' : 'Closed public session'}</strong><span>${escapeHtml(session.created_at)} · Revision ${escapeHtml(session.public_revision)}</span></div>
-        <div class="pills"><span class="pill">${escapeHtml(session.pending_changes)} pending</span><span class="pill">${escapeHtml(session.merged_changes)} merged</span></div>
-        <div class="session-actions">
-          <button class="subtle" type="button" data-review-session="${escapeHtml(session.id)}">Review Changes</button>
-          ${session.enabled ? `<button class="danger-button" type="button" data-disable-session="${escapeHtml(session.id)}">Disable Access</button>` : ''}
-        </div>
-      </article>`).join('') : '<div class="empty compact"><strong>No sharing sessions</strong><span>Create one when someone needs to control this character.</span></div>';
-    document.querySelectorAll('[data-disable-session]').forEach(button => button.addEventListener('click', async () => {
-      if (!confirm('Disable public editing? Pending changes will remain available for review.')) return;
-      await api('disablePublicSession', {sessionId: button.dataset.disableSession});
-      await loadShareSessions();
-    }));
-    document.querySelectorAll('[data-review-session]').forEach(button => button.addEventListener('click', () => openMergeReview(button.dataset.reviewSession)));
-  }
-
-  async function openMergeReview(sessionId) {
-    state.mergeReview = await api('publicMergeReview', {sessionId});
-    const categories = Object.keys(state.mergeReview.categories || {});
-    state.mergeCategory = categories[0] || '';
-    state.mergeResolutions = {};
-    $('mergeCategory').innerHTML = categories.length
-      ? categories.map(category => `<option value="${escapeHtml(category)}">${escapeHtml(category)} (${state.mergeReview.categories[category].length})</option>`).join('')
-      : '<option value="">No pending changes</option>';
-    $('mergeCategory').value = state.mergeCategory;
-    $('mergeConflictBox').classList.add('hidden');
-    $('mergeHistory').innerHTML = (state.mergeReview.merge_batches || []).length ? state.mergeReview.merge_batches.map(batch => `
-      <article class="session-card"><div><strong>${escapeHtml(batch.created_at)}</strong><span>Private revision: ${escapeHtml(batch.private_revision_before || '—')} → ${escapeHtml(batch.private_revision_after || '—')}</span></div><div class="pills"><span class="pill">${escapeHtml((batch.event_ids || []).length)} applied</span><span class="pill">${escapeHtml((batch.skipped_event_ids || []).length)} kept private</span></div></article>`).join('') : '<p class="muted">No merge batches have been recorded for this session.</p>';
-    renderMergeEvents();
-    if (!$('mergeDialog').open) $('mergeDialog').showModal();
-  }
-
-  function compactValue(value) {
-    if (value === undefined) return 'Removed';
-    if (value === null) return 'None';
-    if (typeof value === 'object') {
-      const text = JSON.stringify(value);
-      return text.length > 180 ? `${text.slice(0, 177)}…` : text;
+  async function api(action,payload={}) {
+    if (state.demo) {
+      if (action === 'session') return {authenticated:true};
+      if (action === 'listCharacters') return state.demoStore.characters.map(c=>({id:c.id,name:c.name,race:c.race,characterClass:c.character_class,classes:c.classes,level:c.level,currentHp:c.current_hp,maxHp:c.max_hp,armorClass:c.derived?.armor_class,updatedAt:c.updated_at}));
+      if (action === 'getCharacter') return clone(state.demoStore.characters.find(c=>c.id===payload.characterId));
+      if (action === 'saveCharacter') { const index=state.demoStore.characters.findIndex(c=>c.id===payload.character.id); index<0?state.demoStore.characters.push(clone(payload.character)):state.demoStore.characters.splice(index,1,clone(payload.character)); return payload.character; }
+      if (action === 'deleteCharacters') { state.demoStore.characters=state.demoStore.characters.filter(c=>!payload.characterIds.includes(c.id)); return {deleted:payload.characterIds.length}; }
+      if (action === 'listRevisions') return [];
+      if (action === 'referenceData') { const records=await fetch(`reference/${payload.kind}.json`).then(r=>r.json()); const q=String(payload.query||'').toLowerCase(); const filtered=q?records.filter(row=>JSON.stringify(row).toLowerCase().includes(q)):records; return {records:filtered.slice(0,payload.pageSize||1000),total:filtered.length,page:1,pageSize:payload.pageSize||1000}; }
+      throw new Error(`Demo action is unavailable: ${action}`);
     }
-    return String(value);
+    if (!CONFIG.apiUrl) throw new Error('The API URL has not been configured.');
+    const response = await fetch(CONFIG.apiUrl,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({action,token:state.token,...payload})});
+    const result = await response.json().catch(() => ({ok:false,error:'Invalid server response.'}));
+    if (!response.ok || !result.ok) throw new Error(result.error || 'Request failed.'); return result.data;
   }
+  function hideViews(){['loginView','libraryView','characterView','publicLoginView','publicView'].forEach(id=>$(id).classList.add('hidden'));}
+  function showLogin(message=''){hideViews();$('loginView').classList.remove('hidden');$('loginError').textContent=message;$('libraryBack').classList.add('hidden');$('globalSearchButton').classList.add('hidden');$('shareButton').classList.add('hidden');}
+  function showLibrary(){hideViews();$('libraryView').classList.remove('hidden');$('libraryBack').classList.add('hidden');$('globalSearchButton').classList.add('hidden');$('shareButton').classList.add('hidden');document.body.classList.remove('character-open');scrollTo({top:0,behavior:'instant'});}
+  function showCharacter(){hideViews();$('characterView').classList.remove('hidden');$('libraryBack').classList.remove('hidden');$('globalSearchButton').classList.remove('hidden');$('shareButton').classList.remove('hidden');document.body.classList.add('character-open');scrollTo({top:0,behavior:'instant'});}
+  function showPublicLogin(message=''){hideViews();$('publicLoginView').classList.remove('hidden');$('publicLoginError').textContent=message;}
+  function showPublic(){hideViews();$('publicView').classList.remove('hidden');}
 
-  function renderMergeEvents() {
-    const events = state.mergeReview?.categories?.[state.mergeCategory] || [];
-    $('mergeEventList').innerHTML = events.length ? events.map(event => `
-      <label class="merge-event">
-        <input type="checkbox" data-merge-event="${escapeHtml(event.id)}">
-        <span><strong>${escapeHtml(title(event.path.replaceAll('_', ' ').replaceAll('.', ' › ')))}</strong><small>${escapeHtml(event.editor)} · ${escapeHtml(event.created_at)}${event.note ? ` · ${escapeHtml(event.note)}` : ''}</small><span class="change-values"><em>${escapeHtml(compactValue(event.before))}</em><b>→</b><em>${escapeHtml(compactValue(event.after))}</em></span></span>
-      </label>`).join('') : '<div class="empty compact"><strong>No pending changes</strong><span>This public session is fully merged.</span></div>';
-    $('selectMergeCategory').checked = false;
-    document.querySelectorAll('[data-merge-event]').forEach(input => input.addEventListener('change', updateMergeCount));
-    updateMergeCount();
-  }
-
-  function selectedMergeIds() {
-    return [...document.querySelectorAll('[data-merge-event]:checked')].map(input => input.dataset.mergeEvent);
-  }
-
-  function updateMergeCount() {
-    $('mergeSelectionCount').textContent = `${selectedMergeIds().length} selected`;
-  }
-
-  function renderMergeConflicts(conflicts) {
-    $('mergeConflictBox').innerHTML = `<strong>Private changes conflict with this public session.</strong><p>Choose which value should win for each field, then merge again.</p>${conflicts.map(conflict => `
-      <fieldset class="conflict-row" data-conflict-path="${escapeHtml(conflict.path)}">
-        <legend>${escapeHtml(title(conflict.path.replaceAll('_', ' ').replaceAll('.', ' › ')))}</legend>
-        <label><input type="radio" name="conflict-${escapeHtml(conflict.path)}" value="private" checked> Keep private: ${escapeHtml(compactValue(conflict.private))}</label>
-        <label><input type="radio" name="conflict-${escapeHtml(conflict.path)}" value="public"> Use public: ${escapeHtml(compactValue(conflict.public))}</label>
-      </fieldset>`).join('')}`;
-    $('mergeConflictBox').classList.remove('hidden');
-    $('mergeSelectedButton').textContent = 'Apply Resolutions & Merge';
-  }
-
-  function renderHeader() {
-    const character = state.character;
-    const scores = character.ability_scores || {};
-    const derived = character.derived || {};
-    const classLine = (character.classes || []).map(row => `${row.name} ${row.level}`).join(' / ') || character.character_class;
-    $('characterHeader').innerHTML = `
-      <div class="identity">
-        <div class="avatar">${escapeHtml(character.name.split(/\s+/).map(part => part[0]).slice(0, 2).join(''))}</div>
-        <div><h2>${escapeHtml(character.name)}</h2><p>${escapeHtml(character.race)} · ${escapeHtml(classLine)} · Level ${escapeHtml(character.level)}</p></div>
-      </div>
-      ${ABILITIES.map(ability => `<div class="stat"><span>${escapeHtml(ability)}</span><strong>${escapeHtml(scores[ability])} ${signed(modifier(scores[ability]))}</strong></div>`).join('')}
-      <div class="stat"><span>Proficiency</span><strong>${signed(derived.proficiency_bonus || 0)}</strong></div>
-      <div class="stat"><span>Passive Perception</span><strong>${escapeHtml(derived.passive_perception || 0)}</strong></div>`;
-  }
-
-  function renderTabs() {
-    $('tabBar').innerHTML = TABS.map(([key, label]) => `<button class="tab-button ${key === state.activeTab ? 'active' : ''}" data-tab="${key}" type="button">${label}</button>`).join('');
-    document.querySelectorAll('[data-tab]').forEach(button => button.addEventListener('click', () => {
-      state.activeTab = button.dataset.tab;
-      renderTabs();
-      renderActiveTab();
-    }));
-  }
-
-  function table(headers, rows) {
+  function table(headers,rows,classes='') {
     if (!rows.length) return empty();
-    return `<div class="panel"><table class="data-table"><thead><tr>${headers.map(header => `<th>${escapeHtml(header)}</th>`).join('')}</tr></thead><tbody>${rows.map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+    return `<div class="table-wrap"><table class="data-table ${classes}"><thead><tr>${headers.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${rows.map(row=>`<tr class="${row._class || ''}">${row.map(cell=>`<td>${cell ?? ''}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+  }
+  function actionCell(actions){return `<div class="table-actions">${actions.map(([label,action,id])=>`<button type="button" data-action="${esc(action)}" data-id="${esc(id)}">${esc(label)}</button>`).join('')}</div>`;}
+  function classLine(character){return (character.classes || []).map(r=>`${r.name} ${r.level}`).join(' / ') || `${character.character_class} ${character.level}`;}
+  function download(name,text,type='application/json'){const blob=new Blob([text],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+
+  async function loadLibrary(selectId='') {
+    state.characters = await api('listCharacters'); $('characterCount').textContent=state.characters.length;
+    if (selectId) state.selected=new Set([selectId]); else if (!state.selected.size && state.characters[0]) state.selected.add(state.characters[0].id);
+    renderLibrary(); await renderLibraryPreview();
+  }
+  function filteredCharacters(){const q=$('librarySearch').value.trim().toLowerCase();return state.characters.filter(c=>!q || JSON.stringify(c).toLowerCase().includes(q));}
+  function renderLibrary(){
+    const rows=filteredCharacters();$('characterList').innerHTML=rows.length?rows.map(c=>`<button class="character-row ${state.selected.has(c.id)?'selected':''}" data-character="${esc(c.id)}"><strong>${esc(c.name)}</strong><span>${esc(c.race)} ${esc(c.characterClass)}</span><span>Lvl ${esc(c.level)}</span></button>`).join(''):empty('No matching characters','Try a different search.');
+    document.querySelectorAll('[data-character]').forEach((row,index)=>row.onclick=event=>selectLibraryRow(event,row.dataset.character,index,rows));
+    const one=state.selected.size===1;$('openCharacter').disabled=!one;$('downloadCharacter').disabled=!one;$('deleteCharacters').disabled=!state.selected.size;
+    $('libraryStatus').textContent=`${state.characters.length} character${state.characters.length===1?'':'s'}`;
+  }
+  function selectLibraryRow(event,id,index,rows){
+    if(event.shiftKey&&state.anchor!==null){const [a,b]=[state.anchor,index].sort((x,y)=>x-y);if(!event.ctrlKey&&!event.metaKey)state.selected.clear();rows.slice(a,b+1).forEach(c=>state.selected.add(c.id));}
+    else if(event.ctrlKey||event.metaKey){state.selected.has(id)?state.selected.delete(id):state.selected.add(id);state.anchor=index;}
+    else{state.selected=new Set([id]);state.anchor=index;}renderLibrary();renderLibraryPreview();
+  }
+  async function selectedCharacter(){const id=[...state.selected][0];if(!id)return null;if(state.character?.id===id)return state.character;state.character=E.recalc(await api('getCharacter',{characterId:id}));return state.character;}
+  async function renderLibraryPreview(){
+    const target=$('libraryPreview');
+    if(!state.selected.size){target.innerHTML=empty('Select a character','A desktop-style character preview will appear here.');return;}
+    if(state.selected.size>1){const chars=state.characters.filter(c=>state.selected.has(c.id));target.innerHTML=`<div class="section-head"><div><p class="eyebrow">Multiple Selection</p><h1>${chars.length} Characters</h1></div></div>${table(['Name','Build','Level'],chars.map(c=>[esc(c.name),esc(`${c.race} ${c.characterClass}`),esc(c.level)]))}`;return;}
+    try{
+      const c=await selectedCharacter(),d=c.derived||{},scores=c.ability_scores||{};
+      target.innerHTML=`<div class="preview-head"><div class="portrait">${esc(initials(c.name))}</div><div><p class="eyebrow">Character Preview</p><h1>${esc(c.name)}</h1><p class="muted">Level ${esc(c.level)} · ${esc(c.race)} · ${esc(classLine(c))}</p><p class="muted">${esc(c.background||'No background')} · ${esc(c.alignment||'No alignment')}</p><div class="preview-actions">${button('Open Character','open-character','','primary')}${button('Download Character Sheet','download-sheet')}</div></div></div>
+      <div class="preview-stats">${[['HP',`${c.current_hp} / ${c.max_hp}`],['Armor Class',d.armor_class],['Initiative',signed(d.initiative)],['Proficiency',signed(d.proficiency_bonus)],['Speed',`${c.speed||30} ft`]].map(([k,v])=>`<div class="stat-tile"><span>${k}</span><strong>${esc(v)}</strong></div>`).join('')}</div>
+      <div class="preview-grid"><div class="panel"><p class="eyebrow">Ability Scores</p><div class="ability-grid">${E.ABILITIES.map(a=>`<div class="ability-card"><span>${title(a)}</span><strong>${scores[a]} (${signed(E.mod(scores[a]))})</strong></div>`).join('')}</div></div><div class="panel"><p class="eyebrow">At A Glance</p><p class="note">Inventory items: ${(c.inventory||[]).length}\nKnown spells: ${(c.spells||[]).length}\nFeatures: ${(c.feature_records||[]).length}\nConditions: ${(c.conditions||[]).join(', ')||'None'}</p></div></div>
+      ${renderSheetPreview(c)}`;bindContentActions(target);
+    }catch(error){target.innerHTML=empty('Unable to load character',error.message);}
+  }
+  function renderSheetPreview(c){const d=c.derived||{};return `<section class="sheet-preview"><div class="section-head"><div><p class="eyebrow">Character Sheets</p><span class="muted">Embedded preview remains visible before opening the character.</span></div><div class="section-actions">${button('Fit Width','fit-sheet')}${button('Maximize','maximize-sheet')}</div></div><div class="paper"><div class="paper-head"><div><h2>${esc(c.name)}</h2><small>${esc(c.race)} · ${esc(classLine(c))}</small></div><strong>CHARACTER SHEET</strong></div><div class="paper-grid">${E.ABILITIES.map(a=>`<div class="paper-cell"><small>${title(a)}</small><strong>${signed(d.modifiers?.[a])}</strong><small>${c.ability_scores?.[a]}</small></div>`).join('')}</div><div class="paper-grid"><div class="paper-cell"><small>Armor Class</small><strong>${d.armor_class}</strong></div><div class="paper-cell"><small>Initiative</small><strong>${signed(d.initiative)}</strong></div><div class="paper-cell"><small>Speed</small><strong>${c.speed||30}</strong></div><div class="paper-cell"><small>Hit Points</small><strong>${c.current_hp}/${c.max_hp}</strong></div><div class="paper-cell"><small>Proficiency</small><strong>${signed(d.proficiency_bonus)}</strong></div><div class="paper-cell"><small>Passive Perception</small><strong>${d.passive_perception}</strong></div></div></div></section>`;}
+
+  async function openCharacter(id=[...state.selected][0]){if(!id)return;state.character=E.recalc(await api('getCharacter',{characterId:id}));state.selected=new Set([id]);showCharacter();renderCharacter();}
+  function renderCharacter(){renderCharacterHeader();renderPlaySheet();renderTabs();renderActiveTab();}
+  function renderCharacterHeader(){const c=state.character,d=c.derived||{},scores=c.ability_scores||{};$('characterHeader').innerHTML=`<div class="character-identity"><div class="portrait">${esc(initials(c.name))}</div><div><h1>${esc(c.name)}</h1><p>${esc(c.race)} · ${esc(classLine(c))} · Level ${c.level}</p><div class="identity-controls"><button id="levelUpButton" class="button primary" type="button">Level Up</button><label class="check"><input id="inspirationToggle" type="checkbox" ${c.inspiration?'checked':''}> Inspiration</label><input id="playedBy" value="${esc(c.played_by||'')}" placeholder="Played By"></div></div></div>${E.ABILITIES.map(a=>`<div class="header-stat"><span>${title(a)}</span><strong>${scores[a]} ${signed(d.modifiers?.[a])}</strong></div>`).join('')}<div class="header-stat"><span>Proficiency</span><strong>${signed(d.proficiency_bonus)}</strong></div><div class="header-stat"><span>Passive Perception</span><strong>${d.passive_perception}</strong></div>`;
+    $('levelUpButton').onclick=openLevelUp;$('inspirationToggle').onchange=async e=>{c.inspiration=e.target.checked;await save('Updated inspiration',false);};$('playedBy').onchange=async e=>{c.played_by=e.target.value.trim();await save('Updated player name',false);};
+  }
+  function combatCard(label,value){return `<div class="combat-card"><span>${esc(label)}</span><strong>${esc(value)}</strong></div>`;}
+  function renderPlaySheet(){const c=state.character,d=c.derived||{},movement=c.movement||{},conditions=new Set(c.conditions||[]),saveProfs=new Set(c.saving_throw_proficiencies||[]),skillProfs=new Set(c.skill_proficiencies||[]);
+    $('playSheet').innerHTML=`<div class="combat-grid">${combatCard('HP',`${c.current_hp} / ${c.max_hp}`)}${combatCard('Temp HP',c.temporary_hp||0)}${combatCard('Armor Class',d.armor_class)}${combatCard('Initiative',signed(d.initiative))}${combatCard('Walk',`${(movement.walk??c.speed??30)+(d.speed_bonus||0)} ft`)}${combatCard('Swim',`${movement.swim||0} ft`)}${combatCard('Fly',`${movement.fly||0} ft`)}${combatCard('Long Jump',`${movement.long_jump||0} ft`)}${combatCard('High Jump',`${movement.high_jump||0} ft`)}</div>
+    <section class="tracker"><h3>Play Tracking</h3><div class="control-row"><input id="hpAmount" type="number" min="0" placeholder="Amount"><button class="button danger" data-action="damage">Damage</button><button class="button" data-action="heal">Heal</button></div><div class="control-row"><input id="tempHp" type="number" min="0" value="${c.temporary_hp||''}" placeholder="Temp HP"><button class="button" data-action="temp-hp">Apply Temp</button></div><div class="control-row"><button class="button" data-action="short-rest">Short Rest</button><button class="button" data-action="long-rest">Long Rest</button><input id="xpValue" type="number" min="0" value="${c.experience||''}" placeholder="XP"><button class="button" data-action="save-xp">Save XP</button></div><div class="hit-row"><div class="mini-box"><span>Hit Dice</span><strong>${Math.max(0,c.level-(c.hit_dice_used||0))}/${c.level} ${esc(c.hit_die||'')}</strong></div><div class="mini-box"><span>Death Saves</span><label class="death-line">Success ${[0,1,2].map(i=>`<input data-death="success" type="checkbox" ${i<(c.death_save_successes||0)?'checked':''}>`).join('')}</label><label class="death-line">Failure ${[0,1,2].map(i=>`<input data-death="failure" type="checkbox" ${i<(c.death_save_failures||0)?'checked':''}>`).join('')}</label></div><div class="mini-box"><span>Exhaustion</span><input id="exhaustion" type="number" min="0" max="6" value="${c.exhaustion||''}" placeholder="0–6"></div></div></section>
+    <section class="tracker"><h3>Conditions</h3><div class="check-grid">${CONDITIONS.map(x=>`<label class="check-row"><input data-condition="${esc(x)}" type="checkbox" ${conditions.has(x)?'checked':''}>${esc(x)}</label>`).join('')}</div></section>
+    <section class="tracker"><h3>Saving Throws</h3><div class="proficiency-grid">${E.ABILITIES.map(a=>`<label class="prof-row"><input data-save-prof="${a}" type="checkbox" ${saveProfs.has(a)?'checked':''}><b>${signed(d.saving_throws?.[a])}</b><span>${title(a)}</span></label>`).join('')}</div></section>
+    <section class="tracker"><h3>Skills</h3><div class="proficiency-grid">${Object.keys(E.SKILLS).sort().map(skill=>`<label class="prof-row"><input data-skill-prof="${esc(skill)}" type="checkbox" ${skillProfs.has(skill)?'checked':''}><b>${signed(d.skills?.[skill])}</b><span>${esc(skill)}</span></label>`).join('')}</div></section>`;
+    bindPlayActions();
+  }
+  function bindPlayActions(){const root=$('playSheet');root.querySelectorAll('[data-action]').forEach(btn=>btn.onclick=async()=>{const action=btn.dataset.action,amount=Number($('hpAmount')?.value||0);if(action==='damage')E.takeDamage(state.character,amount);if(action==='heal')E.heal(state.character,amount);if(action==='temp-hp'){state.character.temporary_hp=Math.max(0,Number($('tempHp').value||0));E.recalc(state.character);}if(action==='short-rest')E.shortRest(state.character);if(action==='long-rest'&&confirm('Restore hit points, slots, features, death saves, and half the spent hit dice?'))E.longRest(state.character);if(action==='save-xp'){state.character.experience=Math.max(0,Number($('xpValue').value||0));state.character.exhaustion=Math.min(6,Math.max(0,Number($('exhaustion').value||0)));E.recalc(state.character);}await save(title(action));renderCharacterHeader();renderPlaySheet();});
+    root.querySelectorAll('[data-death]').forEach(box=>box.onchange=async()=>{state.character.death_save_successes=root.querySelectorAll('[data-death=success]:checked').length;state.character.death_save_failures=root.querySelectorAll('[data-death=failure]:checked').length;await save('Updated death saves',false);});
+    root.querySelectorAll('[data-condition]').forEach(box=>box.onchange=async()=>{state.character.conditions=[...root.querySelectorAll('[data-condition]:checked')].map(x=>x.dataset.condition);await save('Updated conditions',false);});
+    root.querySelectorAll('[data-save-prof]').forEach(box=>box.onchange=async()=>{state.character.saving_throw_proficiencies=[...root.querySelectorAll('[data-save-prof]:checked')].map(x=>x.dataset.saveProf);E.recalc(state.character);await save('Updated saving throw proficiencies');renderCharacterHeader();renderPlaySheet();});
+    root.querySelectorAll('[data-skill-prof]').forEach(box=>box.onchange=async()=>{state.character.skill_proficiencies=[...root.querySelectorAll('[data-skill-prof]:checked')].map(x=>x.dataset.skillProf);E.recalc(state.character);await save('Updated skill proficiencies');renderCharacterHeader();renderPlaySheet();});
+  }
+  function renderTabs(){$('tabBar').innerHTML=TABS.map(([key,label])=>`<button class="tab-button ${state.activeTab===key?'active':''}" data-tab="${key}">${label}</button>`).join('');document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{state.activeTab=b.dataset.tab;$('tabSearch').value='';renderTabs();renderActiveTab();});}
+  async function save(action='Character updated',rerender=true){E.recalc(state.character);await api('saveCharacter',{character:state.character,action});if(rerender)toast(action);state.characters=await api('listCharacters');}
+
+  function section(titleText,content,actions='',full=false){return `<section class="panel ${full?'full':''}"><div class="section-head"><h3>${esc(titleText)}</h3><div class="section-actions">${actions}</div></div>${content}</section>`;}
+  function renderEquipment(c){const attacks=E.attacks(c),ac=E.acBreakdown(c),active=c.active_spells||[],attuned=(c.inventory||[]).filter(i=>i.attuned);return `<div class="content-grid">${section('Weapon Attacks',table(['Weapon','Attack Bonus','Damage / Type','Range'],attacks.map(r=>[esc(r.name),signed(r.attack_bonus),esc(r.damage),esc(r.range)])),'',true)}${section('AC Breakdown',table(['Item / Effect','Calculation','Applied'],ac.map(r=>Object.assign([esc(r.name),esc(r.calculation),esc(r.value)],{_class:r.summary?'summary':''}))),'',true)}${section('Active Spells',table(['Spell','Cast Level','Turns','Effects',''],active.map(s=>[esc(s.name),esc(s.cast_level||s.level||'Unknown'),esc(s.turns_remaining??'—'),esc(formatEffects(s.effects)),actionCell([['−','spell-turn-down',s.id],['+','spell-turn-up',s.id],['Remove','spell-remove',s.id]])])),button('Add Active Spell','active-spell-add'),' ',true)}${section('Attuned Items',table(['Item','Type','Effect'],attuned.map(i=>[esc(i.name),esc(title(i.type||'Item')),esc(i.notes||formatEffects(i.effects)||'—')])),'',true)}</div>`;}
+  function formatEffects(value){if(!value)return '';if(typeof value==='string')return value;return Object.entries(value).map(([k,v])=>`${title(k)} ${signed(v)}`).join(', ');}
+  function spellRecord(name){return state.character.spell_metadata?.[name] || state.references.spells?.records?.find(s=>s.name===name) || {name,level:0};}
+  function renderSpells(c){const max=Math.max(0,...Object.keys(c.spell_slots_max||{}).map(Number),...(c.spells||[]).map(n=>Number(spellRecord(typeof n==='string'?n:n.name).level||0)));const prepared=new Set(c.prepared_spells||[]);return `<div class="content-grid">${section('Spellcasting',`<div class="preview-stats">${[['Ability',title(c.derived?.spellcasting_ability||'—')],['Save DC',c.derived?.spell_save_dc||'—'],['Attack',c.derived?.spell_attack_bonus===undefined?'—':signed(c.derived.spell_attack_bonus)]].map(([k,v])=>`<div class="stat-tile"><span>${k}</span><strong>${esc(v)}</strong></div>`).join('')}</div>`,button('Add Spell','spell-add')+button('Reroll','spell-reroll'),true)}${Array.from({length:max+1},(_,level)=>{const names=(c.spells||[]).map(x=>typeof x==='string'?x:x.name).filter(n=>Number(spellRecord(n).level||0)===level);const maximum=c.spell_slots_max?.[String(level)]||0,used=c.spell_slots_used?.[String(level)]||0;return section(level===0?'Cantrips':`Level ${level}`,`${level?`<div class="control-row"><span class="pill">${maximum-used} / ${maximum} slots available</span>${button('Use Slot','slot-use',String(level))}${button('Restore Slot','slot-restore',String(level))}</div>`:''}${table(['Spell','Prepared','Cast Time','Range','Duration',''],names.map(name=>{const s=spellRecord(name);return[esc(name),`<input data-prepare="${esc(name)}" type="checkbox" ${prepared.has(name)?'checked':''}>`,esc(s.casting_time||'—'),esc(s.range||'—'),esc(s.duration||'—'),actionCell([['Cast','spell-cast',name],['Remove','spell-delete',name]])]}))}`,'',true)}).join('')}</div>`;}
+  function renderInventory(c){return `<div class="content-grid">${section('Inventory',table(['Item','Qty','Weight','Type','Equipped','Attuned','Active','Notes',''],(c.inventory||[]).map(i=>[esc(i.name),esc(i.quantity??1),esc(i.weight??0),esc(title(i.type||'Gear')),`<input data-item-toggle="equipped" data-id="${esc(i.id)}" type="checkbox" ${i.equipped?'checked':''}>`,`<input data-item-toggle="attuned" data-id="${esc(i.id)}" type="checkbox" ${i.attuned?'checked':''}>`,`<input data-item-toggle="active" data-id="${esc(i.id)}" type="checkbox" ${i.active?'checked':''}>`,esc(i.notes||''),actionCell([['Edit','item-edit',i.id],['Use','item-use',i.id],['Remove','item-remove',i.id]])])),button('Add Item','item-add')+`<label class="check"><input id="weightToggle" type="checkbox" ${c.weight_matters?'checked':''}> Weight Matters</label>`,true)}${section('Currency',`<div class="currency-grid">${COINS.map(coin=>field(coin.toUpperCase(),`currency-${coin}`,c.currency?.[coin]||'', 'number','min="0"')).join('')}</div>`,button('Save Currency','currency-save'),true)}</div>`;}
+  function renderGroupItems(c){const groups=Object.entries(c.group_items||{});return `<div class="content-grid">${section('Group Funds',`<div class="currency-grid">${COINS.map(coin=>field(coin.toUpperCase(),`group-${coin}`,c.group_funds?.[coin]||'','number','min="0"')).join('')}</div>`,button('Save Group Funds','group-funds-save'),true)}${groups.map(([name,items])=>section(name,table(['Item','Qty','Notes',''],items.map((i,index)=>[esc(i.item),esc(i.qty),esc(i.notes||''),actionCell([['Edit','group-item-edit',`${name}|${index}`],['Remove','group-item-remove',`${name}|${index}`]])])),button('Add Item','group-item-add',name),true)).join('')}${section('Storage',`<p class="muted">Create another shared storage group for the campaign.</p>`,button('Add Storage Group','group-add'),true)}</div>`;}
+  function recordCards(records,kind='feature'){return records.length?`<div class="cards">${records.map(r=>`<article class="record" data-searchable><div class="section-head"><strong>${esc(r.name)}</strong><span class="pill">${esc(r.source||title(kind))}</span></div><p>${esc(r.description||'No description entered.')}</p>${r.max_uses?`<div class="pills"><span class="pill">${Math.max(0,r.max_uses-(r.uses_used||0))}/${r.max_uses} remaining</span><span class="pill">${esc(title(r.recharge))} rest</span></div>`:''}<div class="section-actions">${r.max_uses?button('Use','feature-use',r.id)+button('Restore','feature-restore',r.id):''}${button('Edit','feature-edit',r.id)}${button('Remove','feature-remove',r.id)}</div></article>`).join('')}</div>`:empty();}
+  function renderFeatures(c){return `<div class="content-grid">${section('Class Features',recordCards((c.feature_records||[]).filter(r=>/^Class(?::|$)/.test(r.source||'Class')),'Class'),button('Add Feature','feature-add'),true)}${section('Race & Background',recordCards((c.feature_records||[]).filter(r=>['Race','Background','Custom','Item'].includes(r.source))),'',true)}</div>`;}
+  function renderSubclass(c){const rows=E.classes(c).filter(r=>r.subclass);if(!rows.length)return empty('No subclass selected','A subclass will be chosen automatically at the correct class level during Level Up.');return `<div class="content-grid">${rows.map(row=>section(`${row.name}: ${row.subclass}`,`<p class="muted">Class level ${row.level}. All unlocked subclass features and their complete descriptions are listed below.</p>${recordCards((c.feature_records||[]).filter(r=>r.source===row.subclass||r.source==='Blood Curse'),'Subclass')}`,'',true)).join('')}</div>`;}
+  function renderFeats(c){const feats=(c.feature_records||[]).filter(r=>r.source==='Feat');return `<div class="content-grid">${section('Selected Feats',recordCards(feats,'Feat'),button('Add Feat','feat-add'),true)}${section('Available Feats','<div id="featCatalogue">Loading feat catalogue…</div>','',true)}</div>`;}
+  function renderNotes(c){const notes=c.session_notes||[];return `<div class="content-grid">${section('General Notes',`<textarea id="generalNotes" rows="10" placeholder="Autosaved character notes">${esc(c.general_notes||'')}</textarea>`,button('Save Notes','notes-save'),true)}${section('Session Notes',notes.length?`<div class="cards">${notes.map((n,i)=>`<article class="record"><strong>${esc(n.title||'Session Note')}</strong><span class="muted">${esc(n.session_date||'')}</span><p>${esc(n.body||'')}</p><div class="section-actions">${button('Edit','note-edit',String(i))}${button('Delete','note-delete',String(i))}</div></article>`).join('')}</div>`:empty('No session notes','Add a dated campaign note.'),button('New Session Note','note-add'),true)}</div>`;}
+  function renderDetails(c){return `<div class="content-grid"><form id="detailsForm" class="panel full"><div class="section-head"><h3>Appearance Details</h3><button class="button primary" type="submit">Save Character Details</button></div><div class="form-grid six">${['age','height','weight','eyes','skin','hair'].map(k=>field(title(k),k,c[k]||'')).join('')}</div><div class="details-grid">${[['personality','Personality Traits'],['ideals','Ideals'],['bonds','Bonds'],['flaws','Flaws'],['appearance','Character Appearance'],['backstory','Character Backstory'],['allies_organizations','Allies & Organizations']].map(([k,l])=>`<label>${l}<textarea name="${k}">${esc(c[k]||'')}</textarea></label>`).join('')}</div></form></div>`;}
+  async function reference(kind,query=''){const key=`${kind}:${query.toLowerCase()}`;if(!state.references[key])state.references[key]=await api('referenceData',{kind,query,page:1,pageSize:1000});if(!query)state.references[kind]=state.references[key];return state.references[key];}
+  function sourceLink(record){return record.url?`<a class="text-button" href="${esc(record.url)}" target="_blank" rel="noreferrer">Reference ↗</a>`:'—';}
+  async function renderReference(kind){const q=$('tabSearch').value.trim(),data=await reference(kind,q),records=data.records||[];
+    if(kind==='magic_items'){const order=['Common','Uncommon','Rare','Very Rare','Legendary','Artifact','Varies','Unspecified'],groups={};records.forEach(i=>(groups[i.rarity||i.labels?.rarity||'Unspecified']??=[]).push(i));const rarities=Object.keys(groups).sort((a,b)=>order.indexOf(a)-order.indexOf(b));state.activeRarity=rarities.includes(state.activeRarity)?state.activeRarity:(rarities[0]||'');return `<div class="subtabs">${rarities.map(r=>`<button class="subtab ${state.activeRarity===r?'active':''}" data-rarity="${esc(r)}">${esc(r)} (${groups[r].length})</button>`).join('')}</div>${rarities.map(r=>`<div data-rarity-panel="${esc(r)}" ${state.activeRarity===r?'':'hidden'}>${table(['Magic Item','Type','Attunement','Description','Source'],groups[r].map(i=>[esc(i.name),esc(i.type||i.labels?.type||'—'),i.requires_attunement?'Required':'No',esc(i.description||'—'),sourceLink(i)]))}</div>`).join('')}`;}
+    if(kind==='spells'){const levels={};records.forEach(s=>(levels[s.level??s.labels?.level??0]??=[]).push(s));return `<div class="subtabs">${Object.keys(levels).sort((a,b)=>a-b).map((level,i)=>`<button class="subtab ${i===0?'active':''}" data-level-tab="${level}">${Number(level)===0?'Cantrips':`Level ${level}`} (${levels[level].length})</button>`).join('')}</div>${Object.keys(levels).sort((a,b)=>a-b).map((level,i)=>`<div data-level-panel="${level}" ${i===0?'':'hidden'}>${table(['Spell','School','Classes','Casting Time','Range','Duration','Description'],levels[level].map(s=>[esc(s.name),esc(s.school||'—'),esc((s.classes||[]).join(', ')),esc(s.casting_time||'—'),esc(s.range||'—'),esc(s.duration||'—'),esc(s.description||'—')]))}</div>`).join('')}`;}
+    if(kind==='class_info')return table(['Class / Subclass','Source','Status','Description','Reference'],records.map(r=>[esc(r.name),esc(r.source||'—'),esc(title(r.status||'—')),esc(r.description||'—'),sourceLink(r)]));
+    return table(['Topic','Category','Source','Description','Reference'],records.map(r=>[esc(r.name),esc(title(r.category||'Rules')),esc(r.source||'—'),esc(r.description||'—'),sourceLink(r)]));
+  }
+  function renderChangeLog(){return `<div class="content-grid">${section('Character History','<div id="revisionList">Loading history…</div>',button('Download JSON','download-json')+button('Duplicate Character','duplicate-character')+button('Delete Character','delete-character'),true)}</div>`;}
+  async function loadRevisions(){try{const rows=await api('listRevisions',{characterId:state.character.id});$('revisionList').innerHTML=table(['Date','Action',''],rows.map(r=>[esc(r.created_at),esc(r.action),actionCell([['Restore','revision-restore',r.id]])]));bindContentActions($('revisionList'));}catch(e){$('revisionList').innerHTML=`<p class="muted">${esc(e.message)}</p>`;}}
+
+  async function renderActiveTab(){const c=state.character;if(!c)return;$('tabContent').innerHTML=empty('Loading','Preparing this section…');try{let html='';switch(state.activeTab){case'equipment':html=renderEquipment(c);break;case'spells':html=renderSpells(c);break;case'inventory':html=renderInventory(c);break;case'group-items':html=renderGroupItems(c);break;case'features':html=renderFeatures(c);break;case'subclass':html=renderSubclass(c);break;case'feats':html=renderFeats(c);break;case'notes':html=renderNotes(c);break;case'details':html=renderDetails(c);break;case'magic-items':html=await renderReference('magic_items');break;case'class-info':html=await renderReference('class_info');break;case'roll20':html=await renderReference('equipment_rules');break;case'magic-spells':html=await renderReference('spells');break;case'change-log':html=renderChangeLog();break;default:html=empty();}$('tabContent').innerHTML=html;bindContentActions($('tabContent'));bindTabForms();applyTabSearch();if(state.activeTab==='feats')loadFeatCatalogue();if(state.activeTab==='change-log')loadRevisions();}catch(error){$('tabContent').innerHTML=empty('Unable to load this section',error.message);}}
+
+  function bindTabForms(){document.querySelectorAll('[data-rarity]').forEach(b=>b.onclick=()=>{state.activeRarity=b.dataset.rarity;document.querySelectorAll('[data-rarity]').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('[data-rarity-panel]').forEach(x=>x.hidden=x.dataset.rarityPanel!==state.activeRarity);});document.querySelectorAll('[data-level-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-level-tab]').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('[data-level-panel]').forEach(x=>x.hidden=x.dataset.levelPanel!==b.dataset.levelTab);});document.querySelectorAll('[data-prepare]').forEach(box=>box.onchange=async()=>{const list=state.character.prepared_spells||=[];box.checked&&!list.includes(box.dataset.prepare)?list.push(box.dataset.prepare):!box.checked&&list.splice(list.indexOf(box.dataset.prepare),1);await save('Updated prepared spells');});document.querySelectorAll('[data-item-toggle]').forEach(box=>box.onchange=async()=>{const item=state.character.inventory.find(i=>i.id===box.dataset.id);if(item)item[box.dataset.itemToggle]=box.checked;E.recalc(state.character);await save('Updated equipment');renderCharacterHeader();renderPlaySheet();renderActiveTab();});if($('weightToggle'))$('weightToggle').onchange=async e=>{state.character.weight_matters=e.target.checked;await save('Updated weight rules');};if($('detailsForm'))$('detailsForm').onsubmit=async e=>{e.preventDefault();new FormData(e.target).forEach((v,k)=>state.character[k]=String(v));await save('Updated character details');toast('Character details saved.');};}
+  function bindContentActions(root){root.querySelectorAll('[data-action]').forEach(btn=>btn.onclick=()=>handleAction(btn.dataset.action,btn.dataset.id||''));}
+  async function handleAction(action,id){try{
+    if(action==='open-character')return openCharacter();if(action==='download-sheet')return downloadSheet();if(action==='fit-sheet')return document.querySelector('.paper')?.scrollIntoView({behavior:'smooth'});if(action==='maximize-sheet'){document.querySelector('.sheet-preview')?.requestFullscreen?.();return;}
+    if(action==='damage'||action==='heal')return;
+    if(action==='spell-turn-down'||action==='spell-turn-up'){const s=state.character.active_spells.find(x=>x.id===id);if(s)s.turns_remaining=Math.max(0,Number(s.turns_remaining||0)+(action.endsWith('up')?1:-1));await save('Updated active spell');return renderActiveTab();}
+    if(action==='spell-remove'){state.character.active_spells=state.character.active_spells.filter(x=>x.id!==id);await save('Removed active spell');return refreshCharacter();}
+    if(action==='active-spell-add')return openActiveSpellEditor();
+    if(action==='slot-use'||action==='slot-restore'){const max=state.character.spell_slots_max[id]||0,current=state.character.spell_slots_used[id]||0;state.character.spell_slots_used[id]=Math.max(0,Math.min(max,current+(action==='slot-use'?1:-1)));await save('Updated spell slot');return renderActiveTab();}
+    if(action==='spell-add')return openSpellPicker();if(action==='spell-delete'){state.character.spells=state.character.spells.filter(x=>(typeof x==='string'?x:x.name)!==id);state.character.prepared_spells=(state.character.prepared_spells||[]).filter(x=>x!==id);await save(`Removed spell: ${id}`);return renderActiveTab();}if(action==='spell-cast')return castSpell(id);if(action==='spell-reroll')return toast('Use Add Spell to choose legal spells. Random replacement is intentionally not automatic on the web.');
+    if(action==='item-add')return openItemEditor();if(action==='item-edit')return openItemEditor(state.character.inventory.find(i=>i.id===id));if(action==='item-remove'){if(!confirm('Remove this item?'))return;state.character.inventory=state.character.inventory.filter(i=>i.id!==id);await save('Removed inventory item');return refreshCharacter();}if(action==='item-use'){const item=state.character.inventory.find(i=>i.id===id);if(item)item.quantity=Math.max(0,Number(item.quantity||0)-1);await save('Used inventory item');return renderActiveTab();}if(action==='currency-save'){state.character.currency||={};COINS.forEach(c=>state.character.currency[c]=Math.max(0,Number(document.querySelector(`[name="currency-${c}"]`).value||0)));await save('Updated currency');return;}
+    if(action==='group-funds-save'){state.character.group_funds||={};COINS.forEach(c=>state.character.group_funds[c]=Math.max(0,Number(document.querySelector(`[name="group-${c}"]`).value||0)));await save('Updated group funds');return;}if(action==='group-add')return openGroupEditor();if(action==='group-item-add')return openGroupItemEditor(id);if(action==='group-item-edit'){const [group,index]=id.split('|');return openGroupItemEditor(group,Number(index));}if(action==='group-item-remove'){const [group,index]=id.split('|');state.character.group_items[group].splice(Number(index),1);await save('Removed group item');return renderActiveTab();}
+    if(action==='feature-add')return openFeatureEditor();if(action==='feature-edit')return openFeatureEditor(state.character.feature_records.find(r=>r.id===id));if(action==='feature-remove'){state.character.feature_records=state.character.feature_records.filter(r=>r.id!==id);await save('Removed feature');return renderActiveTab();}if(action==='feature-use'||action==='feature-restore'){const r=state.character.feature_records.find(x=>x.id===id);if(r)r.uses_used=Math.max(0,Math.min(r.max_uses,Number(r.uses_used||0)+(action==='feature-use'?1:-1)));await save('Updated feature use');return renderActiveTab();}
+    if(action==='feat-add')return openFeatPicker();if(action==='notes-save'){state.character.general_notes=$('generalNotes').value;await save('Updated general notes');return;}if(action==='note-add')return openNoteEditor();if(action==='note-edit')return openNoteEditor(Number(id));if(action==='note-delete'){state.character.session_notes.splice(Number(id),1);await save('Deleted session note');return renderActiveTab();}
+    if(action==='download-json')return download(`${state.character.name.replace(/[^a-z0-9]+/gi,'_')}.json`,JSON.stringify(state.character,null,2));if(action==='duplicate-character'){const copy=clone(state.character);copy.id=E.uid();copy.name+= ' Copy';await api('saveCharacter',{character:copy,action:'Character duplicated'});showLibrary();await loadLibrary(copy.id);return;}if(action==='delete-character'){if(!confirm(`Permanently delete ${state.character.name}?`))return;await api('deleteCharacters',{characterIds:[state.character.id]});state.character=null;showLibrary();await loadLibrary();return;}if(action==='revision-restore'){if(!confirm('Restore this revision? The current state will remain in history.'))return;state.character=E.recalc(await api('restoreRevision',{characterId:state.character.id,revisionId:id}));renderCharacter();return;}
+  }catch(error){toast(error.message,true);}}
+  function refreshCharacter(){E.recalc(state.character);renderCharacterHeader();renderPlaySheet();renderActiveTab();}
+
+  function openEditor(eyebrow,titleText,html,confirmText,onSave){$('editorEyebrow').textContent=eyebrow;$('editorTitle').textContent=titleText;$('editorBody').innerHTML=html;$('editorConfirm').textContent=confirmText;$('editorForm').onsubmit=async e=>{e.preventDefault();try{const data=Object.fromEntries(new FormData(e.target));await onSave(data);$('editorDialog').close();}catch(error){toast(error.message,true);}};$('editorDialog').showModal();}
+  function openItemEditor(item=null){openEditor('Inventory',item?'Edit Item':'Add Item',`<div class="form-grid">${field('Name','name',item?.name||'')}${field('Quantity','quantity',item?.quantity??1,'number','min="0"')}${field('Weight','weight',item?.weight??'','number','min="0" step="0.01"')}<label>Type<select name="type">${['gear','weapon','armor','shield','wondrous item','ring','potion','tool','ammunition','feature'].map(x=>`<option ${item?.type===x?'selected':''}>${x}</option>`).join('')}</select></label>${field('Magic Bonus','magic_bonus',item?.magic_bonus||'','number')}${field('AC Bonus','ac_bonus',item?.ac_bonus||'','number')}${field('Damage Die','damage',item?.damage||'')}${field('Damage Type','damage_type',item?.damage_type||'')}${field('Ability','ability',item?.ability||'')}${field('Range','range',item?.range||'')}<label class="check"><input name="equipped" type="checkbox" ${item?.equipped?'checked':''}> Equipped</label><label class="check"><input name="requires_attunement" type="checkbox" ${item?.requires_attunement?'checked':''}> Requires Attunement</label><label class="check"><input name="attuned" type="checkbox" ${item?.attuned?'checked':''}> Attuned</label><label class="check"><input name="active" type="checkbox" ${item?.active?'checked':''}> Active</label><label class="wide">Effects JSON<textarea name="effects" rows="3">${esc(JSON.stringify(item?.effects||{}))}</textarea></label><label class="wide">Notes<textarea name="notes" rows="4">${esc(item?.notes||'')}</textarea></label></div>`,item?'Save Item':'Add Item',async data=>{let target=item||{id:E.uid()};Object.assign(target,{...data,quantity:Number(data.quantity||0),weight:Number(data.weight||0),magic_bonus:Number(data.magic_bonus||0),ac_bonus:Number(data.ac_bonus||0),equipped:data.equipped==='on',requires_attunement:data.requires_attunement==='on',attuned:data.attuned==='on',active:data.active==='on',effects:JSON.parse(data.effects||'{}')});if(!item)state.character.inventory.push(target);await save(item?'Edited inventory item':'Added inventory item');refreshCharacter();});}
+  function openFeatureEditor(record=null){openEditor('Feature Tracker',record?'Edit Feature':'Add Feature',`<div class="form-grid">${field('Name','name',record?.name||'')}${field('Source','source',record?.source||'Custom')}${field('Maximum Uses','max_uses',record?.max_uses||'','number','min="0"')}<label>Recharge<select name="recharge">${['passive','short','long'].map(x=>`<option ${record?.recharge===x?'selected':''}>${x}</option>`).join('')}</select></label><label class="wide">Description<textarea name="description" rows="6">${esc(record?.description||'')}</textarea></label><label class="wide">Effects JSON<textarea name="effects" rows="3">${esc(JSON.stringify(record?.effects||{}))}</textarea></label></div>`,record?'Save Feature':'Add Feature',async data=>{const target=record||{id:E.uid(),uses_used:0};Object.assign(target,data,{max_uses:Number(data.max_uses||0),effects:JSON.parse(data.effects||'{}')});if(!record)state.character.feature_records.push(target);await save(record?'Edited feature':'Added feature');renderActiveTab();});}
+  function openGroupEditor(){openEditor('Shared Campaign Storage','Add Storage Group',field('Group Name','name'),'Add Group',async data=>{if(!data.name.trim())throw new Error('Enter a group name.');state.character.group_items[data.name.trim()]||=[];await save('Added storage group');renderActiveTab();});}
+  function openGroupItemEditor(group,index=null){const item=index===null?null:state.character.group_items[group][index];openEditor(group,item?'Edit Group Item':'Add Group Item',`<div class="form-grid">${field('Item','item',item?.item||'')}${field('Quantity','qty',item?.qty??1,'number','min="0"')}<label class="wide">Notes<textarea name="notes" rows="4">${esc(item?.notes||'')}</textarea></label></div>`,item?'Save Item':'Add Item',async data=>{const row={item:data.item,qty:Number(data.qty||0),notes:data.notes};item?Object.assign(item,row):state.character.group_items[group].push(row);await save('Updated group item');renderActiveTab();});}
+  function openNoteEditor(index=null){state.character.session_notes||=[];const note=index===null?null:state.character.session_notes[index];openEditor('Campaign Notebook',note?'Edit Session Note':'New Session Note',`<div class="form-grid">${field('Session Date','session_date',note?.session_date||new Date().toISOString().slice(0,10),'date')}${field('Title','title',note?.title||'')}<label class="wide">Note<textarea name="body" rows="10">${esc(note?.body||'')}</textarea></label></div>`,note?'Save Note':'Add Note',async data=>{note?Object.assign(note,data):state.character.session_notes.unshift(data);await save('Updated session notes');renderActiveTab();});}
+  async function openSpellPicker(){const data=await reference('spells'),current=new Set((state.character.spells||[]).map(x=>typeof x==='string'?x:x.name));const casterClasses=E.classes(state.character).map(x=>x.name);const legal=data.records.filter(s=>!current.has(s.name)&&(!s.classes?.length||s.classes.some(c=>casterClasses.includes(c))));openEditor('Spellbook','Add a Legal Spell',`<label>Spell<select name="name">${legal.map(s=>`<option value="${esc(s.name)}">${esc(s.name)} — Level ${s.level}</option>`).join('')}</select></label><div id="pickerDescription" class="panel">Choose a spell from the class list.</div>`,'Add Spell',async form=>{const s=legal.find(x=>x.name===form.name);state.character.spells.push(s.name);state.character.spell_metadata||={};state.character.spell_metadata[s.name]=s;await save(`Added spell: ${s.name}`);renderActiveTab();});}
+  async function openActiveSpellEditor(){const data=await reference('spells'),known=new Set((state.character.spells||[]).map(x=>typeof x==='string'?x:x.name)),spells=data.records.filter(s=>known.has(s.name));openEditor('Timed Effect','Add Active Spell',`<div class="form-grid"><label>Spell<select name="name">${spells.map(s=>`<option>${esc(s.name)}</option>`).join('')}</select></label>${field('Cast Level','cast_level','Unknown')}${field('Turns Remaining','turns_remaining',10,'number','min="0"')}<label class="check"><input name="concentration" type="checkbox"> Concentration</label><label class="wide">Effects JSON<textarea name="effects" rows="4">{}</textarea></label></div>`,'Add Active Spell',async form=>{state.character.active_spells.push({id:E.uid(),name:form.name,cast_level:form.cast_level,turns_remaining:Number(form.turns_remaining||0),concentration:form.concentration==='on',effects:JSON.parse(form.effects||'{}')});await save('Added active spell');refreshCharacter();});}
+  async function castSpell(name){const s=spellRecord(name),level=Number(s.level||0);if(!level){toast(`Cast ${name}. Cantrips do not use a slot.`);return;}const available=Object.keys(state.character.spell_slots_max||{}).filter(k=>Number(k)>=level&&(state.character.spell_slots_used[k]||0)<state.character.spell_slots_max[k]);if(!available.length)throw new Error(`No spell slot of level ${level} or higher remains.`);openEditor('Cast Spell',name,`<label>Slot Level<select name="level">${available.map(x=>`<option>${x}</option>`).join('')}</select></label>`,'Cast',async data=>{state.character.spell_slots_used[data.level]=(state.character.spell_slots_used[data.level]||0)+1;const duration=String(s.duration||'');if(duration&&!/instant/i.test(duration)){let turns=10,m=duration.match(/(\d+)\s*minute/i),r=duration.match(/(\d+)\s*round/i);if(m)turns=Number(m[1])*10;else if(r)turns=Number(r[1]);state.character.active_spells.push({id:E.uid(),name,cast_level:data.level,turns_remaining:turns,concentration:/concentration/i.test(duration),effects:{},description:s.description||''});}await save(`Cast ${name}`);refreshCharacter();});}
+  async function loadFeatCatalogue(){try{const data=await reference('feats');$('featCatalogue').innerHTML=table(['Feat','Prerequisite','Description',''],data.records.slice(0,250).map(f=>[esc(f.name),esc(f.prerequisite||'—'),esc(f.description||'—'),`<button class="text-button" data-add-feat="${esc(f.name)}">Add</button>`]));document.querySelectorAll('[data-add-feat]').forEach(b=>b.onclick=()=>addFeat(data.records.find(f=>f.name===b.dataset.addFeat)));}catch(e){$('featCatalogue').textContent=e.message;}}
+  async function openFeatPicker(){const data=await reference('feats');openEditor('Feat Catalogue','Add a Feat',`<label>Feat<select name="name">${data.records.map(f=>`<option>${esc(f.name)}</option>`).join('')}</select></label><p class="muted">The complete feat description is stored on the character sheet.</p>`,'Add Feat',async form=>addFeat(data.records.find(f=>f.name===form.name)));}
+  async function addFeat(feat){state.character.feature_records.push({id:E.uid(),name:feat.name,source:'Feat',description:feat.description||'',max_uses:0,uses_used:0,recharge:'passive',effects:feat.effects||{}});await save(`Added feat: ${feat.name}`);renderActiveTab();}
+
+  async function openLevelUp(){state.levelStage='choices';const classes=E.classes(state.character),all=Object.keys(E.CLASSES),eligible=all;const selected=classes[0].name,info=E.levelInfo(state.character,selected);$('levelBody').innerHTML=levelChoiceHtml(eligible,info);$('levelNext').textContent='Review Changes';$('levelNext').onclick=reviewLevelUp;$('levelDialog').showModal();bindLevelChoice();}
+  function levelChoiceHtml(classes,info){return `<div class="form-grid"><label>Choose a Class<select id="levelClass">${classes.map(name=>`<option ${name===info.className?'selected':''}>${name}</option>`).join('')}</select></label><label>Hit Point Increase<select id="hpMode"><option value="average">Fixed Average for d${info.hitDie}</option><option value="roll">Roll d${info.hitDie} in App</option><option value="physical">Use Physical d${info.hitDie}</option></select></label><label id="physicalWrap" class="hidden">Physical Die Result<input id="physicalRoll" type="number" min="1" max="${info.hitDie}"></label><div id="subclassWrap" class="${info.requiresSubclass?'':'hidden'}"><label>Choose Subclass<select id="levelSubclass">${info.subclasses.map(x=>`<option>${esc(x)}</option>`).join('')}</select></label></div><div id="asiWrap" class="${info.asi?'':'hidden'}"><label>Level Choice<select id="asiType"><option value="ability">Ability Score Improvement (+2)</option><option value="feat">Choose a Feat</option></select></label><label id="abilityWrap">Ability<select id="asiAbility">${E.ABILITIES.map(x=>`<option>${x}</option>`).join('')}</select></label><label id="levelFeatWrap" class="hidden">Feat<select id="levelFeat"><option>Loading feats…</option></select></label><div id="levelFeatDescription" class="panel wide">Choose a feat to see its description.</div></div></div><div class="level-summary"><p><strong>${esc(info.className)} Level ${info.nextClassLevel}</strong></p><p>Hit Die: d${info.hitDie}</p><p>Features: ${esc(info.features.join(', ')||'Class progression and derived values')}</p>${info.requiresSubclass?'<p>A subclass must be selected at this level.</p>':''}${info.asi?'<p>This level includes an Ability Score Improvement or feat.</p>':''}</div>`;}
+  function bindLevelChoice(){const update=()=>{const info=E.levelInfo(state.character,$('levelClass').value);$('levelBody').innerHTML=levelChoiceHtml(Object.keys(E.CLASSES),info);bindLevelChoice();};$('levelClass').onchange=update;$('hpMode').onchange=()=> $('physicalWrap').classList.toggle('hidden',$('hpMode').value!=='physical');if($('asiType'))$('asiType').onchange=()=>{const feat=$('asiType').value==='feat';$('abilityWrap').classList.toggle('hidden',feat);$('levelFeatWrap').classList.toggle('hidden',!feat);$('levelFeatDescription').classList.toggle('hidden',!feat);if(feat)populateLevelFeats();};}
+  async function populateLevelFeats(){const data=await reference('feats'),select=$('levelFeat');select.innerHTML=data.records.map(f=>`<option>${esc(f.name)}</option>`).join('');const update=()=>{$('levelFeatDescription').textContent=data.records.find(f=>f.name===select.value)?.description||'No description available.';};select.onchange=update;update();}
+  function currentLevelChoice(){return{className:$('levelClass').value,hpMode:$('hpMode').value,physicalRoll:Number($('physicalRoll')?.value||0),subclass:$('levelSubclass')?.value||'',asiType:$('asiType')?.value||'',ability:$('asiAbility')?.value||'',feat:$('levelFeat')?.value||''};}
+  async function reviewLevelUp(){try{const choice=currentLevelChoice(),info=E.levelInfo(state.character,choice.className);let feat=null;if(info.asi&&choice.asiType==='feat'){const data=await reference('feats');feat=data.records.find(f=>f.name===choice.feat);}const preview=clone(state.character),result=E.applyLevelUp(preview,choice,feat);state.pendingLevel={choice,feat,result,preview};$('levelBody').innerHTML=`<div class="level-summary"><h3>Review Every Change</h3><p><strong>Total Level:</strong> ${state.character.level} → ${result.totalLevel}</p><p><strong>${esc(choice.className)} Level:</strong> ${result.classLevel}</p><p><strong>Hit Points:</strong> ${state.character.max_hp} → ${preview.max_hp} (+${result.hpGain}; die result ${result.dieRoll})</p>${result.subclass?`<p><strong>Subclass:</strong> ${esc(result.subclass)}</p>`:''}<p><strong>New Features:</strong> ${esc(result.features.join(', ')||'None at this level')}</p>${feat?`<p><strong>Feat:</strong> ${esc(feat.name)}</p><p>${esc(feat.description||'')}</p>`:''}<p><strong>Proficiency:</strong> ${signed(state.character.derived.proficiency_bonus)} → ${signed(preview.derived.proficiency_bonus)}</p><p><strong>Spell Slots:</strong> ${esc(JSON.stringify(state.character.spell_slots_max||{}))} → ${esc(JSON.stringify(preview.spell_slots_max||{}))}</p></div>`;$('levelNext').textContent='Confirm';$('levelNext').onclick=confirmLevelUp;}catch(error){toast(error.message,true);}}
+  async function confirmLevelUp(){state.character=state.pendingLevel.preview;await save(`Leveled up to ${state.character.level}`);$('levelDialog').close();renderCharacter();toast(`Level ${state.character.level} reached.`);}
+
+  function applyTabSearch(){const q=$('tabSearch').value.trim().toLowerCase();document.querySelectorAll('#tabContent tbody tr,#tabContent .record,#tabContent .panel').forEach(el=>{el.hidden=!!q&&!el.textContent.toLowerCase().includes(q);});}
+  function globalSearch(){const q=$('globalSearch').value.trim().toLowerCase();if(q.length<2){$('globalResults').innerHTML=empty('Type at least two letters','Searches every character tab.');return;}const results=[];const c=state.character;const add=(tab,label,text)=>{if(`${label} ${text}`.toLowerCase().includes(q))results.push({tab,label,text:String(text).slice(0,180)});};(c.inventory||[]).forEach(x=>add('inventory',x.name,x.notes||''));(c.feature_records||[]).forEach(x=>add(x.source==='Feat'?'feats':x.source===c.subclass?'subclass':'features',x.name,x.description||''));(c.spells||[]).forEach(x=>{const n=typeof x==='string'?x:x.name,s=spellRecord(n);add('spells',n,s.description||'');});(c.session_notes||[]).forEach(x=>add('notes',x.title,x.body));Object.entries(c).forEach(([k,v])=>{if(typeof v==='string')add('details',title(k),v);});$('globalResults').innerHTML=results.length?results.map((r,i)=>`<button class="search-result" data-result="${i}"><strong>${esc(r.label)}</strong><span>${esc(TABS.find(x=>x[0]===r.tab)?.[1]||r.tab)} · ${esc(r.text)}</span></button>`).join(''):empty('No results','Try another phrase.');document.querySelectorAll('[data-result]').forEach(b=>b.onclick=()=>{const r=results[Number(b.dataset.result)];state.activeTab=r.tab;$('searchDialog').close();renderTabs();renderActiveTab().then(()=>{$('tabSearch').value=q;applyTabSearch();document.querySelector('#tabContent [data-searchable],#tabContent tbody tr')?.classList.add('search-hit');});});}
+
+  function downloadSheet(){if(!state.character)return;const win=open('','_blank');win.document.write(`<title>${esc(state.character.name)} Character Sheet</title><style>body{font-family:system-ui;padding:24px;color:#231d18}.grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}.box{border:1px solid #777;padding:10px}table{width:100%;border-collapse:collapse;margin-top:16px}td,th{border:1px solid #999;padding:7px;text-align:left}@media print{button{display:none}}</style><h1>${esc(state.character.name)}</h1><p>${esc(state.character.race)} · ${esc(classLine(state.character))}</p><div class="grid">${E.ABILITIES.map(a=>`<div class="box"><small>${title(a)}</small><h2>${state.character.ability_scores[a]} (${signed(state.character.derived.modifiers[a])})</h2></div>`).join('')}</div>${table(['Item','Qty','Notes'],(state.character.inventory||[]).map(i=>[esc(i.name),i.quantity,esc(i.notes||'')]))}<button onclick="print()">Download / Print PDF</button>`);win.document.close();}
+
+  function randomCharacter(){const names=['Aeris Silverhand','Kael Dawnforge','Nyx Nightwind','Vexa Whisperwind'],className=Object.keys(E.CLASSES)[Math.floor(Math.random()*Object.keys(E.CLASSES).length)],scores=Object.fromEntries(E.ABILITIES.map(a=>[a,8+Math.floor(Math.random()*11)]));const info=E.CLASSES[className],c={id:E.uid(),name:names[Math.floor(Math.random()*names.length)],race:'Human',background:'Adventurer',alignment:'True Neutral',character_class:className,classes:[{name:className,level:1,subclass:info.sub===1?info.subs[0]:''}],subclass:info.sub===1?info.subs[0]:'',level:1,ability_scores:scores,base_ability_scores:clone(scores),current_hp:info.die+E.mod(scores.constitution),max_hp:info.die+E.mod(scores.constitution),temporary_hp:0,speed:30,movement:{walk:30,swim:0,fly:0,long_jump:scores.strength,high_jump:Math.max(0,3+E.mod(scores.strength))},experience:0,conditions:[],inventory:[],currency:{cp:0,sp:0,ep:0,gp:0,pp:0},group_funds:{cp:0,sp:0,ep:0,gp:0,pp:0},group_items:{'Bag of Holding':[],'Refridge-A-Bag':[]},feature_records:[],spells:[],prepared_spells:[],spell_metadata:{},spell_slots_max:{},spell_slots_used:{},active_spells:[],saving_throw_proficiencies:[],skill_proficiencies:[],created_at:new Date().toISOString(),general_notes:'',session_notes:[]};return E.recalc(c);}
+
+  function applyPreferences(){const p=JSON.parse(localStorage.getItem('dndPreferences')||'{}');document.body.dataset.theme=p.theme||'midnight';document.documentElement.style.setProperty('--scale',p.scale||1);document.documentElement.style.setProperty('--glass',String((p.opacity||88)/100));if(p.accent)document.documentElement.style.setProperty('--accent',p.accent);if(p.main){document.documentElement.style.setProperty('--main',p.main);document.documentElement.style.setProperty('--surface2',p.main);}document.body.classList.toggle('no-frost',p.frost===false);document.body.classList.toggle('square',p.rounded===false);$('themeControl').value=p.theme||'midnight';$('accentControl').value=p.accent||'';$('mainControl').value=p.main||'';$('scaleControl').value=String(p.scale||1);$('opacityControl').value=p.opacity||88;$('frostControl').checked=p.frost!==false;$('roundedControl').checked=p.rounded!==false;}
+  function colorValue(value){const names={blue:'#6aa8ff',red:'#ff6b7b',yellow:'#f5ca68',green:'#55d6a1',purple:'#a884ff',orange:'#ff9a70',pink:'#ee7dcc',teal:'#54ced2',navy:'#16243b',black:'#10131b',white:'#f5f7ff',gray:'#6e788b',grey:'#6e788b'};if(!value)return'';if(names[value.toLowerCase()])return names[value.toLowerCase()];if(/^#[0-9a-f]{6}$/i.test(value))return value;throw new Error('Use a supported color name or a six-digit hex code beginning with #.');}
+
+  // Public session editor and merge review remain isolated from the private workspace.
+  function renderPublic(){const c=state.publicCharacter;if(!c)return;$('publicCharacterName').textContent=c.name;$('publicSessionStatus').textContent=`Public revision ${state.publicSession?.public_revision||0} · ${state.publicSession?.pending_changes||0} pending changes`;const fields=[['current_hp','Current HP'],['max_hp','Maximum HP'],['temporary_hp','Temporary HP'],['exhaustion','Exhaustion'],['death_save_successes','Death Save Successes'],['death_save_failures','Death Save Failures'],['hit_dice_used','Hit Dice Used'],['experience','Experience']];$('publicQuickFields').innerHTML=fields.map(([k,l])=>field(l,k,c[k]??'','number')).join('')+`<label class="check"><input name="inspiration" type="checkbox" ${c.inspiration?'checked':''}> Inspiration</label>`;$('publicAbilities').innerHTML=E.ABILITIES.map(a=>field(title(a),`ability-${a}`,c.ability_scores?.[a]??10,'number','min="1" max="30"')).join('');const active=new Set(c.conditions||[]);$('publicConditions').innerHTML=CONDITIONS.map(x=>`<label class="check-row"><input data-public-condition="${esc(x)}" type="checkbox" ${active.has(x)?'checked':''}>${x}</label>`).join('');$('publicSpellSlots').innerHTML=Object.keys(c.spell_slots_max||{}).map(l=>field(`Level ${l} Used`,`slot-${l}`,c.spell_slots_used?.[l]||'','number',`min="0" max="${c.spell_slots_max[l]}"`)).join('')||'<p class="muted">No spell slots.</p>';$('publicActiveSpells').innerHTML=table(['Spell','Level','Turns'],(c.active_spells||[]).map((s,i)=>[esc(s.name),esc(s.cast_level||'Unknown'),`<input data-public-active="${i}" type="number" value="${s.turns_remaining||0}">`]));$('publicInventory').innerHTML=table(['Item','Qty','Equipped','Attuned','Notes'],(c.inventory||[]).map((i,n)=>[esc(i.name),`<input data-public-item="${n}" data-key="quantity" type="number" value="${i.quantity??1}">`,`<input data-public-item="${n}" data-key="equipped" type="checkbox" ${i.equipped?'checked':''}>`,`<input data-public-item="${n}" data-key="attuned" type="checkbox" ${i.attuned?'checked':''}>`,`<input data-public-item="${n}" data-key="notes" value="${esc(i.notes||'')}">`]));$('publicCurrency').innerHTML=COINS.map(x=>field(x.toUpperCase(),`coin-${x}`,c.currency?.[x]||'','number')).join('');$('publicGroupFunds').innerHTML=COINS.map(x=>field(x.toUpperCase(),`fund-${x}`,c.group_funds?.[x]||'','number')).join('');$('publicFeatures').innerHTML=table(['Feature','Used','Maximum'],(c.feature_records||[]).filter(r=>r.max_uses).map((r,i)=>[esc(r.name),`<input data-public-feature="${c.feature_records.indexOf(r)}" type="number" value="${r.uses_used||0}">`,r.max_uses]));$('publicNotes').value=c.general_notes||'';$('publicJsonEditor').value=JSON.stringify(c,null,2);}
+  function publicForm(){const c=clone(state.publicCharacter);document.querySelectorAll('#publicQuickFields [name]').forEach(x=>c[x.name]=x.type==='checkbox'?x.checked:Number(x.value||0));c.ability_scores||={};E.ABILITIES.forEach(a=>c.ability_scores[a]=Number(document.querySelector(`[name="ability-${a}"]`).value||10));c.conditions=[...document.querySelectorAll('[data-public-condition]:checked')].map(x=>x.dataset.publicCondition);document.querySelectorAll('[data-public-active]').forEach(x=>c.active_spells[Number(x.dataset.publicActive)].turns_remaining=Number(x.value||0));document.querySelectorAll('[data-public-item]').forEach(x=>{const item=c.inventory[Number(x.dataset.publicItem)];item[x.dataset.key]=x.type==='checkbox'?x.checked:x.type==='number'?Number(x.value||0):x.value;});c.currency||={};c.group_funds||={};COINS.forEach(x=>{c.currency[x]=Number(document.querySelector(`[name="coin-${x}"]`).value||0);c.group_funds[x]=Number(document.querySelector(`[name="fund-${x}"]`).value||0);});document.querySelectorAll('[data-public-feature]').forEach(x=>c.feature_records[Number(x.dataset.publicFeature)].uses_used=Number(x.value||0));c.general_notes=$('publicNotes').value;return E.recalc(c);}
+  async function restorePublic(){if(!state.publicToken)return showPublicLogin();try{const r=await api('publicSession',{publicToken:state.publicToken});state.publicCharacter=r.character;state.publicSession=r.session;showPublic();renderPublic();}catch(e){state.publicToken='';sessionStorage.removeItem(publicStorageKey);showPublicLogin(e.message);}}
+  async function loadShareSessions(){state.shareSessions=await api('listPublicSessions',{characterId:state.character.id});$('shareSessionList').innerHTML=state.shareSessions.length?state.shareSessions.map(s=>`<article class="record"><strong>${s.enabled?'Active':'Closed'} Public Session</strong><p>${esc(s.created_at)} · ${s.pending_changes} pending · ${s.merged_changes} merged</p><div class="section-actions">${button('Review Changes','share-review',s.id)}${s.enabled?button('Disable Access','share-disable',s.id):''}</div></article>`).join(''):empty('No sharing sessions','Create one when a friend needs the character.');bindContentActions($('shareSessionList'));}
+  async function openMerge(id){state.mergeReview=await api('publicMergeReview',{sessionId:id});const cats=Object.keys(state.mergeReview.categories||{});state.mergeCategory=cats[0]||'';$('mergeCategory').innerHTML=cats.map(c=>`<option>${esc(c)}</option>`).join('');renderMerge();$('mergeDialog').showModal();}
+  function renderMerge(){const rows=state.mergeReview?.categories?.[state.mergeCategory]||[];$('mergeEventList').innerHTML=rows.length?rows.map(e=>`<label class="merge-event"><input data-merge-event="${e.id}" type="checkbox"><span><strong>${esc(title(e.path))}</strong><small>${esc(e.editor)} · ${esc(e.created_at)}</small><span>${esc(JSON.stringify(e.before))} → ${esc(JSON.stringify(e.after))}</span></span></label>`).join(''):empty('No pending changes','Everything is already merged.');document.querySelectorAll('[data-merge-event]').forEach(x=>x.onchange=updateMergeCount);$('mergeHistory').innerHTML=(state.mergeReview?.merge_batches||[]).map(b=>`<p>${esc(b.created_at)} · ${(b.event_ids||[]).length} applied</p>`).join('');updateMergeCount();}
+  function mergeIds(){return[...document.querySelectorAll('[data-merge-event]:checked')].map(x=>x.dataset.mergeEvent);}function updateMergeCount(){$('mergeSelectionCount').textContent=`${mergeIds().length} selected`;}
+  function renderMergeConflicts(conflicts){
+    $('mergeConflictBox').innerHTML=(conflicts||[]).map(row=>`<div class="record"><strong>${esc(title(row.path))}</strong><p>Private: ${esc(JSON.stringify(row.private))}</p><p>Public: ${esc(JSON.stringify(row.public))}</p><label>Use for this field<select data-merge-resolution="${esc(row.path)}"><option value="public">Public session change</option><option value="private">Keep private value</option></select></label></div>`).join('');
   }
 
-  function empty() {
-    return $('emptyTemplate').innerHTML;
-  }
+  // Event wiring.
+  $('loginForm').onsubmit=async e=>{e.preventDefault();try{const s=await api('login',{email:$('email').value,password:$('password').value});state.token=s.token;sessionStorage.setItem('dndSession',state.token);$('password').value='';showLibrary();await loadLibrary();}catch(error){showLogin(error.message);}};
+  $('libraryBack').onclick=async()=>{showLibrary();await loadLibrary(state.character?.id||'');};$('menuButton').onclick=()=>$('settingsDialog').showModal();$('globalSearchButton').onclick=()=>{$('globalSearch').value='';$('globalResults').innerHTML=empty('Search the whole character','Enter a feature, spell, item, note, or detail.');$('searchDialog').showModal();setTimeout(()=>$('globalSearch').focus(),50);};$('globalSearch').oninput=globalSearch;$('tabSearch').oninput=()=>{if(['magic-items','class-info','roll20','magic-spells'].includes(state.activeTab)){clearTimeout(state.searchTimer);state.searchTimer=setTimeout(renderActiveTab,350);}else applyTabSearch();};
+  $('librarySearch').oninput=()=>{renderLibrary();renderLibraryPreview();};$('selectAll').onclick=()=>{state.selected=new Set(filteredCharacters().map(c=>c.id));renderLibrary();renderLibraryPreview();};$('clearSelection').onclick=()=>{state.selected.clear();renderLibrary();renderLibraryPreview();};$('openCharacter').onclick=()=>openCharacter();$('downloadCharacter').onclick=async()=>{await selectedCharacter();downloadSheet();};
+  $('newCharacter').onclick=async()=>{const c=randomCharacter();await api('saveCharacter',{character:c,action:'Random character created'});await loadLibrary(c.id);toast('Random character created.');};$('loadCharacter').onclick=()=>$('characterFile').click();$('characterFile').onchange=async e=>{try{const raw=await e.target.files[0].text(),c=E.recalc(JSON.parse(raw));c.id||=E.uid();await api('saveCharacter',{character:c,action:'Character imported from JSON'});await loadLibrary(c.id);toast('Character imported.');}catch(error){toast(error.message,true);}e.target.value='';};$('batchCharacters').onclick=()=>openEditor('Batch Generation','Generate a Batch',`<div class="form-grid">${field('Number of Characters','count',10,'number','min="1" max="250"')}${field('Character Level','level',1,'number','min="1" max="20"')}</div>`,'Generate',async data=>{for(let i=0;i<Math.min(250,Number(data.count||1));i++){let c=randomCharacter();while(c.level<Number(data.level||1))E.applyLevelUp(c,{className:c.character_class,hpMode:'average',asiType:'ability',ability:'constitution',subclass:E.CLASSES[c.character_class].subs[0]},null);await api('saveCharacter',{character:c,action:'Batch character created'});}await loadLibrary();toast('Batch generation complete.');});
+  $('deleteCharacters').onclick=async()=>{if(!state.selected.size||!confirm(`Delete ${state.selected.size} selected character(s)?`))return;await api('deleteCharacters',{characterIds:[...state.selected]});state.selected.clear();state.character=null;await loadLibrary();};$('exportAll').onclick=()=>download('dnd-character-vault.json',JSON.stringify({characters:state.characters},null,2));$('refreshRules').onclick=()=>{state.references={};toast('Reference cache cleared. Catalogues will reload from Drive.');};$('backup').onclick=()=>download('dnd-character-backup.json',JSON.stringify(state.character||state.characters,null,2));
+  $('shareButton').onclick=async()=>{await loadShareSessions();$('shareDialog').showModal();};$('createShareButton').onclick=async()=>{try{const r=await api('createPublicSession',{characterId:state.character.id,pin:$('newSharePin').value});$('newSharePin').value='';$('newShareResult').innerHTML=`<p>Share this URL and PIN:</p><input value="${esc(new URL(`?share=${r.share_token}`,location.href).href)}" readonly>`;await loadShareSessions();}catch(e){toast(e.message,true);}};
+  $('publicLoginForm').onsubmit=async e=>{e.preventDefault();try{const r=await api('publicOpen',{shareToken:state.shareToken,pin:$('publicPin').value,editorName:$('publicEditorName').value});state.publicToken=r.public_token;sessionStorage.setItem(publicStorageKey,state.publicToken);state.publicCharacter=r.character;state.publicSession=r.session;showPublic();renderPublic();}catch(error){showPublicLogin(error.message);}};$('publicSaveButton').onclick=async()=>{try{const c=publicForm(),r=await api('publicSave',{publicToken:state.publicToken,character:c,changeNote:$('publicChangeNote').value});state.publicCharacter=r.character;state.publicSession=r.session;$('publicChangeNote').value='';renderPublic();$('publicSaveStatus').textContent=`${r.changesCreated||0} change-log item(s) saved.`;}catch(e){$('publicSaveStatus').textContent=e.message;}};$('applyPublicJson').onclick=()=>{try{state.publicCharacter=E.recalc(JSON.parse($('publicJsonEditor').value));renderPublic();}catch(e){toast(e.message,true);}};
+  $('mergeCategory').onchange=e=>{state.mergeCategory=e.target.value;renderMerge();};$('selectMergeCategory').onchange=e=>{document.querySelectorAll('[data-merge-event]').forEach(x=>x.checked=e.target.checked);updateMergeCount();};$('mergeSelectedButton').onclick=async()=>{const ids=mergeIds();if(!ids.length)return toast('Select changes to merge.',true);const resolutions=Object.fromEntries([...document.querySelectorAll('[data-merge-resolution]')].map(x=>[x.dataset.mergeResolution,x.value]));try{const result=await api('mergePublicChanges',{sessionId:state.mergeReview.session.id,eventIds:ids,resolutions});if(result.merged===false&&result.conflicts?.length){renderMergeConflicts(result.conflicts);toast('Choose how to resolve each private/public conflict.');return;}$('mergeConflictBox').innerHTML='';await openMerge(state.mergeReview.session.id);state.character=E.recalc(await api('getCharacter',{characterId:state.character.id}));renderCharacter();toast('Selected public changes merged.');}catch(e){toast(e.message,true);}};
+  $('logoutButton').onclick=async()=>{try{await api('logout');}catch{}state.token='';sessionStorage.removeItem('dndSession');$('settingsDialog').close();showLogin();};$('applySettings').onclick=e=>{e.preventDefault();try{const p={theme:$('themeControl').value,accent:colorValue($('accentControl').value.trim()),main:colorValue($('mainControl').value.trim()),scale:Number($('scaleControl').value),opacity:Number($('opacityControl').value),frost:$('frostControl').checked,rounded:$('roundedControl').checked};localStorage.setItem('dndPreferences',JSON.stringify(p));applyPreferences();$('settingsDialog').close();toast('Preferences saved and applied.');}catch(error){toast(error.message,true);}};
+  document.addEventListener('click',async e=>{const b=e.target.closest('[data-action]');if(!b)return;if(b.dataset.action==='share-review')return openMerge(b.dataset.id);if(b.dataset.action==='share-disable'){if(confirm('Disable this public session?')){await api('disablePublicSession',{sessionId:b.dataset.id});await loadShareSessions();}}});
 
-  function sourceLink(record) {
-    return record.url ? `<a href="${escapeHtml(record.url)}" target="_blank" rel="noopener noreferrer">Source</a>` : '—';
-  }
-
-  function weaponRows(character) {
-    const prof = Number(character.derived?.proficiency_bonus || 0);
-    const mods = character.derived?.modifiers || {};
-    return (character.inventory || []).filter(item => item.type === 'weapon').map(item => {
-      const ability = String(item.ability || 'Strength').toLowerCase();
-      const attack = prof + Number(mods[ability] || 0) + Number(item.magic_bonus || 0) + Number(item.attack_bonus_extra || 0);
-      const damage = `${item.damage || '—'}${Number(item.damage_bonus_extra || item.magic_bonus || 0) ? signed(Number(item.damage_bonus_extra || item.magic_bonus || 0)) : ''} ${item.damage_type || ''}`.trim();
-      return [escapeHtml(item.name), signed(attack), escapeHtml(damage), escapeHtml(item.range || '—')];
-    });
-  }
-
-  function renderEquipment(character) {
-    const attacks = table(['Weapon', 'Attack Bonus', 'Damage / Type', 'Range'], weaponRows(character));
-    const equipped = (character.inventory || []).filter(item => item.equipped || item.active);
-    const acRows = equipped.filter(item => item.type === 'armor' || item.type === 'shield' || Number(item.effects?.ac || item.ac_bonus || 0)).map(item => [
-      escapeHtml(item.name), item.equipped ? 'Yes' : 'Active effect', escapeHtml(item.notes || '—')
-    ]);
-    acRows.push(['<strong>Total Armor Class</strong>', '', `<strong>${escapeHtml(character.derived?.armor_class || '—')}</strong>`]);
-    const activeSpells = (character.active_spells || []).map(spell => [escapeHtml(spell.name), escapeHtml(spell.level || 'Unknown'), escapeHtml(spell.turns_remaining ?? '—'), escapeHtml(spell.effects || '—')]);
-    const attuned = (character.inventory || []).filter(item => item.attuned).map(item => [escapeHtml(item.name), escapeHtml(item.notes || '—')]);
-    return `<div class="content-grid">
-      <div><div class="section-heading"><span>Weapon Attacks</span></div>${attacks}</div>
-      <div><div class="section-heading"><span>AC Breakdown</span></div>${table(['Item / Effect', 'Applied', 'Details'], acRows)}</div>
-      <div><div class="section-heading"><span>Active Spells</span></div>${table(['Spell', 'Level', 'Turns Remaining', 'Effects'], activeSpells)}</div>
-      <div><div class="section-heading"><span>Attuned Items</span></div>${table(['Item', 'Effect'], attuned)}</div>
-    </div>`;
-  }
-
-  function renderSpells(character) {
-    const slots = Object.keys(character.spell_slots_max || {}).map(level => [level, character.spell_slots_max[level], character.spell_slots_used?.[level] || 0]);
-    const spellRows = (character.spells || []).map(spell => [escapeHtml(typeof spell === 'string' ? spell : spell.name), escapeHtml(spell.level ?? '—'), escapeHtml(spell.school || '—'), escapeHtml(spell.classes?.join(', ') || '—')]);
-    return `<div class="content-grid">${table(['Slot Level', 'Maximum', 'Used'], slots)}${table(['Spell', 'Level', 'School', 'Classes'], spellRows)}</div>`;
-  }
-
-  function renderInventory(character) {
-    const rows = (character.inventory || []).map(item => [escapeHtml(item.name), escapeHtml(item.quantity ?? 1), escapeHtml(title(item.type || 'Item')), item.equipped ? 'Yes' : '', item.attuned ? 'Yes' : '', escapeHtml(item.notes || '')]);
-    return table(['Item', 'Qty', 'Type', 'Equipped', 'Attuned', 'Notes'], rows);
-  }
-
-  function renderGroupItems(character) {
-    const funds = character.group_funds || {};
-    const fundHtml = `<div class="panel"><h3>Group Funds</h3><div class="pills">${['cp','sp','ep','gp','pp'].map(coin => `<span class="pill">${coin.toUpperCase()} ${escapeHtml(funds[coin] || 0)}</span>`).join('')}</div></div>`;
-    const groups = Object.entries(character.group_items || {}).map(([name, items]) => `<div class="panel"><h3>${escapeHtml(name)}</h3>${table(['Item','Qty','Notes'], items.map(item => [escapeHtml(item.item), escapeHtml(item.qty), escapeHtml(item.notes || '')]))}</div>`).join('');
-    return `<div class="content-grid">${fundHtml}${groups || empty()}</div>`;
-  }
-
-  function renderRecords(records) {
-    if (!records.length) return empty();
-    return `<div class="cards">${records.map(record => `<article class="record"><strong>${escapeHtml(record.name)}</strong><p>${escapeHtml(record.description || '')}</p><div class="pills"><span class="pill">${escapeHtml(record.source || 'Feature')}</span>${record.max_uses ? `<span class="pill">${escapeHtml(record.max_uses - (record.uses_used || 0))}/${escapeHtml(record.max_uses)} remaining</span>` : ''}</div></article>`).join('')}</div>`;
-  }
-
-  async function loadReference(kind) {
-    if (!state.references[kind]) state.references[kind] = await api('referenceData', {kind, page: 1, pageSize: 1000});
-    return state.references[kind];
-  }
-
-  async function renderReferenceTab(kind) {
-    const result = await loadReference(kind);
-    if (kind === 'magic_items') {
-      const order = ['Common', 'Uncommon', 'Rare', 'Very Rare', 'Legendary', 'Artifact', 'Varies', 'Unspecified'];
-      const groups = result.records.reduce((map, item) => {
-        const rarity = item.rarity || 'Unspecified';
-        (map[rarity] ||= []).push(item);
-        return map;
-      }, {});
-      const rarities = Object.keys(groups).sort((a, b) => (order.indexOf(a) < 0 ? 99 : order.indexOf(a)) - (order.indexOf(b) < 0 ? 99 : order.indexOf(b)) || a.localeCompare(b));
-      state.activeRarity = rarities.includes(state.activeRarity) ? state.activeRarity : rarities[0];
-      return `<div class="subtab-bar" aria-label="Magic item rarities">${rarities.map(rarity => `<button class="subtab-button ${rarity === state.activeRarity ? 'active' : ''}" data-rarity="${escapeHtml(rarity)}" type="button">${escapeHtml(rarity)} <span>${groups[rarity].length}</span></button>`).join('')}</div>
-        ${rarities.map(rarity => `<div data-rarity-panel="${escapeHtml(rarity)}" ${rarity === state.activeRarity ? '' : 'hidden'}>${table(['Magic Item', 'Type', 'Attunement', 'Summary', 'Link'], groups[rarity].map(item => [escapeHtml(item.name), escapeHtml(item.type || '—'), item.requires_attunement ? 'Required' : 'No', escapeHtml(item.description || ''), sourceLink(item)]))}</div>`).join('')}`;
-    }
-    if (kind === 'spells') {
-      return table(['Spell', 'Level', 'School', 'Classes', 'Summary', 'Link'], result.records.map(spell => [
-        escapeHtml(spell.name), escapeHtml(spell.level ?? '—'), escapeHtml(spell.school || '—'), escapeHtml((spell.classes || []).join(', ')), escapeHtml(spell.description || ''), sourceLink(spell)
-      ]));
-    }
-    if (kind === 'class_info') {
-      return table(['Class / Subclass', 'Source', 'Status', 'Summary', 'Link'], result.records.map(record => [
-        escapeHtml(record.name), escapeHtml(record.source || '—'), escapeHtml(title(String(record.status || '').replaceAll('_', ' '))), escapeHtml(record.description || ''), sourceLink(record)
-      ]));
-    }
-    return table(['Topic', 'Category', 'Source', 'Summary', 'Link'], result.records.map(record => [
-      escapeHtml(record.name), escapeHtml(title(String(record.category || 'Rules').replaceAll('_', ' '))), escapeHtml(record.source || '—'), escapeHtml(record.description || ''), sourceLink(record)
-    ]));
-  }
-
-  function renderDetails(character) {
-    const scores = character.derived?.skills || {};
-    const conditions = new Set(character.conditions || []);
-    return `<div class="content-grid">
-      <div class="panel"><h3>Play Tracking</h3><div class="pills"><span class="pill">HP ${escapeHtml(character.current_hp)} / ${escapeHtml(character.max_hp)}</span><span class="pill">Temp HP ${escapeHtml(character.temporary_hp || 0)}</span><span class="pill">Hit Dice ${escapeHtml(character.level - (character.hit_dice_used || 0))} / ${escapeHtml(character.level)}</span><span class="pill">Exhaustion ${escapeHtml(character.exhaustion || 0)}</span><span class="pill">XP ${escapeHtml(character.experience || 0)}</span></div></div>
-      <div class="panel"><h3>Conditions</h3><div class="check-grid">${CONDITIONS.map(condition => `<label class="check-row"><input type="checkbox" disabled ${conditions.has(condition) ? 'checked' : ''}>${condition}</label>`).join('')}</div></div>
-      <div class="panel"><h3>Skills</h3>${table(['Skill','Bonus'], Object.entries(scores).map(([skill, bonus]) => [escapeHtml(skill), signed(bonus)]))}</div>
-      <div class="panel"><h3>Appearance</h3><p class="note">${escapeHtml([character.age && `Age: ${character.age}`, character.height && `Height: ${character.height}`, character.eyes && `Eyes: ${character.eyes}`, character.appearance].filter(Boolean).join('\n') || 'No appearance details entered.')}</p></div>
-    </div>`;
-  }
-
-  function renderPublicEditor() {
-    const character = state.publicCharacter;
-    if (!character) return;
-    $('publicCharacterName').textContent = character.name;
-    $('publicSessionStatus').textContent = `Public revision ${state.publicSession?.public_revision || 0} · ${state.publicSession?.pending_changes || 0} pending changes`;
-    const fields = [
-      ['current_hp', 'Current HP', 'number'], ['max_hp', 'Maximum HP', 'number'], ['temporary_hp', 'Temporary HP', 'number'],
-      ['exhaustion', 'Exhaustion', 'number'], ['death_save_successes', 'Death Save Successes', 'number'],
-      ['death_save_failures', 'Death Save Failures', 'number'], ['hit_dice_used', 'Hit Dice Used', 'number'],
-      ['experience', 'Experience', 'number'], ['inspiration', 'Inspiration', 'checkbox'],
-    ];
-    $('publicQuickFields').innerHTML = fields.map(([key, label, type]) => `<label>${label}<input data-public-field="${key}" type="${type}" ${type === 'checkbox' ? (character[key] ? 'checked' : '') : `value="${escapeHtml(character[key] ?? '')}"`}></label>`).join('');
-    $('publicAbilities').innerHTML = ABILITIES.map(ability => `<label>${title(ability)}<input type="number" min="1" max="30" data-public-ability="${ability}" value="${escapeHtml(character.ability_scores?.[ability] ?? 10)}"></label>`).join('');
-    const activeConditions = new Set(character.conditions || []);
-    $('publicConditions').innerHTML = CONDITIONS.map(condition => `<label class="check-row"><input type="checkbox" data-public-condition="${escapeHtml(condition)}" ${activeConditions.has(condition) ? 'checked' : ''}>${escapeHtml(condition)}</label>`).join('');
-    const maximumSlots = character.spell_slots_max || {};
-    $('publicSpellSlots').innerHTML = Object.keys(maximumSlots).length ? Object.keys(maximumSlots).map(level => `<label>Level ${escapeHtml(level)} Used<input type="number" min="0" max="${escapeHtml(maximumSlots[level])}" data-public-slot="${escapeHtml(level)}" value="${escapeHtml(character.spell_slots_used?.[level] || 0)}"><small>Maximum ${escapeHtml(maximumSlots[level])}</small></label>`).join('') : '<p class="muted">This character has no spell slots.</p>';
-    $('publicActiveSpells').innerHTML = (character.active_spells || []).length ? table(['Spell', 'Level', 'Turns Remaining', 'Effects'], character.active_spells.map((spell, index) => [
-      escapeHtml(spell.name), escapeHtml(spell.level || 'Unknown'), `<input class="table-input small" type="number" min="0" data-public-active-spell="${index}" value="${escapeHtml(spell.turns_remaining ?? 0)}">`, escapeHtml(spell.effects || '—')
-    ])) : '<p class="muted">No active spells are recorded.</p>';
-    $('publicInventory').innerHTML = (character.inventory || []).length ? table(['Item', 'Quantity', 'Equipped', 'Attuned', 'Notes'], character.inventory.map((item, index) => [
-      escapeHtml(item.name),
-      `<input class="table-input small" type="number" min="0" data-public-inventory="${index}" data-item-key="quantity" value="${escapeHtml(item.quantity ?? 1)}">`,
-      `<input type="checkbox" data-public-inventory="${index}" data-item-key="equipped" ${item.equipped ? 'checked' : ''}>`,
-      `<input type="checkbox" data-public-inventory="${index}" data-item-key="attuned" ${item.attuned ? 'checked' : ''}>`,
-      `<input class="table-input" type="text" data-public-inventory="${index}" data-item-key="notes" value="${escapeHtml(item.notes || '')}">`,
-    ])) : empty();
-    $('publicCurrency').innerHTML = ['cp','sp','ep','gp','pp'].map(coin => `<label>${coin.toUpperCase()}<input type="number" min="0" data-public-currency="${coin}" value="${escapeHtml(character.currency?.[coin] || 0)}"></label>`).join('');
-    $('publicGroupFunds').innerHTML = ['cp','sp','ep','gp','pp'].map(coin => `<label>${coin.toUpperCase()}<input type="number" min="0" data-public-group-fund="${coin}" value="${escapeHtml(character.group_funds?.[coin] || 0)}"></label>`).join('');
-    const usableFeatures = (character.feature_records || []).filter(feature => Number(feature.max_uses || 0) > 0);
-    $('publicFeatures').innerHTML = usableFeatures.length ? table(['Feature', 'Used', 'Maximum', 'Recharge'], usableFeatures.map(feature => {
-      const index = character.feature_records.indexOf(feature);
-      return [escapeHtml(feature.name), `<input class="table-input small" type="number" min="0" max="${escapeHtml(feature.max_uses)}" data-public-feature="${index}" value="${escapeHtml(feature.uses_used || 0)}">`, escapeHtml(feature.max_uses), escapeHtml(feature.recharge || '—')];
-    })) : '<p class="muted">No limited-use features are recorded.</p>';
-    $('publicNotes').value = character.general_notes || '';
-    $('publicJsonEditor').value = JSON.stringify(character, null, 2);
-  }
-
-  function applyPublicForm() {
-    const character = dndPublicClone(state.publicCharacter);
-    document.querySelectorAll('[data-public-field]').forEach(input => {
-      character[input.dataset.publicField] = input.type === 'checkbox' ? input.checked : Number(input.value || 0);
-    });
-    character.ability_scores = character.ability_scores || {};
-    document.querySelectorAll('[data-public-ability]').forEach(input => { character.ability_scores[input.dataset.publicAbility] = Number(input.value || 10); });
-    character.conditions = [...document.querySelectorAll('[data-public-condition]:checked')].map(input => input.dataset.publicCondition);
-    character.spell_slots_used = character.spell_slots_used || {};
-    document.querySelectorAll('[data-public-slot]').forEach(input => { character.spell_slots_used[input.dataset.publicSlot] = Number(input.value || 0); });
-    document.querySelectorAll('[data-public-active-spell]').forEach(input => {
-      const spell = character.active_spells?.[Number(input.dataset.publicActiveSpell)];
-      if (spell) spell.turns_remaining = Number(input.value || 0);
-    });
-    document.querySelectorAll('[data-public-inventory]').forEach(input => {
-      const item = character.inventory?.[Number(input.dataset.publicInventory)];
-      if (!item) return;
-      const key = input.dataset.itemKey;
-      item[key] = input.type === 'checkbox' ? input.checked : input.type === 'number' ? Number(input.value || 0) : input.value;
-    });
-    document.querySelectorAll('[data-public-feature]').forEach(input => {
-      const feature = character.feature_records?.[Number(input.dataset.publicFeature)];
-      if (feature) feature.uses_used = Number(input.value || 0);
-    });
-    character.currency = character.currency || {};
-    document.querySelectorAll('[data-public-currency]').forEach(input => { character.currency[input.dataset.publicCurrency] = Number(input.value || 0); });
-    character.group_funds = character.group_funds || {};
-    document.querySelectorAll('[data-public-group-fund]').forEach(input => { character.group_funds[input.dataset.publicGroupFund] = Number(input.value || 0); });
-    character.general_notes = $('publicNotes').value;
-    state.publicCharacter = character;
-    $('publicJsonEditor').value = JSON.stringify(character, null, 2);
-    return character;
-  }
-
-  function dndPublicClone(value) {
-    return JSON.parse(JSON.stringify(value));
-  }
-
-  async function savePublicCharacter() {
-    $('publicSaveStatus').classList.remove('error');
-    $('publicSaveStatus').textContent = 'Saving changes…';
-    try {
-      const character = applyPublicForm();
-      const result = await api('publicSave', {publicToken: state.publicToken, character, changeNote: $('publicChangeNote').value});
-      state.publicCharacter = result.character;
-      state.publicSession = result.session;
-      $('publicChangeNote').value = '';
-      renderPublicEditor();
-      $('publicSaveStatus').textContent = result.changesCreated ? `${result.changesCreated} change-log item${result.changesCreated === 1 ? '' : 's'} saved.` : 'No changes to save.';
-    } catch (error) {
-      $('publicSaveStatus').textContent = error.message;
-      $('publicSaveStatus').classList.add('error');
-    }
-  }
-
-  async function restorePublicSession() {
-    if (!state.publicToken) return showPublicLogin();
-    try {
-      const result = await api('publicSession', {publicToken: state.publicToken});
-      state.publicCharacter = result.character;
-      state.publicSession = result.session;
-      showPublicView();
-      renderPublicEditor();
-    } catch (error) {
-      state.publicToken = '';
-      sessionStorage.removeItem(publicStorageKey);
-      showPublicLogin(error.message);
-    }
-  }
-
-  async function renderActiveTab() {
-    const character = state.character;
-    if (!character) return;
-    const records = character.feature_records || [];
-    const views = {
-      'equipment': () => renderEquipment(character),
-      'spells': () => renderSpells(character),
-      'inventory': () => renderInventory(character),
-      'group-items': () => renderGroupItems(character),
-      'features': () => renderRecords(records.filter(record => record.source !== 'Feat' && record.source !== character.subclass)),
-      'subclass': () => renderRecords(records.filter(record => record.source === character.subclass || record.source === 'Order of the Lycan' || record.source === 'Blood Curse')),
-      'feats': () => renderRecords(records.filter(record => record.source === 'Feat')),
-      'notes': () => `<div class="panel"><p class="note">${escapeHtml(character.general_notes || 'No notes entered.')}</p></div>`,
-      'details': () => renderDetails(character),
-      'magic-items': () => renderReferenceTab('magic_items'),
-      'class-info': () => renderReferenceTab('class_info'),
-      'roll20': () => renderReferenceTab('equipment_rules'),
-      'magic-spells': () => renderReferenceTab('spells'),
-      'change-log': () => `<div class="panel"><p class="note">Created: ${escapeHtml(character.created_at || '—')}\nUpdated: ${escapeHtml(character.updated_at || '—')}\nImport source: ${escapeHtml(character.import_source || 'Manual')}</p></div>`,
-    };
-    $('tabContent').innerHTML = '<div class="empty"><strong>Loading</strong><span>Reading the Drive-backed catalogue…</span></div>';
-    try { $('tabContent').innerHTML = await (views[state.activeTab] || (() => empty()))(); }
-    catch (error) { $('tabContent').innerHTML = `<div class="empty"><strong>Unable to load this section</strong><span>${escapeHtml(error.message)}</span></div>`; }
-    bindRarityTabs();
-    applySearch();
-  }
-
-  function bindRarityTabs() {
-    document.querySelectorAll('[data-rarity]').forEach(button => button.addEventListener('click', () => {
-      state.activeRarity = button.dataset.rarity;
-      document.querySelectorAll('[data-rarity]').forEach(item => item.classList.toggle('active', item === button));
-      document.querySelectorAll('[data-rarity-panel]').forEach(panel => { panel.hidden = panel.dataset.rarityPanel !== state.activeRarity; });
-    }));
-  }
-
-  function applySearch() {
-    const query = $('globalSearch').value.trim().toLowerCase();
-    document.querySelectorAll('#tabContent tr, #tabContent .record, #tabContent .panel').forEach(element => {
-      element.hidden = Boolean(query) && !element.textContent.toLowerCase().includes(query);
-    });
-  }
-
-  $('loginForm').addEventListener('submit', async event => {
-    event.preventDefault();
-    $('loginError').textContent = '';
-    try {
-      const session = await api('login', {email: $('email').value, password: $('password').value});
-      state.token = session.token;
-      sessionStorage.setItem('dndSession', state.token);
-      $('password').value = '';
-      showVault();
-      await loadLibrary();
-    } catch (error) { showLogin(error.message); }
-  });
-
-  $('logoutButton').addEventListener('click', async () => {
-    try { await api('logout'); } catch (error) { /* local logout still proceeds */ }
-    state.token = '';
-    state.character = null;
-    sessionStorage.removeItem('dndSession');
-    showLogin();
-  });
-  $('globalSearch').addEventListener('input', applySearch);
-  $('menuButton').addEventListener('click', () => $('settingsDialog').showModal());
-  $('shareButton').addEventListener('click', async () => {
-    $('newShareResult').classList.add('hidden');
-    await loadShareSessions();
-    $('shareDialog').showModal();
-  });
-  $('createShareButton').addEventListener('click', async () => {
-    const pin = $('newSharePin').value;
-    if (!state.character) return;
-    try {
-      const result = await api('createPublicSession', {characterId: state.character.id, pin});
-      const url = publicShareUrl(result.shareToken);
-      $('newShareResult').innerHTML = `<strong>Public session enabled</strong><p>Share this link and the PIN separately. The link is shown only now.</p><div class="copy-row"><input id="createdShareUrl" value="${escapeHtml(url)}" readonly><button id="copyShareUrl" class="subtle" type="button">Copy Link</button></div>`;
-      $('newShareResult').classList.remove('hidden');
-      $('newSharePin').value = '';
-      $('copyShareUrl').addEventListener('click', async () => {
-        await navigator.clipboard.writeText(url);
-        $('copyShareUrl').textContent = 'Copied';
-      });
-      await loadShareSessions();
-    } catch (error) {
-      $('newShareResult').innerHTML = `<span class="error">${escapeHtml(error.message)}</span>`;
-      $('newShareResult').classList.remove('hidden');
-    }
-  });
-  $('mergeCategory').addEventListener('change', event => {
-    state.mergeCategory = event.target.value;
-    $('mergeConflictBox').classList.add('hidden');
-    $('mergeSelectedButton').textContent = 'Review & Merge Selected';
-    renderMergeEvents();
-  });
-  $('selectMergeCategory').addEventListener('change', event => {
-    document.querySelectorAll('[data-merge-event]').forEach(input => { input.checked = event.target.checked; });
-    updateMergeCount();
-  });
-  $('mergeSelectedButton').addEventListener('click', async () => {
-    const eventIds = selectedMergeIds();
-    if (!eventIds.length) return alert('Select at least one pending change.');
-    const resolutions = {};
-    document.querySelectorAll('[data-conflict-path]').forEach(row => {
-      const selected = row.querySelector('input:checked');
-      if (selected) resolutions[row.dataset.conflictPath] = selected.value;
-    });
-    if (!confirm(`Merge ${eventIds.length} selected change${eventIds.length === 1 ? '' : 's'} into the private character?`)) return;
-    try {
-      const result = await api('mergePublicChanges', {sessionId: state.mergeReview.session.id, eventIds, resolutions});
-      if (!result.merged) {
-        renderMergeConflicts(result.conflicts || []);
-        return;
-      }
-      $('mergeSelectedButton').textContent = 'Review & Merge Selected';
-      $('mergeConflictBox').classList.add('hidden');
-      await selectCharacter(state.character.id);
-      await loadShareSessions();
-      await openMergeReview(state.mergeReview.session.id);
-      alert(`Merge complete. ${result.remaining_changes} pending change${result.remaining_changes === 1 ? '' : 's'} remain.`);
-    } catch (error) { alert(error.message); }
-  });
-  $('publicLoginForm').addEventListener('submit', async event => {
-    event.preventDefault();
-    $('publicLoginError').textContent = '';
-    try {
-      const result = await api('publicOpen', {shareToken: state.shareToken, pin: $('publicPin').value, editorName: $('publicEditorName').value});
-      state.publicToken = result.publicToken;
-      state.publicCharacter = result.character;
-      state.publicSession = result.session;
-      sessionStorage.setItem(publicStorageKey, state.publicToken);
-      $('publicPin').value = '';
-      showPublicView();
-      renderPublicEditor();
-    } catch (error) { showPublicLogin(error.message); }
-  });
-  $('publicSaveButton').addEventListener('click', savePublicCharacter);
-  $('applyPublicJson').addEventListener('click', () => {
-    try {
-      const parsed = JSON.parse($('publicJsonEditor').value);
-      if (parsed.id !== state.publicCharacter.id) throw new Error('The character ID cannot be changed.');
-      state.publicCharacter = parsed;
-      renderPublicEditor();
-      $('publicSaveStatus').classList.remove('error');
-      $('publicSaveStatus').textContent = 'JSON applied to the form. Save to record the changes.';
-    } catch (error) {
-      $('publicSaveStatus').textContent = `Invalid character JSON: ${error.message}`;
-      $('publicSaveStatus').classList.add('error');
-    }
-  });
-  $('opacityControl').addEventListener('input', event => document.documentElement.style.setProperty('--glass-opacity', Number(event.target.value) / 100));
-  $('lightMode').addEventListener('change', event => document.body.classList.toggle('light', event.target.checked));
-
-  async function restoreSession() {
-    if (!state.token) return showLogin();
-    try {
-      await api('session');
-      showVault();
-      await loadLibrary();
-    } catch (error) {
-      state.token = '';
-      sessionStorage.removeItem('dndSession');
-      showLogin('Your session expired. Please sign in again.');
-    }
-  }
-  if (state.shareToken) restorePublicSession();
-  else restoreSession();
+  async function boot(){applyPreferences();const demoRequested=new URLSearchParams(location.search).has('demo')&&['127.0.0.1','localhost'].includes(location.hostname);if(demoRequested){state.demo=true;state.demoStore=await fetch('preview-data.json').then(r=>r.json());showLibrary();await loadLibrary();return;}if(shareToken)return restorePublic();if(!state.token)return showLogin();try{await api('session');showLibrary();await loadLibrary();}catch(error){state.token='';sessionStorage.removeItem('dndSession');showLogin(error.message);}}
+  boot();
 })();

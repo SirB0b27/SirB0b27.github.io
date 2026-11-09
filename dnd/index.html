@@ -8,144 +8,70 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="ambient ambient-one"></div>
-  <div class="ambient ambient-two"></div>
-  <header class="topbar glass">
-    <a class="brand" href="../" aria-label="Return to the main site">
-      <span class="brand-mark">20</span>
-      <span><strong>D&D Character Vault</strong><small>Secure, Drive-backed character workspace</small></span>
-    </a>
-    <div class="top-actions">
-      <label class="global-search" for="globalSearch">
-        <span aria-hidden="true">⌕</span>
-        <input id="globalSearch" type="search" placeholder="Search this character" autocomplete="off">
-      </label>
-      <button id="shareButton" class="subtle hidden" type="button">Share / Merge</button>
-      <button id="menuButton" class="icon-button" type="button" aria-label="Open settings">☰</button>
+  <div class="ambient one"></div><div class="ambient two"></div>
+  <header id="appBar" class="app-bar glass">
+    <button id="libraryBack" class="button ghost hidden" type="button">← Library</button>
+    <a class="brand" href="../" aria-label="Return to workspace home"><span class="d20">20</span><span><strong>D&D Character Vault</strong><small>Build, play, and safely preserve every character</small></span></a>
+    <div class="app-actions">
+      <button id="globalSearchButton" class="icon-button hidden" type="button" aria-label="Search everything">⌕</button>
+      <button id="shareButton" class="button ghost hidden" type="button">Share</button>
+      <button id="menuButton" class="icon-button" type="button" aria-label="Open menu">☰</button>
     </div>
   </header>
 
-  <main>
-    <section id="loginView" class="auth-shell">
-      <form id="loginForm" class="login-card glass">
-        <p class="eyebrow">Administrator access</p>
-        <h1>Open the vault</h1>
-        <p class="muted">Character data stays private in Google Drive and is available only after server verification.</p>
-        <label>Email<input id="email" name="email" type="email" autocomplete="username" required></label>
-        <label>Password<input id="password" name="password" type="password" autocomplete="current-password" minlength="12" required></label>
-        <button class="primary" type="submit">Sign in</button>
-        <p id="loginError" class="error" role="alert"></p>
+  <main id="main">
+    <section id="loginView" class="auth-view">
+      <form id="loginForm" class="auth-card glass">
+        <p class="eyebrow">Administrator Access</p><h1>Open the vault</h1>
+        <p class="muted">Your private characters are verified by the server and stored in Google Drive.</p>
+        <label>Email<input id="email" type="email" autocomplete="username" required></label>
+        <label>Password<input id="password" type="password" autocomplete="current-password" minlength="12" required></label>
+        <button class="button primary" type="submit">Sign In</button><p id="loginError" class="error" role="alert"></p>
       </form>
     </section>
 
-    <section id="publicLoginView" class="auth-shell hidden">
-      <form id="publicLoginForm" class="login-card glass">
-        <p class="eyebrow">Shared character session</p>
-        <h1>Take control for this session</h1>
-        <p class="muted">Your edits stay in a separate public copy until the administrator reviews and merges them.</p>
-        <label>Your name<input id="publicEditorName" type="text" maxlength="80" autocomplete="nickname" required></label>
-        <label>Session PIN<input id="publicPin" type="password" minlength="4" maxlength="32" inputmode="numeric" required></label>
-        <button class="primary" type="submit">Open Character</button>
-        <p id="publicLoginError" class="error" role="alert"></p>
-      </form>
-    </section>
-
-    <section id="publicView" class="public-shell hidden">
-      <section class="public-banner glass">
-        <div><p class="eyebrow">Public session copy</p><h1 id="publicCharacterName">Character</h1><p id="publicSessionStatus" class="muted"></p></div>
-        <button id="publicSaveButton" class="primary" type="button">Save Session Changes</button>
-      </section>
-      <div id="publicSaveStatus" class="save-status" role="status"></div>
-      <section class="public-editor glass">
-        <div class="section-heading"><span>Session Controls</span><span class="badge">Editable</span></div>
-        <div id="publicQuickFields" class="quick-fields"></div>
-        <label class="wide-field">Change note<input id="publicChangeNote" type="text" maxlength="500" placeholder="Optional: damage, short rest, used potion…"></label>
-        <div class="section-heading public-section-heading"><span>Ability Scores</span></div>
-        <div id="publicAbilities" class="quick-fields"></div>
-        <div class="section-heading public-section-heading"><span>Conditions</span></div>
-        <div id="publicConditions" class="check-grid"></div>
-        <div class="section-heading public-section-heading"><span>Spell Slots</span></div>
-        <div id="publicSpellSlots" class="quick-fields"></div>
-        <div class="section-heading public-section-heading"><span>Active Spells</span></div>
-        <div id="publicActiveSpells"></div>
-        <div class="section-heading public-section-heading"><span>Inventory & Item Uses</span></div>
-        <div id="publicInventory"></div>
-        <div class="section-heading public-section-heading"><span>Currency</span></div>
-        <div id="publicCurrency" class="quick-fields"></div>
-        <div class="section-heading public-section-heading"><span>Group Funds</span></div>
-        <div id="publicGroupFunds" class="quick-fields"></div>
-        <div class="section-heading public-section-heading"><span>Features & Resources</span></div>
-        <div id="publicFeatures"></div>
-        <label class="wide-field">General Notes<textarea id="publicNotes" rows="5"></textarea></label>
-        <details class="advanced-editor">
-          <summary>Advanced: edit complete character data</summary>
-          <p class="muted">This JSON editor exposes every character field. Invalid JSON cannot be saved.</p>
-          <textarea id="publicJsonEditor" rows="22" spellcheck="false"></textarea>
-          <button id="applyPublicJson" class="subtle" type="button">Apply JSON to Form</button>
-        </details>
-      </section>
-    </section>
-
-    <section id="vaultView" class="vault hidden" aria-live="polite">
-      <aside class="library glass">
-        <div class="section-heading"><span>Characters</span><span id="characterCount" class="badge">0</span></div>
+    <section id="libraryView" class="library-view hidden">
+      <aside class="library-tools glass">
+        <p class="eyebrow">Create & Load</p>
+        <div class="button-pair"><button id="newCharacter" class="button primary" type="button">＋ New Random</button><button id="loadCharacter" class="button" type="button">⇩ Load Character</button></div>
+        <button id="batchCharacters" class="button full" type="button">Generate a Batch</button>
+        <div class="section-label"><span>Character Library</span><span id="characterCount" class="badge">0</span></div>
+        <input id="librarySearch" type="search" placeholder="Search characters">
+        <div class="library-selection"><small>Ctrl/Shift-click for multiple</small><span><button id="selectAll" class="text-button" type="button">Select All</button><button id="clearSelection" class="text-button" type="button">Clear</button></span></div>
         <div id="characterList" class="character-list"></div>
-        <button id="logoutButton" class="subtle full" type="button">Sign out</button>
+        <div class="library-actions"><button id="openCharacter" class="button primary" type="button">Open Character</button><button id="downloadCharacter" class="button" type="button">Download Sheet</button></div>
+        <button id="deleteCharacters" class="button danger full" type="button">Delete Selected</button>
+        <div class="button-triple"><button id="exportAll" class="button" type="button">Export All</button><button id="refreshRules" class="button" type="button">Refresh Rules</button><button id="backup" class="button" type="button">Backup</button></div>
+        <small id="libraryStatus" class="status"></small>
       </aside>
+      <section id="libraryPreview" class="library-preview glass"></section>
+    </section>
 
-      <div class="workspace">
-        <section id="characterHeader" class="character-header glass"></section>
-        <nav id="tabBar" class="tab-bar" aria-label="Character sections"></nav>
-        <section class="content-card glass">
-          <div id="tabContent"></div>
+    <section id="characterView" class="character-view hidden">
+      <header id="characterHeader" class="character-banner glass"></header>
+      <div class="character-body">
+        <aside id="playSheet" class="play-sheet glass"></aside>
+        <section class="sheet-workspace">
+          <nav id="tabBar" class="tab-bar" aria-label="Character sections"></nav>
+          <div id="tabTools" class="tab-tools"><label class="search-field"><span>⌕</span><input id="tabSearch" type="search" placeholder="Search this tab"></label></div>
+          <section id="tabContent" class="tab-content glass"></section>
         </section>
       </div>
     </section>
+
+    <section id="publicLoginView" class="auth-view hidden"><form id="publicLoginForm" class="auth-card glass"><p class="eyebrow">Shared Character Session</p><h1>Take control for this session</h1><p class="muted">Changes stay in a separate copy until the administrator merges them.</p><label>Your Name<input id="publicEditorName" required maxlength="80"></label><label>Session PIN<input id="publicPin" type="password" required minlength="4" maxlength="32"></label><button class="button primary" type="submit">Open Character</button><p id="publicLoginError" class="error"></p></form></section>
+    <section id="publicView" class="public-view hidden"><header class="public-head glass"><div><p class="eyebrow">Public Session Copy</p><h1 id="publicCharacterName">Character</h1><p id="publicSessionStatus" class="muted"></p></div><button id="publicSaveButton" class="button primary">Save Session Changes</button></header><p id="publicSaveStatus" class="status"></p><section class="public-editor glass"><div id="publicQuickFields" class="form-grid"></div><label>Change Note<input id="publicChangeNote" placeholder="Optional: damage, short rest, used potion…"></label><h3>Ability Scores</h3><div id="publicAbilities" class="form-grid"></div><h3>Conditions</h3><div id="publicConditions" class="check-grid"></div><h3>Spell Slots</h3><div id="publicSpellSlots" class="form-grid"></div><h3>Active Spells</h3><div id="publicActiveSpells"></div><h3>Inventory & Item Uses</h3><div id="publicInventory"></div><h3>Currency</h3><div id="publicCurrency" class="form-grid"></div><h3>Group Funds</h3><div id="publicGroupFunds" class="form-grid"></div><h3>Features & Resources</h3><div id="publicFeatures"></div><h3>General Notes</h3><textarea id="publicNotes" rows="6"></textarea><details><summary>Advanced Character Data</summary><textarea id="publicJsonEditor" rows="20" spellcheck="false"></textarea><button id="applyPublicJson" class="button" type="button">Apply JSON</button></details></section></section>
   </main>
 
-  <dialog id="shareDialog" class="settings share-dialog glass">
-    <form method="dialog">
-      <div class="section-heading"><span>Public Character Control</span><button class="icon-button" value="close" aria-label="Close">×</button></div>
-      <p class="muted">Create an isolated session copy. Public edits never touch the private character until you approve a merge.</p>
-      <label>New session PIN<input id="newSharePin" type="password" minlength="4" maxlength="32" placeholder="4–32 characters"></label>
-      <button id="createShareButton" class="primary full" type="button">Enable New Public Session</button>
-      <div id="newShareResult" class="share-result hidden"></div>
-      <div class="section-heading public-section-heading"><span>Session History</span></div>
-      <div id="shareSessionList" class="session-list"></div>
-    </form>
-  </dialog>
+  <dialog id="editorDialog" class="modal glass"><form id="editorForm" method="dialog"><header><div><p id="editorEyebrow" class="eyebrow"></p><h2 id="editorTitle"></h2></div><button class="icon-button" value="cancel" aria-label="Close">×</button></header><div id="editorBody"></div><footer><button class="button" value="cancel">Cancel</button><button id="editorConfirm" class="button primary" value="default">Save</button></footer></form></dialog>
+  <dialog id="levelDialog" class="modal wide glass"><form id="levelForm" method="dialog"><header><div><p class="eyebrow">Character Advancement</p><h2>Level Up</h2></div><button class="icon-button" value="cancel">×</button></header><div id="levelBody"></div><footer><button class="button" value="cancel">Cancel</button><button id="levelNext" class="button primary" type="button">Review Changes</button></footer></form></dialog>
+  <dialog id="searchDialog" class="modal wide glass"><form method="dialog"><header><div><p class="eyebrow">Global Search</p><h2>Find Anything</h2></div><button class="icon-button" value="cancel">×</button></header><label class="search-field large"><span>⌕</span><input id="globalSearch" type="search" placeholder="Search every tab and reference catalogue"></label><div id="globalResults" class="search-results"></div></form></dialog>
+  <dialog id="settingsDialog" class="modal glass"><form method="dialog"><header><div><p class="eyebrow">Appearance & Accessibility</p><h2>Preferences</h2></div><button class="icon-button" value="cancel">×</button></header><div class="form-grid"><label>Theme<select id="themeControl"><option value="midnight">Midnight Blue</option><option value="vault">Vault Purple</option><option value="ember">Ember Dark</option><option value="frost">Frost Light</option><option value="parchment">Parchment Light</option></select></label><label>Accent Color<input id="accentControl" placeholder="blue or #6aa8ff"></label><label>Main Color<input id="mainControl" placeholder="navy or #101827"></label><label>UI Scale<select id="scaleControl"><option value=".85">85%</option><option value="1">100%</option><option value="1.15">115%</option><option value="1.3">130%</option><option value="1.5">150%</option></select></label><label>Foreground Opacity<input id="opacityControl" type="range" min="62" max="100" value="88"></label><label class="check"><input id="frostControl" type="checkbox" checked> Frosted Glass</label><label class="check"><input id="roundedControl" type="checkbox" checked> Rounded Corners</label></div><footer><button id="logoutButton" class="button danger" type="button">Sign Out</button><button id="applySettings" class="button primary" value="default">Save & Apply</button></footer></form></dialog>
+  <dialog id="shareDialog" class="modal wide glass"><form method="dialog"><header><div><p class="eyebrow">Public Character Control</p><h2>Share & Merge</h2></div><button class="icon-button" value="cancel">×</button></header><p class="muted">Create an isolated public copy. It never changes the private character until you approve a merge.</p><label>New Session PIN<input id="newSharePin" type="password" minlength="4" maxlength="32"></label><button id="createShareButton" class="button primary" type="button">Enable Public Session</button><div id="newShareResult"></div><div id="shareSessionList" class="cards"></div></form></dialog>
+  <dialog id="mergeDialog" class="modal wide glass"><form method="dialog"><header><div><p class="eyebrow">Public Session Changes</p><h2>Review & Merge</h2></div><button class="icon-button" value="cancel">×</button></header><div class="merge-toolbar"><label>Change Type<select id="mergeCategory"></select></label><label class="check"><input id="selectMergeCategory" type="checkbox"> Select All Shown</label></div><div id="mergeConflictBox"></div><div id="mergeEventList"></div><footer><span id="mergeSelectionCount" class="muted">0 selected</span><button id="mergeSelectedButton" class="button primary" type="button">Merge Selected</button></footer><details><summary>Merge History</summary><div id="mergeHistory"></div></details></form></dialog>
 
-  <dialog id="mergeDialog" class="merge-dialog glass">
-    <form method="dialog">
-      <div class="section-heading"><span>Review Public Changes</span><button class="icon-button" value="close" aria-label="Close">×</button></div>
-      <div class="merge-toolbar">
-        <label>Change type<select id="mergeCategory"></select></label>
-        <label class="check-row"><input id="selectMergeCategory" type="checkbox"> Select all shown</label>
-      </div>
-      <div id="mergeConflictBox" class="conflict-box hidden"></div>
-      <div id="mergeEventList" class="merge-event-list"></div>
-      <div class="merge-footer">
-        <span id="mergeSelectionCount" class="muted">0 selected</span>
-        <button id="mergeSelectedButton" class="primary" type="button">Review & Merge Selected</button>
-      </div>
-      <details class="advanced-editor">
-        <summary>Merge history</summary>
-        <div id="mergeHistory" class="session-list"></div>
-      </details>
-    </form>
-  </dialog>
-
-  <dialog id="settingsDialog" class="settings glass">
-    <form method="dialog">
-      <div class="section-heading"><span>Display</span><button class="icon-button" value="close" aria-label="Close">×</button></div>
-      <label>Foreground opacity<input id="opacityControl" type="range" min="65" max="100" value="88"></label>
-      <label class="check-row"><input id="lightMode" type="checkbox"> Use light theme</label>
-      <button class="primary full" value="close">Done</button>
-    </form>
-  </dialog>
-
-  <template id="emptyTemplate"><div class="empty"><strong>Nothing here yet</strong><span>This section is ready for data.</span></div></template>
-  <script src="config.js"></script>
-  <script src="app.js"></script>
+  <input id="characterFile" type="file" accept="application/json,.json" hidden>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="config.js"></script><script src="engine.js"></script><script src="app.js"></script>
 </body>
 </html>
