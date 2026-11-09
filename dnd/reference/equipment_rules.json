@@ -1,0 +1,2388 @@
+[
+  {
+    "name": "Adventuring Gear",
+    "slug": "adventuring-gear",
+    "category": "rules",
+    "status": "published_or_unspecified",
+    "source": "Dragonlance: Shadow of the Dragon Queen",
+    "url": "https://dnd5e.wikidot.com/adventuring-gear",
+    "description": "Adventuring Gear is catalogued as rules. Difficulty classes: 10, 13, 15, 17, 20. Dice formulas: 1d4, 2d6.",
+    "labels": {
+      "source": "Dragonlance: Shadow of the Dragon Queen"
+    },
+    "mechanics": {
+      "bonuses": [],
+      "dice": [
+        "1d4",
+        "2d6"
+      ],
+      "difficulty_classes": [
+        10,
+        13,
+        15,
+        17,
+        20
+      ],
+      "speed_values_feet": [],
+      "charge_counts": [],
+      "damage_types_mentioned": [
+        "acid",
+        "fire",
+        "piercing",
+        "poison",
+        "radiant"
+      ],
+      "conditions_mentioned": [
+        "poisoned",
+        "prone"
+      ],
+      "damage_resistances": [],
+      "damage_immunities": [],
+      "requires_attunement": false,
+      "concentration_mentioned": false,
+      "advantage_mentioned": true,
+      "disadvantage_mentioned": false
+    },
+    "headings": [
+      "Equipment Packs",
+      "Common Items",
+      "Usable Items",
+      "Clothes",
+      "Arcane Focus",
+      "Druidic Focus",
+      "Holy Symbols",
+      "Containers",
+      "Setting Specific Adventuring Gear",
+      "Dragonlance"
+    ],
+    "tables": [
+      {
+        "headers": [
+          "Common Item",
+          "Cost",
+          "Weight"
+        ],
+        "rows": [
+          [
+            "Abacus",
+            "2 gp",
+            "2 lb."
+          ],
+          [
+            "Bedroll",
+            "1 gp",
+            "7 lb."
+          ],
+          [
+            "Bell",
+            "1 gp",
+            "-"
+          ],
+          [
+            "Blanket",
+            "5 sp",
+            "3 lb."
+          ],
+          [
+            "Chalk (1 pc)",
+            "1 cp",
+            "-"
+          ],
+          [
+            "Grappling Hook",
+            "2 gp",
+            "4 lb."
+          ],
+          [
+            "Hammer",
+            "1 gp",
+            "3 lb."
+          ],
+          [
+            "Hourglass",
+            "25 gp",
+            "1 lb."
+          ],
+          [
+            "Ink (1 oz)",
+            "10 gp",
+            "-"
+          ],
+          [
+            "Ink Pen",
+            "2 cp",
+            "-"
+          ],
+          [
+            "Ladder (10 ft)",
+            "1 sp",
+            "25 lb."
+          ],
+          [
+            "Miner's Pick",
+            "2 gp",
+            "10 lb."
+          ],
+          [
+            "Paper (1 sheet)",
+            "2 sp",
+            "-"
+          ],
+          [
+            "Parchment (1 sheet)",
+            "1 sp",
+            "-"
+          ],
+          [
+            "Perfume (vial)",
+            "5 gp",
+            "-"
+          ],
+          [
+            "Piton",
+            "5 cp",
+            "0.25 lb."
+          ],
+          [
+            "Pole (10 ft)",
+            "5 cp",
+            "7 lb."
+          ],
+          [
+            "Sealing Wax",
+            "5 sp",
+            "-"
+          ],
+          [
+            "Shovel",
+            "2 gp",
+            "5 lb."
+          ],
+          [
+            "Signal Whistle",
+            "5 cp",
+            "-"
+          ],
+          [
+            "Signet Ring",
+            "5 gp",
+            "-"
+          ],
+          [
+            "Sledgehammer",
+            "2 gp",
+            "10 lb."
+          ],
+          [
+            "Spikes, Iron (10)",
+            "1 gp",
+            "5 lb."
+          ],
+          [
+            "Spyglass * Objects viewed through a spyglass are magnified to twice their size.",
+            "1000 gp",
+            "1 lb."
+          ],
+          [
+            "Tent, Two-person",
+            "2 gp",
+            "20 lbs."
+          ],
+          [
+            "Whetstone",
+            "1 cp",
+            "1 lb."
+          ]
+        ]
+      },
+      {
+        "headers": [
+          "Usable Items",
+          "Cost",
+          "Weight"
+        ],
+        "rows": [
+          [
+            "Potion of Healing (common)",
+            "50 gp",
+            "0.5 lb."
+          ]
+        ]
+      },
+      {
+        "headers": [
+          "Clothes",
+          "Cost",
+          "Weight"
+        ],
+        "rows": [
+          [
+            "Common Clothes",
+            "5 sp",
+            "3 lb."
+          ],
+          [
+            "Costume",
+            "5 gp",
+            "4 lb."
+          ],
+          [
+            "Fine Clothes",
+            "15 gp",
+            "6 lb."
+          ],
+          [
+            "Robes",
+            "1 gp",
+            "4 lb."
+          ],
+          [
+            "Traveler's Clothes",
+            "2 gp",
+            "4 lb."
+          ]
+        ]
+      },
+      {
+        "headers": [
+          "Arcane Focus",
+          "Cost",
+          "Weight"
+        ],
+        "rows": [
+          [
+            "Crystal",
+            "10 gp",
+            "1 lb."
+          ],
+          [
+            "Orb",
+            "20 gp",
+            "3 lb."
+          ],
+          [
+            "Rod",
+            "10 gp",
+            "2 lb."
+          ],
+          [
+            "Staff",
+            "5 gp",
+            "4 lb."
+          ],
+          [
+            "Wand",
+            "10 gp",
+            "1 lb."
+          ]
+        ]
+      },
+      {
+        "headers": [
+          "Druidic Focus",
+          "Cost",
+          "Weight"
+        ],
+        "rows": [
+          [
+            "Sprig of Mistletoe",
+            "1 gp",
+            "-"
+          ],
+          [
+            "Totem",
+            "1 gp",
+            "-"
+          ],
+          [
+            "Wooden Staff",
+            "5 gp",
+            "4 lb."
+          ],
+          [
+            "Yew Wand",
+            "10 gp",
+            "1 lb."
+          ]
+        ]
+      },
+      {
+        "headers": [
+          "Holy Symbols",
+          "Cost",
+          "Weight"
+        ],
+        "rows": [
+          [
+            "Amulet",
+            "5 gp",
+            "1 lb."
+          ],
+          [
+            "Emblem",
+            "5 gp",
+            "-"
+          ],
+          [
+            "Reliquary",
+            "5 gp",
+            "2 lb."
+          ]
+        ]
+      },
+      {
+        "headers": [
+          "Containers",
+          "Cost",
+          "Capacity",
+          "Weight"
+        ],
+        "rows": [
+          [
+            "Barrel",
+            "2 gp",
+            "40 gallons liquid, 4 cubic feet solid",
+            "70 lb."
+          ],
+          [
+            "Basket",
+            "4 sp",
+            "2 cubic feet/40 pounds of gear",
+            "2 lb."
+          ],
+          [
+            "Bucket",
+            "5 cp",
+            "3 gallons liquid, 1/2 cubic foot solid",
+            "2 lb."
+          ],
+          [
+            "Case, Crossbow Bolt",
+            "1 gp",
+            "20 crossbow bolts",
+            "1 lb."
+          ],
+          [
+            "Case, Map/Scroll",
+            "1 gp",
+            "ten rolled-up sheets of paper or five rolled-up sheets of parchment",
+            "1 lb."
+          ],
+          [
+            "Chest",
+            "5 gp",
+            "12 cubic feet/300 pounds of gear",
+            "25 lb."
+          ],
+          [
+            "Flask or Tankard",
+            "2 cp",
+            "1 pint liquid",
+            "1 lb."
+          ],
+          [
+            "Glass Bottle",
+            "2 gp",
+            "1.5 pints liquid",
+            "2 lb."
+          ],
+          [
+            "Jug or Pitcher",
+            "2 cp",
+            "1 gallon liquid",
+            "4 lb."
+          ],
+          [
+            "Pot, iron",
+            "2 gp",
+            "1 gallon liquid",
+            "10 lb"
+          ],
+          [
+            "Quiver",
+            "1 gp",
+            "20 arrows",
+            "1 lb."
+          ],
+          [
+            "Sack",
+            "1 cp",
+            "1 cubic foot/30 pounds of gear",
+            "0.5 lb."
+          ],
+          [
+            "Vial",
+            "1 gp",
+            "4 ounces liquid",
+            "-"
+          ],
+          [
+            "Waterskin",
+            "2 sp",
+            "4 pints liquid",
+            "5 lb.(full)"
+          ]
+        ]
+      }
+    ],
+    "requires_attunement": false
+  },
+  {
+    "name": "Armor",
+    "slug": "armor",
+    "category": "rules",
+    "status": "published_or_unspecified",
+    "source": "",
+    "url": "https://dnd5e.wikidot.com/armor",
+    "description": "Armor is catalogued as rules.",
+    "labels": {},
+    "mechanics": {
+      "bonuses": [],
+      "dice": [],
+      "difficulty_classes": [],
+      "speed_values_feet": [],
+      "charge_counts": [],
+      "damage_types_mentioned": [],
+      "conditions_mentioned": [],
+      "damage_resistances": [],
+      "damage_immunities": [],
+      "requires_attunement": false,
+      "concentration_mentioned": false,
+      "advantage_mentioned": true,
+      "disadvantage_mentioned": true
+    },
+    "headings": [
+      "Light Armor",
+      "Medium Armor",
+      "Heavy Armor",
+      "Shield",
+      "Don/Doff Time",
+      "Proficiency"
+    ],
+    "tables": [
+      {
+        "headers": [
+          "Name",
+          "Armor Class (AC)",
+          "Strength",
+          "Stealth",
+          "Weight",
+          "Cost"
+        ],
+        "rows": [
+          [
+            "Padded",
+            "11 + Dex modifier",
+            "-",
+            "Disadvantage",
+            "8 lb.",
+            "5 gp"
+          ],
+          [
+            "Leather",
+            "11 + Dex modifier",
+            "-",
+            "-",
+            "10 lb.",
+            "10 gp"
+          ],
+          [
+            "Studded Leather",
+            "12 + Dex Modifier",
+            "-",
+            "-",
+            "13 lb.",
+            "45 gp"
+          ]
+        ]
+      },
+      {
+        "headers": [
+          "Name",
+          "Armor Class (AC)",
+          "Strength",
+          "Stealth",
+          "Weight",
+          "Cost"
+        ],
+        "rows": [
+          [
+            "Hide",
+            "12 + Dex modifier (max 2)",
+            "-",
+            "-",
+            "12 lb.",
+            "10 gp"
+          ],
+          [
+            "Chain Shirt",
+            "13 + Dex modifier (max 2)",
+            "-",
+            "-",
+            "20 lb.",
+            "50 gp"
+          ],
+          [
+            "Scale Mail",
+            "14 + Dex modifier (max 2)",
+            "-",
+            "Disadvantage",
+            "45 lb.",
+            "50 gp"
+          ],
+          [
+            "Spiked Armor",
+            "14 + Dex modifier (max 2)",
+            "-",
+            "Disadvantage",
+            "45 lb.",
+            "75 gp"
+          ],
+          [
+            "Breastplate",
+            "14 + Dex modifier (max 2)",
+            "-",
+            "-",
+            "20 lb.",
+            "400 gp"
+          ],
+          [
+            "Halfplate",
+            "15 + Dex modifier (max 2)",
+            "-",
+            "Disadvantage",
+            "40 lb.",
+            "750 gp"
+          ]
+        ]
+      },
+      {
+        "headers": [
+          "Name",
+          "Armor Class (AC)",
+          "Strength",
+          "Stealth",
+          "Weight",
+          "Cost"
+        ],
+        "rows": [
+          [
+            "Ring Mail",
+            "14",
+            "-",
+            "Disadvantage",
+            "40 lb.",
+            "30 gp"
+          ],
+          [
+            "Chain Mail",
+            "16",
+            "Str 13",
+            "Disadvantage",
+            "55 lb.",
+            "75 gp"
+          ],
+          [
+            "Splint",
+            "17",
+            "Str 15",
+            "Disadvantage",
+            "60 lb.",
+            "200 gp"
+          ],
+          [
+            "Plate",
+            "18",
+            "Str 15",
+            "Disadvantage",
+            "65 lb.",
+            "1,500 gp"
+          ]
+        ]
+      },
+      {
+        "headers": [
+          "Name",
+          "Armor Class (AC)",
+          "Strength",
+          "Stealth",
+          "Weight",
+          "Cost"
+        ],
+        "rows": [
+          [
+            "Shield",
+            "+2",
+            "-",
+            "-",
+            "6 lb.",
+            "10 gp"
+          ]
+        ]
+      },
+      {
+        "headers": [
+          "Category",
+          "Don",
+          "Doff"
+        ],
+        "rows": [
+          [
+            "Light Armor",
+            "1 minute",
+            "1 minute"
+          ],
+          [
+            "Medium Armor",
+            "5 minutes",
+            "1 minute"
+          ],
+          [
+            "Heavy Armor",
+            "10 minutes",
+            "5 minutes"
+          ],
+          [
+            "Shield",
+            "1 action",
+            "1 action"
+          ]
+        ]
+      }
+    ],
+    "requires_attunement": false
+  },
+  {
+    "name": "Ballista",
+    "slug": "siege-equipment:ballista",
+    "category": "equipment",
+    "status": "published_or_unspecified",
+    "source": "",
+    "url": "https://dnd5e.wikidot.com/siege-equipment:ballista",
+    "description": "Ballista is catalogued as equipment. Dice formulas: 3d10.",
+    "labels": {
+      "armor_class": "15",
+      "hit_points": "50"
+    },
+    "mechanics": {
+      "bonuses": [],
+      "dice": [
+        "3d10"
+      ],
+      "difficulty_classes": [],
+      "speed_values_feet": [],
+      "charge_counts": [],
+      "damage_types_mentioned": [
+        "piercing"
+      ],
+      "conditions_mentioned": [],
+      "damage_resistances": [],
+      "damage_immunities": [],
+      "requires_attunement": false,
+      "concentration_mentioned": false,
+      "advantage_mentioned": false,
+      "disadvantage_mentioned": false
+    },
+    "headings": [],
+    "tables": [],
+    "armor_class": "15",
+    "hit_points": "50",
+    "requires_attunement": false
+  },
+  {
+    "name": "Boilerdrak",
+    "slug": "siege-equipment:boilerdrak",
+    "category": "equipment",
+    "status": "published_or_unspecified",
+    "source": "",
+    "url": "https://dnd5e.wikidot.com/siege-equipment:boilerdrak",
+    "description": "Boilerdrak is catalogued as equipment. Difficulty classes: 15. Dice formulas: 5d10.",
+    "labels": {
+      "armor_class": "15",
+      "hit_points": "100"
+    },
+    "mechanics": {
+      "bonuses": [],
+      "dice": [
+        "5d10"
+      ],
+      "difficulty_classes": [
+        15
+      ],
+      "speed_values_feet": [],
+      "charge_counts": [],
+      "damage_types_mentioned": [
+        "fire"
+      ],
+      "conditions_mentioned": [],
+      "damage_resistances": [],
+      "damage_immunities": [],
+      "requires_attunement": false,
+      "concentration_mentioned": false,
+      "advantage_mentioned": false,
+      "disadvantage_mentioned": false
+    },
+    "headings": [],
+    "tables": [],
+    "armor_class": "15",
+    "hit_points": "100",
+    "requires_attunement": false
+  },
+  {
+    "name": "Cannon",
+    "slug": "siege-equipment:cannon",
+    "category": "equipment",
+    "status": "published_or_unspecified",
+    "source": "",
+    "url": "https://dnd5e.wikidot.com/siege-equipment:cannon",
+    "description": "Cannon is catalogued as equipment. Dice formulas: 8d10.",
+    "labels": {
+      "armor_class": "19",
+      "hit_points": "75"
+    },
+    "mechanics": {
+      "bonuses": [],
+      "dice": [
+        "8d10"
+      ],
+      "difficulty_classes": [],
+      "speed_values_feet": [],
+      "charge_counts": [],
+      "damage_types_mentioned": [
+        "bludgeoning"
+      ],
+      "conditions_mentioned": [],
+      "damage_resistances": [],
+      "damage_immunities": [],
+      "requires_attunement": false,
+      "concentration_mentioned": false,
+      "advantage_mentioned": false,
+      "disadvantage_mentioned": false
+    },
+    "headings": [],
+    "tables": [],
+    "armor_class": "19",
+    "hit_points": "75",
+    "requires_attunement": false
+  },
+  {
+    "name": "Gnomeflinger",
+    "slug": "siege-equipment:gnomeflinger",
+    "category": "equipment",
+    "status": "published_or_unspecified",
+    "source": "",
+    "url": "https://dnd5e.wikidot.com/siege-equipment:gnomeflinger",
+    "description": "Gnomeflinger is catalogued as equipment. Dice formulas: 1d6.",
+    "labels": {
+      "armor_class": "15",
+      "hit_points": "100"
+    },
+    "mechanics": {
+      "bonuses": [],
+      "dice": [
+        "1d6"
+      ],
+      "difficulty_classes": [],
+      "speed_values_feet": [],
+      "charge_counts": [],
+      "damage_types_mentioned": [
+        "bludgeoning"
+      ],
+      "conditions_mentioned": [],
+      "damage_resistances": [],
+      "damage_immunities": [],
+      "requires_attunement": false,
+      "concentration_mentioned": false,
+      "advantage_mentioned": false,
+      "disadvantage_mentioned": false
+    },
+    "headings": [],
+    "tables": [],
+    "armor_class": "15",
+    "hit_points": "100",
+    "requires_attunement": false
+  },
+  {
+    "name": "Madness",
+    "slug": "madness",
+    "category": "rules",
+    "status": "published_or_unspecified",
+    "source": "",
+    "url": "https://dnd5e.wikidot.com/madness",
+    "description": "Madness is catalogued as rules. Difficulty classes: 15. Dice formulas: 1d10.",
+    "labels": {},
+    "mechanics": {
+      "bonuses": [],
+      "dice": [
+        "1d10"
+      ],
+      "difficulty_classes": [
+        15
+      ],
+      "speed_values_feet": [],
+      "charge_counts": [],
+      "damage_types_mentioned": [],
+      "conditions_mentioned": [
+        "blinded",
+        "deafened",
+        "frightened",
+        "incapacitated",
+        "paralyzed",
+        "stunned",
+        "unconscious"
+      ],
+      "damage_resistances": [],
+      "damage_immunities": [],
+      "requires_attunement": false,
+      "concentration_mentioned": false,
+      "advantage_mentioned": true,
+      "disadvantage_mentioned": true
+    },
+    "headings": [
+      "Going Mad",
+      "Madness Effects",
+      "Curing Madness",
+      "Short Term Madness",
+      "Long Term Madness",
+      "Indefinite Madness"
+    ],
+    "tables": [
+      {
+        "headers": [
+          "d100",
+          "Effects (lasts 1d10 minutes)"
+        ],
+        "rows": [
+          [
+            "41-50",
+            "The character begins babbling and is incapable of normal speech or spellcasting."
+          ],
+          [
+            "51-60",
+            "The character must use his or her action each round to attack the nearest creature."
+          ],
+          [
+            "61-70",
+            "The character experiences vivid hallucinations and has disadvantage on ability checks."
+          ],
+          [
+            "71-75",
+            "The character does whatever anyone tells them to do that isn't obviously self-destructive."
+          ],
+          [
+            "81-90",
+            "The character is stunned."
+          ],
+          [
+            "91-100",
+            "The character falls unconscious."
+          ]
+        ]
+      },
+      {
+        "headers": [
+          "d100",
+          "Effects (lasts 1d10×10 hours)"
+        ],
+        "rows": [
+          [
+            "11-20",
+            "The character experiences vivid hallucinations and has disadvantage on ability checks."
+          ],
+          [
+            "56-65",
+            "The character is blinded (25%) or deafened (75%)."
+          ],
+          [
+            "91-95",
+            "The character loses the ability to speak."
+          ],
+          [
+            "96-100",
+            "The character falls unconscious. No amount of jostling or damage can wake the character."
+          ]
+        ]
+      }
+    ],
+    "requires_attunement": false
+  },
+  {
+    "name": "Mangonel",
+    "slug": "siege-equipment:mangonel",
+    "category": "equipment",
+    "status": "published_or_unspecified",
+    "source": "",
+    "url": "https://dnd5e.wikidot.com/siege-equipment:mangonel",
+    "description": "Mangonel is catalogued as equipment. Dice formulas: 5d10.",
+    "labels": {
+      "armor_class": "15",
+      "hit_points": "100"
+    },
+    "mechanics": {
+      "bonuses": [],
+      "dice": [
+        "5d10"
+      ],
+      "difficulty_classes": [],
+      "speed_values_feet": [],
+      "charge_counts": [],
+      "damage_types_mentioned": [
+        "bludgeoning"
+      ],
+      "conditions_mentioned": [],
+      "damage_resistances": [],
+      "damage_immunities": [],
+      "requires_attunement": false,
+      "concentration_mentioned": false,
+      "advantage_mentioned": false,
+      "disadvantage_mentioned": false
+    },
+    "headings": [],
+    "tables": [],
+    "armor_class": "15",
+    "hit_points": "100",
+    "requires_attunement": false
+  },
+  {
+    "name": "Mounts Vehicles",
+    "slug": "mounts-vehicles",
+    "category": "rules",
+    "status": "published_or_unspecified",
+    "source": "Player's Handbook",
+    "url": "https://dnd5e.wikidot.com/mounts-vehicles",
+    "description": "Mounts Vehicles is catalogued as rules. Dice formulas: 4d12.",
+    "labels": {
+      "source": "Player's Handbook"
+    },
+    "mechanics": {
+      "bonuses": [],
+      "dice": [
+        "4d12"
+      ],
+      "difficulty_classes": [],
+      "speed_values_feet": [],
+      "charge_counts": [],
+      "damage_types_mentioned": [],
+      "conditions_mentioned": [],
+      "damage_resistances": [],
+      "damage_immunities": [],
+      "requires_attunement": false,
+      "concentration_mentioned": false,
+      "advantage_mentioned": true,
+      "disadvantage_mentioned": false
+    },
+    "headings": [
+      "Mounts and Other Animals",
+      "Tack, Harness, and Drawn Vehicles",
+      "Waterborne Vehicles",
+      "Spelljamming Vehicles",
+      "Overview",
+      "Descriptions"
+    ],
+    "tables": [
+      {
+        "headers": [
+          "Item",
+          "Cost",
+          "Speed",
+          "Carrying Capacity"
+        ],
+        "rows": [
+          [
+            "Camel",
+            "50 gp",
+            "50 ft.",
+            "480 lb."
+          ],
+          [
+            "Donkey or mule",
+            "8 gp",
+            "40 ft.",
+            "420 lb."
+          ],
+          [
+            "Elephant",
+            "200 gp",
+            "40 ft.",
+            "1,320 lb."
+          ],
+          [
+            "Horse, draft",
+            "50 gp",
+            "40 ft.",
+            "540 lb."
+          ],
+          [
+            "Horse, riding",
+            "75 gp",
+            "60 ft.",
+            "480 lb."
+          ],
+          [
+            "Mastiff",
+            "25 gp",
+            "40 ft.",
+            "195 lb."
+          ],
+          [
+            "Pony",
+            "30 gp",
+            "40 ft.",
+            "225 lb."
+          ],
+          [
+            "Warhorse",
+            "400 gp",
+            "60 ft.",
+            "540 lb."
+          ]
+        ]
+      },
+      {
+        "headers": [
+          "Item",
+          "Cost",
+          "Weight"
+        ],
+        "rows": [
+          [
+            "Barding",
+            "x4",
+            "x2"
+          ],
+          [
+            "Bit and bridle",
+            "2 gp",
+            "1 lb."
+          ],
+          [
+            "Carriage",
+            "100 gp",
+            "600 lb."
+          ],
+          [
+            "Cart",
+            "15 gp",
+            "200 lb."
+          ],
+          [
+            "Chariot",
+            "250 gp",
+            "100 lb."
+          ],
+          [
+            "Feed (per day)",
+            "5 cp",
+            "10 lb."
+          ],
+          [
+            "Exotic",
+            "60 gp",
+            "40 lb."
+          ],
+          [
+            "Military",
+            "20 gp",
+            "30 lb."
+          ],
+          [
+            "Pack",
+            "5 gp",
+            "15 lb."
+          ],
+          [
+            "Riding",
+            "10 gp",
+            "25 lb."
+          ],
+          [
+            "Saddlebags",
+            "4 gp",
+            "8 lb."
+          ],
+          [
+            "Sled",
+            "20 gp",
+            "300 lb."
+          ],
+          [
+            "Stabling (per day)",
+            "5 sp",
+            "—"
+          ],
+          [
+            "Wagon",
+            "35 gp",
+            "400 lb."
+          ]
+        ]
+      },
+      {
+        "headers": [
+          "Item",
+          "Cost",
+          "Speed"
+        ],
+        "rows": [
+          [
+            "Galley",
+            "30,000 gp",
+            "4 mph"
+          ],
+          [
+            "Keelboat",
+            "3,000 gp",
+            "1 mph"
+          ],
+          [
+            "Longship",
+            "10,000 gp",
+            "3 mph"
+          ],
+          [
+            "Rowboat",
+            "50 gp",
+            "1.5 mph"
+          ],
+          [
+            "Sailing ship",
+            "10,000 gp",
+            "2 mph"
+          ],
+          [
+            "Warship",
+            "25,000 gp",
+            "2.5 mph"
+          ]
+        ]
+      },
+      {
+        "headers": [
+          "Name",
+          "Armor Class",
+          "Hit Points",
+          "Damage Threshold",
+          "Speed",
+          "Cargo",
+          "Crew",
+          "Keel/Beam",
+          "Cost",
+          "Weapons"
+        ],
+        "rows": [
+          [
+            "Bombard",
+            "15 (wood)",
+            "300",
+            "20",
+            "fly 35 ft. (4 mph)",
+            "150 tons",
+            "12",
+            "140 ft./30 ft.",
+            "50,000 gp",
+            "2 Ballistae, Giant Cannon"
+          ],
+          [
+            "Damselfly Ship",
+            "19 (metal)",
+            "200",
+            "15",
+            "fly 70 ft. (8 mph)",
+            "5 tons",
+            "9",
+            "100 ft./20 ft.",
+            "20,000 gp",
+            "Ballista, Mangonel+"
+          ],
+          [
+            "Flying Fish Ship",
+            "15 (wood)",
+            "250",
+            "15",
+            "fly 40 ft. (4.5 mph)",
+            "13 tons",
+            "10",
+            "120 ft./30 ft.",
+            "20,000 gp",
+            "Ballista, Mangonel"
+          ],
+          [
+            "Hammerhead Ship",
+            "15 (wood)",
+            "400",
+            "15",
+            "fly 35 ft. (4 mph)",
+            "30 tons",
+            "15",
+            "250 ft./25 ft.",
+            "40,000 gp",
+            "Ballista, Blunt Ram, Mangonel"
+          ],
+          [
+            "Lamprey Ship",
+            "15 (wood)",
+            "250",
+            "15",
+            "fly 35 ft. (4 mph)",
+            "6 tons",
+            "15",
+            "115 ft./25 ft.",
+            "20,000 gp",
+            "4 Ballistae, Grappling Jaws"
+          ],
+          [
+            "Living Ship",
+            "15 (wood)",
+            "250",
+            "15",
+            "fly 40 ft. (4.5 mph)",
+            "10 tons",
+            "5 (+treant)",
+            "80 ft./20 ft.",
+            "25,000 gp",
+            "Ballista"
+          ],
+          [
+            "Nautiloid",
+            "15 (wood)",
+            "400",
+            "15",
+            "fly 40 ft. (4.5 mph)",
+            "17 tons",
+            "20",
+            "180 ft./30 ft.",
+            "50,000 gp",
+            "4 Ballistae, Mangonel, Tentacles"
+          ],
+          [
+            "Nightspider",
+            "19 (metal)",
+            "300",
+            "15",
+            "fly 40 ft. (4.5 mph)",
+            "50 tons",
+            "25",
+            "175 ft./50 ft.",
+            "50,000 gp",
+            "4 Ballistae, Mangonel"
+          ],
+          [
+            "Scorpion Ship",
+            "19 (metal)",
+            "250",
+            "15",
+            "30 ft. (3.5 mph), fly 30 ft. (3.5 mph)",
+            "12 tons",
+            "12",
+            "75 ft./25 ft.",
+            "25,000 gp",
+            "Ballista, 2 Claws, Mangonel"
+          ],
+          [
+            "Shrike Ship",
+            "15 (wood)",
+            "250",
+            "15",
+            "fly 70 ft. (8 mph)",
+            "20 tons",
+            "11",
+            "100 ft./20 ft.",
+            "20,000 gp",
+            "3 Ballistae, Piercing Ram"
+          ],
+          [
+            "Space Galleon",
+            "15 (wood)",
+            "400",
+            "15",
+            "fly 35 ft. (4 mph)",
+            "20 tons",
+            "20",
+            "130 ft./30 ft.",
+            "30,000 gp",
+            "2 Ballistae, Mangonel"
+          ],
+          [
+            "Squid Ship",
+            "15 (wood)",
+            "300",
+            "15",
+            "fly 30 ft. (3.5 mph)",
+            "20 tons",
+            "13",
+            "250 ft./25 ft.",
+            "25,000 gp",
+            "3 Ballistae, Mangonel, Piercing Ram"
+          ],
+          [
+            "Star Moth",
+            "13 (ceramic)",
+            "400",
+            "15",
+            "fly 50 ft. (5.5 mph)",
+            "30 tons",
+            "13",
+            "200 ft./20 ft.",
+            "40,000 gp",
+            "2 Ballistae, Mangonel"
+          ],
+          [
+            "Turtle Ship",
+            "19 (metal)",
+            "300",
+            "15",
+            "25 ft. (3 mph), fly 25 ft. (3 mph)",
+            "30 tons",
+            "16",
+            "95 ft./70 ft.",
+            "40,000 gp",
+            "3 Ballistae, Mangonel"
+          ],
+          [
+            "Tyrant Ship",
+            "17 (stone)",
+            "300",
+            "20",
+            "fly 40 ft. (4.5 mph)",
+            "20 tons",
+            "10 (beholders)",
+            "100 ft./100 ft.",
+            "-",
+            "3 Eyestalk Cannons"
+          ],
+          [
+            "Wasp Ship",
+            "15 (wood)",
+            "250",
+            "15",
+            "fly 50 ft. (5.5 mph)",
+            "10 tons",
+            "5",
+            "80 ft./20 ft.",
+            "20,000 gp",
+            "Ballista"
+          ]
+        ]
+      }
+    ],
+    "requires_attunement": false
+  },
+  {
+    "name": "Ram",
+    "slug": "siege-equipment:ram",
+    "category": "equipment",
+    "status": "published_or_unspecified",
+    "source": "",
+    "url": "https://dnd5e.wikidot.com/siege-equipment:ram",
+    "description": "Ram is catalogued as equipment. Dice formulas: 3d10.",
+    "labels": {
+      "armor_class": "15",
+      "hit_points": "100"
+    },
+    "mechanics": {
+      "bonuses": [],
+      "dice": [
+        "3d10"
+      ],
+      "difficulty_classes": [],
+      "speed_values_feet": [],
+      "charge_counts": [],
+      "damage_types_mentioned": [
+        "bludgeoning"
+      ],
+      "conditions_mentioned": [],
+      "damage_resistances": [],
+      "damage_immunities": [],
+      "requires_attunement": false,
+      "concentration_mentioned": false,
+      "advantage_mentioned": false,
+      "disadvantage_mentioned": false
+    },
+    "headings": [],
+    "tables": [],
+    "armor_class": "15",
+    "hit_points": "100",
+    "requires_attunement": false
+  },
+  {
+    "name": "Setting Specific Siege Equipment",
+    "slug": "siege-equipment",
+    "category": "equipment",
+    "status": "published_or_unspecified",
+    "source": "Dungeon Masters Guide",
+    "url": "https://dnd5e.wikidot.com/siege-equipment",
+    "description": "Setting Specific Siege Equipment is catalogued as equipment.",
+    "labels": {
+      "source": "Dungeon Masters Guide"
+    },
+    "mechanics": {
+      "bonuses": [],
+      "dice": [],
+      "difficulty_classes": [],
+      "speed_values_feet": [],
+      "charge_counts": [],
+      "damage_types_mentioned": [],
+      "conditions_mentioned": [],
+      "damage_resistances": [],
+      "damage_immunities": [],
+      "requires_attunement": false,
+      "concentration_mentioned": false,
+      "advantage_mentioned": false,
+      "disadvantage_mentioned": false
+    },
+    "headings": [
+      "Setting Specific Siege Equipment",
+      "Dragonlance"
+    ],
+    "tables": [],
+    "requires_attunement": false
+  },
+  {
+    "name": "Siege Tower",
+    "slug": "siege-equipment:siege-tower",
+    "category": "equipment",
+    "status": "published_or_unspecified",
+    "source": "",
+    "url": "https://dnd5e.wikidot.com/siege-equipment:siege-tower",
+    "description": "Siege Tower is catalogued as equipment.",
+    "labels": {
+      "armor_class": "15",
+      "hit_points": "200"
+    },
+    "mechanics": {
+      "bonuses": [],
+      "dice": [],
+      "difficulty_classes": [],
+      "speed_values_feet": [],
+      "charge_counts": [],
+      "damage_types_mentioned": [],
+      "conditions_mentioned": [],
+      "damage_resistances": [],
+      "damage_immunities": [],
+      "requires_attunement": false,
+      "concentration_mentioned": false,
+      "advantage_mentioned": false,
+      "disadvantage_mentioned": false
+    },
+    "headings": [],
+    "tables": [],
+    "armor_class": "15",
+    "hit_points": "200",
+    "requires_attunement": false
+  },
+  {
+    "name": "Suspended Cauldron",
+    "slug": "siege-equipment:suspended-cauldron",
+    "category": "equipment",
+    "status": "published_or_unspecified",
+    "source": "",
+    "url": "https://dnd5e.wikidot.com/siege-equipment:suspended-cauldron",
+    "description": "Suspended Cauldron is catalogued as equipment. Difficulty classes: 15. Dice formulas: 3d6.",
+    "labels": {
+      "armor_class": "19",
+      "hit_points": "20"
+    },
+    "mechanics": {
+      "bonuses": [],
+      "dice": [
+        "3d6"
+      ],
+      "difficulty_classes": [
+        15
+      ],
+      "speed_values_feet": [],
+      "charge_counts": [],
+      "damage_types_mentioned": [
+        "fire"
+      ],
+      "conditions_mentioned": [],
+      "damage_resistances": [],
+      "damage_immunities": [],
+      "requires_attunement": false,
+      "concentration_mentioned": false,
+      "advantage_mentioned": false,
+      "disadvantage_mentioned": false
+    },
+    "headings": [],
+    "tables": [],
+    "armor_class": "19",
+    "hit_points": "20",
+    "requires_attunement": false
+  },
+  {
+    "name": "Tools",
+    "slug": "tools",
+    "category": "rules",
+    "status": "published_or_unspecified",
+    "source": "Player's Handbook",
+    "url": "https://dnd5e.wikidot.com/tools",
+    "description": "Tools is catalogued as rules. Dice formulas: 1d3.",
+    "labels": {
+      "source": "Player's Handbook"
+    },
+    "mechanics": {
+      "bonuses": [],
+      "dice": [
+        "1d3"
+      ],
+      "difficulty_classes": [],
+      "speed_values_feet": [],
+      "charge_counts": [],
+      "damage_types_mentioned": [],
+      "conditions_mentioned": [
+        "poisoned",
+        "exhaustion"
+      ],
+      "damage_resistances": [],
+      "damage_immunities": [],
+      "requires_attunement": false,
+      "concentration_mentioned": false,
+      "advantage_mentioned": true,
+      "disadvantage_mentioned": false
+    },
+    "headings": [
+      "PHB Tool Descriptions",
+      "Artisan's Tools",
+      "Disguise Kit",
+      "Forgery Kit",
+      "Gaming Set",
+      "Herbalism Kit",
+      "Musical Instrument",
+      "Navigator's Tools",
+      "Poisoner's Kit",
+      "Thieves' Tools",
+      "Tool Proficiencies",
+      "Tools and Skills Together",
+      "XGE Tool Descriptions",
+      "Alchemist's Supplies",
+      "Brewer's Supplies",
+      "Calligrapher's Supplies",
+      "Carpenter's Tools",
+      "Cartographer's Tools",
+      "Cobbler's Tools",
+      "Cook's Utensils",
+      "Gaming Kit",
+      "Glassblower's Tools",
+      "Jeweler's Tools",
+      "Land and Water Vehicles",
+      "Leatherworker's Tools",
+      "Mason's Tools",
+      "Musical Instruments",
+      "Painter's Supplies",
+      "Potter's Tools",
+      "Smith's Tools",
+      "Tinker's Tools",
+      "Weaver's Tools",
+      "Woodcarver's Tools"
+    ],
+    "tables": [
+      {
+        "headers": [
+          "Tool Set",
+          "Cost",
+          "Weight"
+        ],
+        "rows": [
+          [
+            "Alchemist's supplies",
+            "50 gp",
+            "8 lb."
+          ],
+          [
+            "Brewer's supplies",
+            "20 gp",
+            "9 lb."
+          ],
+          [
+            "Calligrapher's supplies",
+            "10 gp",
+            "5 lb."
+          ],
+          [
+            "Carpenter's tools",
+            "8 gp",
+            "6 lb."
+          ],
+          [
+            "Cartographer's tools",
+            "15 gp",
+            "6 lb."
+          ],
+          [
+            "Cobbler's tools",
+            "5 gp",
+            "5 lb."
+          ],
+          [
+            "Cook's utensils",
+            "1 gp",
+            "8 lb."
+          ],
+          [
+            "Glassblower's tools",
+            "30 gp",
+            "5 lb."
+          ],
+          [
+            "Jeweler's tools",
+            "25 gp",
+            "2 lb."
+          ],
+          [
+            "Leatherworker's tools",
+            "5 gp",
+            "5 lb."
+          ],
+          [
+            "Mason's tools",
+            "10 gp",
+            "8 lb."
+          ],
+          [
+            "Painter's supplies",
+            "10 gp",
+            "5 lb."
+          ],
+          [
+            "Potter's tools",
+            "10 gp",
+            "3 lb."
+          ],
+          [
+            "Smith's tools",
+            "20 gp",
+            "8 lb."
+          ],
+          [
+            "Tinker's tools",
+            "50 gp",
+            "10 lb."
+          ],
+          [
+            "Weaver's tools",
+            "1 gp",
+            "5 lb."
+          ],
+          [
+            "Woodcarver's tools",
+            "1 gp",
+            "5 lb."
+          ],
+          [
+            "Dice set",
+            "1 sp",
+            "-"
+          ],
+          [
+            "Dragonchess set",
+            "1 gp",
+            "1/2 lb"
+          ],
+          [
+            "Playing card set",
+            "5 sp",
+            "-"
+          ],
+          [
+            "Three-Dragon Ante set",
+            "1 gp",
+            "-"
+          ],
+          [
+            "Bagpipes",
+            "30 gp",
+            "6 lb."
+          ],
+          [
+            "Drum",
+            "6 gp",
+            "3 lb."
+          ],
+          [
+            "Dulcimer",
+            "25 gp",
+            "10 lb."
+          ],
+          [
+            "Flute",
+            "2 gp",
+            "1 lb."
+          ],
+          [
+            "Lute",
+            "35 gp",
+            "2 lb."
+          ],
+          [
+            "Lyre",
+            "30 gp",
+            "2 lb."
+          ],
+          [
+            "Horn",
+            "3 gp",
+            "2 lb."
+          ],
+          [
+            "Pan flute",
+            "12 gp",
+            "2 lb."
+          ],
+          [
+            "Shawm",
+            "2 gp",
+            "1 lb."
+          ],
+          [
+            "Viol",
+            "30 gp",
+            "1 lb."
+          ],
+          [
+            "Disguise kit",
+            "25 gp",
+            "3 lb."
+          ],
+          [
+            "Forgery kit",
+            "15 gp",
+            "5 lb."
+          ],
+          [
+            "Herbalism kit",
+            "5 gp",
+            "3 lb."
+          ],
+          [
+            "Navigator's tools",
+            "25 gp",
+            "2 lb."
+          ],
+          [
+            "Poisoner's kit",
+            "50 gp",
+            "2 lb."
+          ],
+          [
+            "Thieves' tools",
+            "25 gp",
+            "1 lb."
+          ]
+        ]
+      },
+      {
+        "headers": [
+          "Activity",
+          "DC"
+        ],
+        "rows": [
+          [
+            "Create a puff of thick smoke",
+            "10"
+          ],
+          [
+            "Identify a poison",
+            "10"
+          ],
+          [
+            "Identify a substance",
+            "15"
+          ],
+          [
+            "Start a fire",
+            "15"
+          ],
+          [
+            "Neutralize acid",
+            "20"
+          ]
+        ]
+      },
+      {
+        "headers": [
+          "Activity",
+          "DC"
+        ],
+        "rows": [
+          [
+            "Detect poison or impurities in a drink",
+            "10"
+          ],
+          [
+            "Identify alcohol",
+            "15"
+          ],
+          [
+            "Ignore effects of alcohol",
+            "20"
+          ]
+        ]
+      },
+      {
+        "headers": [
+          "Activity",
+          "DC"
+        ],
+        "rows": [
+          [
+            "Identify writer of nonmagical script",
+            "10"
+          ],
+          [
+            "Determine writer's state of mind",
+            "15"
+          ],
+          [
+            "Spot forged text",
+            "15"
+          ],
+          [
+            "Forge a signature",
+            "20"
+          ]
+        ]
+      },
+      {
+        "headers": [
+          "Activity",
+          "DC"
+        ],
+        "rows": [
+          [
+            "Build a simple wooden structure",
+            "10"
+          ],
+          [
+            "Design a complex wooden structure",
+            "15"
+          ],
+          [
+            "Find a weak point in a wooden wall",
+            "15"
+          ],
+          [
+            "Pry apart a door",
+            "20"
+          ]
+        ]
+      },
+      {
+        "headers": [
+          "Activity",
+          "DC"
+        ],
+        "rows": [
+          [
+            "Determine a map's age and origin",
+            "10"
+          ],
+          [
+            "Estimate direction and distance to a landmark",
+            "15"
+          ],
+          [
+            "Discern that a map is fake",
+            "15"
+          ],
+          [
+            "Fill in a missing part of a map",
+            "20"
+          ]
+        ]
+      },
+      {
+        "headers": [
+          "Activity",
+          "DC"
+        ],
+        "rows": [
+          [
+            "Determine a shoe's age and origin",
+            "10"
+          ],
+          [
+            "Find a hidden compartment in a boot heel",
+            "15"
+          ]
+        ]
+      },
+      {
+        "headers": [
+          "Activity",
+          "DC"
+        ],
+        "rows": [
+          [
+            "Create a typical meal",
+            "10"
+          ],
+          [
+            "Duplicate a meal",
+            "10"
+          ],
+          [
+            "Spot poison or impurities in food",
+            "15"
+          ],
+          [
+            "Create a gourmet meal",
+            "15"
+          ]
+        ]
+      },
+      {
+        "headers": [
+          "Activity",
+          "DC"
+        ],
+        "rows": [
+          [
+            "Cover injuries or distinguishing marks",
+            "10"
+          ],
+          [
+            "Spot a disguise being used by someone else",
+            "15"
+          ],
+          [
+            "Copy a humanoid's appearance",
+            "20"
+          ]
+        ]
+      },
+      {
+        "headers": [
+          "Activity",
+          "DC"
+        ],
+        "rows": [
+          [
+            "Mimic handwriting",
+            "15"
+          ],
+          [
+            "Duplicate a wax seal",
+            "20"
+          ]
+        ]
+      },
+      {
+        "headers": [
+          "Activity",
+          "DC"
+        ],
+        "rows": [
+          [
+            "Catch a player cheating",
+            "15"
+          ],
+          [
+            "Gain insight into an opponent's personality",
+            "15"
+          ]
+        ]
+      },
+      {
+        "headers": [
+          "Activity",
+          "DC"
+        ],
+        "rows": [
+          [
+            "Identify source of glass",
+            "10"
+          ],
+          [
+            "Determine what a glass object once held",
+            "20"
+          ]
+        ]
+      },
+      {
+        "headers": [
+          "Activity",
+          "DC"
+        ],
+        "rows": [
+          [
+            "Find plants",
+            "15"
+          ],
+          [
+            "Identify poison",
+            "20"
+          ]
+        ]
+      },
+      {
+        "headers": [
+          "Activity",
+          "DC"
+        ],
+        "rows": [
+          [
+            "Modify a gem's appearance",
+            "15"
+          ],
+          [
+            "Determine a gem's history",
+            "20"
+          ]
+        ]
+      },
+      {
+        "headers": [
+          "Activity",
+          "DC"
+        ],
+        "rows": [
+          [
+            "Navigate rough terrain or waters",
+            "10"
+          ],
+          [
+            "Assess a vehicle's condition",
+            "15"
+          ],
+          [
+            "Take a tight corner at high speed",
+            "20"
+          ]
+        ]
+      },
+      {
+        "headers": [
+          "Activity",
+          "DC"
+        ],
+        "rows": [
+          [
+            "Modify a leather item's appearance",
+            "10"
+          ],
+          [
+            "Determine a leather item's history",
+            "20"
+          ]
+        ]
+      },
+      {
+        "headers": [
+          "Activity",
+          "DC"
+        ],
+        "rows": [
+          [
+            "Chisel a small hole in a stone wall",
+            "10"
+          ],
+          [
+            "Find a weak point in a stone wall",
+            "15"
+          ]
+        ]
+      },
+      {
+        "headers": [
+          "Activity",
+          "DC"
+        ],
+        "rows": [
+          [
+            "Identify a tune",
+            "10"
+          ],
+          [
+            "Improvise a tune",
+            "20"
+          ]
+        ]
+      },
+      {
+        "headers": [
+          "Activity",
+          "DC"
+        ],
+        "rows": [
+          [
+            "Plot a course",
+            "10"
+          ],
+          [
+            "Discover your position on a nautical chart",
+            "15"
+          ]
+        ]
+      },
+      {
+        "headers": [
+          "Activity",
+          "DC"
+        ],
+        "rows": [
+          [
+            "Paint an accurate portrait",
+            "10"
+          ],
+          [
+            "Create a painting with a hidden message",
+            "20"
+          ]
+        ]
+      },
+      {
+        "headers": [
+          "Activity",
+          "DC"
+        ],
+        "rows": [
+          [
+            "Spot a poisoned object",
+            "10"
+          ],
+          [
+            "Determine the effects of a poison",
+            "20"
+          ]
+        ]
+      },
+      {
+        "headers": [
+          "Activity",
+          "DC"
+        ],
+        "rows": [
+          [
+            "Determine what a vessel once held",
+            "10"
+          ],
+          [
+            "Create a serviceable pot",
+            "15"
+          ],
+          [
+            "Find a weak point in a ceramic object",
+            "20"
+          ]
+        ]
+      },
+      {
+        "headers": [
+          "Activity",
+          "DC"
+        ],
+        "rows": [
+          [
+            "Sharpen a dull blade",
+            "10"
+          ],
+          [
+            "Repair a suit of armor",
+            "15"
+          ],
+          [
+            "Sunder a nonmagical metal object",
+            "15"
+          ]
+        ]
+      },
+      {
+        "headers": [
+          "Activity",
+          "DC"
+        ],
+        "rows": [
+          [
+            "Pick a lock",
+            "Varies"
+          ],
+          [
+            "Disable a trap",
+            "Varies"
+          ]
+        ]
+      },
+      {
+        "headers": [
+          "Activity",
+          "DC"
+        ],
+        "rows": [
+          [
+            "Temporarily repair a disabled device",
+            "10"
+          ],
+          [
+            "Repair an item in half the time",
+            "15"
+          ],
+          [
+            "Improvise a temporary item using scraps",
+            "20"
+          ]
+        ]
+      },
+      {
+        "headers": [
+          "Activity",
+          "DC"
+        ],
+        "rows": [
+          [
+            "Repurpose cloth",
+            "10"
+          ],
+          [
+            "Mend a hole in a piece of cloth",
+            "10"
+          ],
+          [
+            "Tailor an outfit",
+            "15"
+          ]
+        ]
+      },
+      {
+        "headers": [
+          "Activity",
+          "DC"
+        ],
+        "rows": [
+          [
+            "Craft a small wooden figurine",
+            "10"
+          ],
+          [
+            "Carve an intricate pattern in wood",
+            "15"
+          ]
+        ]
+      }
+    ],
+    "requires_attunement": false
+  },
+  {
+    "name": "Trebuchet",
+    "slug": "siege-equipment:trebuchet",
+    "category": "equipment",
+    "status": "published_or_unspecified",
+    "source": "",
+    "url": "https://dnd5e.wikidot.com/siege-equipment:trebuchet",
+    "description": "Trebuchet is catalogued as equipment. Dice formulas: 8d10.",
+    "labels": {
+      "armor_class": "15",
+      "hit_points": "150"
+    },
+    "mechanics": {
+      "bonuses": [],
+      "dice": [
+        "8d10"
+      ],
+      "difficulty_classes": [],
+      "speed_values_feet": [],
+      "charge_counts": [],
+      "damage_types_mentioned": [
+        "bludgeoning"
+      ],
+      "conditions_mentioned": [],
+      "damage_resistances": [],
+      "damage_immunities": [],
+      "requires_attunement": false,
+      "concentration_mentioned": false,
+      "advantage_mentioned": false,
+      "disadvantage_mentioned": false
+    },
+    "headings": [],
+    "tables": [],
+    "armor_class": "15",
+    "hit_points": "150",
+    "requires_attunement": false
+  },
+  {
+    "name": "Weapons",
+    "slug": "weapons",
+    "category": "rules",
+    "status": "published_or_unspecified",
+    "source": "Tomb of Annihilation",
+    "url": "https://dnd5e.wikidot.com/weapons",
+    "description": "Weapons is catalogued as rules. Difficulty classes: 10. Dice formulas: 1d10, 1d12, 1d4, 1d6, 1d8, 2d4, 2d6.",
+    "labels": {
+      "source": "Tomb of Annihilation"
+    },
+    "mechanics": {
+      "bonuses": [],
+      "dice": [
+        "1d10",
+        "1d12",
+        "1d4",
+        "1d6",
+        "1d8",
+        "2d4",
+        "2d6"
+      ],
+      "difficulty_classes": [
+        10
+      ],
+      "speed_values_feet": [],
+      "charge_counts": [],
+      "damage_types_mentioned": [
+        "bludgeoning",
+        "slashing"
+      ],
+      "conditions_mentioned": [
+        "restrained"
+      ],
+      "damage_resistances": [],
+      "damage_immunities": [],
+      "requires_attunement": false,
+      "concentration_mentioned": false,
+      "advantage_mentioned": true,
+      "disadvantage_mentioned": true
+    },
+    "headings": [
+      "Simple Weapons",
+      "Martial Weapons",
+      "Ammunition",
+      "Setting Specific Weapons",
+      "Forgotten Realms",
+      "Dragonlance",
+      "Eberron",
+      "Weapon Properties",
+      "Improvised Weapons",
+      "Silvered Weapons",
+      "Special Weapons"
+    ],
+    "tables": [
+      {
+        "headers": [
+          "Ammunition",
+          "Cost",
+          "Weight"
+        ],
+        "rows": [
+          [
+            "Arrows (20)",
+            "1 gp",
+            "1 lb."
+          ],
+          [
+            "Blowgun needles (50)",
+            "1 gp",
+            "1 lb."
+          ],
+          [
+            "Crossbow bolts (20)",
+            "1 gp",
+            "1½ lb."
+          ],
+          [
+            "Sling bullets (20)",
+            "4 cp",
+            "1½ lb."
+          ]
+        ]
+      }
+    ],
+    "requires_attunement": false
+  }
+]
