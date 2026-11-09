@@ -58,7 +58,8 @@
 
   function effects(character) {
     const total = {ac:0,saving_throws:0,ability_checks:0,initiative:0,speed:0,max_hp:0,attack:0,damage:0,sources:[]};
-    [...(character.inventory || []), ...(character.active_spells || [])].forEach(item => {
+    const features = (character.feature_records || []).filter(row => row.active || (row.recharge === 'passive' && row.effects && Object.keys(row.effects).length));
+    [...(character.inventory || []), ...(character.active_spells || []), ...features].forEach(item => {
       if ((character.inventory || []).includes(item) && !itemActive(item)) return;
       let data = item.effects && typeof item.effects === 'object' ? item.effects : {};
       if (/stone of good luck|luckstone/i.test(item.name || '')) data = {...data,saving_throws:1,ability_checks:1};
@@ -67,6 +68,12 @@
         if (value) { total[key] += value; total.sources.push({source:item.name || 'Effect',effect:key,value}); }
       });
     });
+    const hybrid = (character.feature_records || []).some(row => /hybrid transformation/i.test(row.name || '') && row.active);
+    if (hybrid) {
+      total.ac += 1; total.speed += (classes(character).find(row => row.name === 'Blood Hunter')?.level || 0) >= 7 ? 10 : 0;
+      total.sources.push({source:'Resilient Hide',effect:'ac',value:1});
+      if (total.speed) total.sources.push({source:"Stalker's Prowess",effect:'speed',value:10});
+    }
     return total;
   }
 
@@ -124,11 +131,14 @@
 
   function attacks(character) {
     recalc(character); const global = effects(character);
-    return (character.inventory || []).filter(item => item.equipped && kind(item) === 'weapon').map(item => {
+    const attacks = (character.inventory || []).filter(item => item.equipped && kind(item) === 'weapon').map(item => {
       const data = WEAPONS[baseName(item.name)] || [item.damage || '—',item.damage_type || 'weapon',String(item.ability || 'strength').toLowerCase(),item.range || '5 ft'];
       const ability = String(item.ability || data[2]).toLowerCase(), abilityMod = mod(character.ability_scores?.[ability]), magic = bonus(item);
       return {name:item.name,attack_bonus:prof(character.level) + abilityMod + magic + global.attack + Number(item.attack_bonus_extra || 0),damage:`${data[0]}${abilityMod + magic + global.damage + Number(item.damage_bonus_extra || 0) >= 0 ? '+' : ''}${abilityMod + magic + global.damage + Number(item.damage_bonus_extra || 0)} ${data[1]}`,range:data[3]};
     });
+    const hybrid = (character.feature_records || []).some(row => /hybrid transformation/i.test(row.name || '') && row.active);
+    if (hybrid) { const bloodLevel=classes(character).find(row=>row.name==='Blood Hunter')?.level||0,dex=mod(character.ability_scores?.dexterity),str=mod(character.ability_scores?.strength),ability=Math.max(dex,str),die=bloodLevel>=11?'1d8':'1d6',rite=(character.feature_records||[]).some(row=>/crimson rite/i.test(row.name||'')&&row.active)?` + ${bloodLevel>=11?'1d8':bloodLevel>=5?'1d6':'1d4'} rite`:'';attacks.unshift({name:'Hybrid Unarmed Strike',attack_bonus:prof(character.level)+ability+global.attack,damage:`${die}${ability>=0?'+':''}${ability} slashing${rite}`,range:'5 ft'}); }
+    return attacks;
   }
 
   function shortRest(character) { (character.feature_records || []).forEach(r => { if (r.recharge === 'short') r.uses_used = 0; }); return recalc(character); }
