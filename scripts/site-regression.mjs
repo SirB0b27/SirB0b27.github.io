@@ -23,7 +23,7 @@ if (!dnd.includes('<script src="config.js"></script>') || !dnd.includes('<script
 if (!dndConfig.includes("https://dnd-character-vault-api.hemanth2355.workers.dev")) {
   fail("D&D frontend is not connected to the production Worker.");
 }
-for (const action of ["login", "listCharacters", "getCharacter", "saveCharacter", "createPublicSession", "mergePublicChanges"]) {
+for (const action of ["login", "listCharacters", "getCharacter", "referenceData", "createPublicSession", "publicSave", "mergePublicChanges"]) {
   if (!dndApp.includes(action)) fail(`D&D frontend action missing: ${action}`);
 }
 if (/script\.google\.com|DND_BRIDGE_KEY|bridgeKey/.test(dndConfig)) {
@@ -31,7 +31,7 @@ if (/script\.google\.com|DND_BRIDGE_KEY|bridgeKey/.test(dndConfig)) {
 }
 
 // The public homepage is a workspace chooser, not the Portfolio sidebar.
-if (!index.includes('data-space="portfolio"') || !index.includes('data-space="personal"') || !index.includes('href="birthdays/"')) {
+if (!index.includes('workspace=Portfolio') || !index.includes('workspace=Personal') || !index.includes('href="birthdays/"')) {
   fail("Workspace homepage must show Portfolio, Personal, and Birthdays.");
 }
 if (index.includes("Personal Analytics</span>") || index.includes("College Projects</span>")) {
@@ -44,8 +44,8 @@ if (!portfolio.includes('sessionStorage.getItem("portfolioSpaceAuth")') || !port
 }
 if (!portfolio.includes('id="personalNavTrigger"')) fail("Portfolio workspace Personal entry is missing.");
 if (!portfolioApp.includes("personalNavTrigger")) fail("Portfolio workspace Personal navigation handler is missing.");
-if (!index.includes("sessionStorage.setItem('portfolioSpaceAuth','1')") || !index.includes("sessionStorage.setItem('personalSpaceAuth','1')")) {
-  fail("Homepage must unlock both Portfolio and Personal workspaces.");
+if (!index.includes("script.google.com/macros/s/") || !index.includes("?workspace=Portfolio") || !index.includes("?workspace=Personal")) {
+  fail("Homepage must route Portfolio and Personal through the protected Apps Script gateway.");
 }
 
 const templates = ["azurill","bronzor","chikorita","ditgar","ditto","gengar","glalie","kakuna","lapras","leafish","meowth","onyx","pikachu","rhyhorn","scizor"];
