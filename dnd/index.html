@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <title>D&D Character Vault</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+  <header class="topbar glass">
+    <a class="brand" href="../" aria-label="Return to the main site">
+      <span class="brand-mark">20</span>
+      <span><strong>D&D Character Vault</strong><small>Secure, Drive-backed character workspace</small></span>
+    </a>
+    <div class="top-actions">
+      <label class="global-search" for="globalSearch">
+        <span aria-hidden="true">⌕</span>
+        <input id="globalSearch" type="search" placeholder="Search this character" autocomplete="off">
+      </label>
+      <button id="shareButton" class="subtle hidden" type="button">Share / Merge</button>
+      <button id="menuButton" class="icon-button" type="button" aria-label="Open settings">☰</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="loginView" class="auth-shell">
+      <form id="loginForm" class="login-card glass">
+        <p class="eyebrow">Administrator access</p>
+        <h1>Open the vault</h1>
+        <p class="muted">Character data stays private in Google Drive and is available only after server verification.</p>
+        <label>Email<input id="email" name="email" type="email" autocomplete="username" required></label>
+        <label>Password<input id="password" name="password" type="password" autocomplete="current-password" minlength="12" required></label>
+        <button class="primary" type="submit">Sign in</button>
+        <p id="loginError" class="error" role="alert"></p>
+      </form>
+    </section>
+
+    <section id="publicLoginView" class="auth-shell hidden">
+      <form id="publicLoginForm" class="login-card glass">
+        <p class="eyebrow">Shared character session</p>
+        <h1>Take control for this session</h1>
+        <p class="muted">Your edits stay in a separate public copy until the administrator reviews and merges them.</p>
+        <label>Your name<input id="publicEditorName" type="text" maxlength="80" autocomplete="nickname" required></label>
+        <label>Session PIN<input id="publicPin" type="password" minlength="4" maxlength="32" inputmode="numeric" required></label>
+        <button class="primary" type="submit">Open Character</button>
+        <p id="publicLoginError" class="error" role="alert"></p>
+      </form>
+    </section>
+
+    <section id="publicView" class="public-shell hidden">
+      <section class="public-banner glass">
+        <div><p class="eyebrow">Public session copy</p><h1 id="publicCharacterName">Character</h1><p id="publicSessionStatus" class="muted"></p></div>
+        <button id="publicSaveButton" class="primary" type="button">Save Session Changes</button>
+      </section>
+      <div id="publicSaveStatus" class="save-status" role="status"></div>
+      <section class="public-editor glass">
+        <div class="section-heading"><span>Session Controls</span><span class="badge">Editable</span></div>
+        <div id="publicQuickFields" class="quick-fields"></div>
+        <label class="wide-field">Change note<input id="publicChangeNote" type="text" maxlength="500" placeholder="Optional: damage, short rest, used potion…"></label>
+        <div class="section-heading public-section-heading"><span>Ability Scores</span></div>
+        <div id="publicAbilities" class="quick-fields"></div>
+        <div class="section-heading public-section-heading"><span>Conditions</span></div>
+        <div id="publicConditions" class="check-grid"></div>
+        <div class="section-heading public-section-heading"><span>Spell Slots</span></div>
+        <div id="publicSpellSlots" class="quick-fields"></div>
+        <div class="section-heading public-section-heading"><span>Active Spells</span></div>
+        <div id="publicActiveSpells"></div>
+        <div class="section-heading public-section-heading"><span>Inventory & Item Uses</span></div>
+        <div id="publicInventory"></div>
+        <div class="section-heading public-section-heading"><span>Currency</span></div>
+        <div id="publicCurrency" class="quick-fields"></div>
+        <div class="section-heading public-section-heading"><span>Group Funds</span></div>
+        <div id="publicGroupFunds" class="quick-fields"></div>
+        <div class="section-heading public-section-heading"><span>Features & Resources</span></div>
+        <div id="publicFeatures"></div>
+        <label class="wide-field">General Notes<textarea id="publicNotes" rows="5"></textarea></label>
+        <details class="advanced-editor">
+          <summary>Advanced: edit complete character data</summary>
+          <p class="muted">This JSON editor exposes every character field. Invalid JSON cannot be saved.</p>
+          <textarea id="publicJsonEditor" rows="22" spellcheck="false"></textarea>
+          <button id="applyPublicJson" class="subtle" type="button">Apply JSON to Form</button>
+        </details>
+      </section>
+    </section>
+
+    <section id="vaultView" class="vault hidden" aria-live="polite">
+      <aside class="library glass">
+        <div class="section-heading"><span>Characters</span><span id="characterCount" class="badge">0</span></div>
+        <div id="characterList" class="character-list"></div>
+        <button id="logoutButton" class="subtle full" type="button">Sign out</button>
+      </aside>
+
+      <div class="workspace">
+        <section id="characterHeader" class="character-header glass"></section>
+        <nav id="tabBar" class="tab-bar" aria-label="Character sections"></nav>
+        <section class="content-card glass">
+          <div id="tabContent"></div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="shareDialog" class="settings share-dialog glass">
+    <form method="dialog">
+      <div class="section-heading"><span>Public Character Control</span><button class="icon-button" value="close" aria-label="Close">×</button></div>
+      <p class="muted">Create an isolated session copy. Public edits never touch the private character until you approve a merge.</p>
+      <label>New session PIN<input id="newSharePin" type="password" minlength="4" maxlength="32" placeholder="4–32 characters"></label>
+      <button id="createShareButton" class="primary full" type="button">Enable New Public Session</button>
+      <div id="newShareResult" class="share-result hidden"></div>
+      <div class="section-heading public-section-heading"><span>Session History</span></div>
+      <div id="shareSessionList" class="session-list"></div>
+    </form>
+  </dialog>
+
+  <dialog id="mergeDialog" class="merge-dialog glass">
+    <form method="dialog">
+      <div class="section-heading"><span>Review Public Changes</span><button class="icon-button" value="close" aria-label="Close">×</button></div>
+      <div class="merge-toolbar">
+        <label>Change type<select id="mergeCategory"></select></label>
+        <label class="check-row"><input id="selectMergeCategory" type="checkbox"> Select all shown</label>
+      </div>
+      <div id="mergeConflictBox" class="conflict-box hidden"></div>
+      <div id="mergeEventList" class="merge-event-list"></div>
+      <div class="merge-footer">
+        <span id="mergeSelectionCount" class="muted">0 selected</span>
+        <button id="mergeSelectedButton" class="primary" type="button">Review & Merge Selected</button>
+      </div>
+      <details class="advanced-editor">
+        <summary>Merge history</summary>
+        <div id="mergeHistory" class="session-list"></div>
+      </details>
+    </form>
+  </dialog>
+
+  <dialog id="settingsDialog" class="settings glass">
+    <form method="dialog">
+      <div class="section-heading"><span>Display</span><button class="icon-button" value="close" aria-label="Close">×</button></div>
+      <label>Foreground opacity<input id="opacityControl" type="range" min="65" max="100" value="88"></label>
+      <label class="check-row"><input id="lightMode" type="checkbox"> Use light theme</label>
+      <button class="primary full" value="close">Done</button>
+    </form>
+  </dialog>
+
+  <template id="emptyTemplate"><div class="empty"><strong>Nothing here yet</strong><span>This section is ready for data.</span></div></template>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
