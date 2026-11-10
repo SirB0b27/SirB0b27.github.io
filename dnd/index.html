@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark light">
   <title>D&D Character Vault</title>
-  <link rel="stylesheet" href="styles.css?v=20261109-6">
+  <link rel="stylesheet" href="styles.css?v=20261110-1">
 </head>
 <body>
   <div class="ambient one"></div><div class="ambient two"></div>
@@ -24,14 +24,14 @@
     <label class="check site-nav-pin"><input id="pinSiteNav" type="checkbox"> Pin navigation on desktop</label>
   </aside>
   <header id="appBar" class="app-bar glass">
+    <button id="menuButton" class="icon-button menu-glyph" type="button" aria-label="Open site navigation"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
     <button id="libraryBack" class="button ghost hidden" type="button">← Library</button>
-    <a class="brand" href="../" aria-label="Return to workspace home"><span class="d20">20</span><span><strong>D&D Character Vault</strong><small>Build, play, and safely preserve every character</small></span></a>
+    <a class="brand" href="../" aria-label="Return to workspace home"><span class="d20" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M32 4 57 18l-4 31-21 11L11 49 7 18Z"/><path d="m32 4 11 20-11 36-11-36Zm-25 14 14 6h22l14-6M11 49l10-25m32 25L43 24"/><text x="32" y="38">20</text></svg></span><span><strong>D&amp;D Character Vault</strong><small>Build, play, and safely preserve every character</small></span></a>
     <div class="app-actions">
       <button id="globalSearchButton" class="icon-button hidden" type="button" aria-label="Search everything">⌕</button>
       <button id="notesButton" class="button ghost hidden" type="button">Notes</button>
       <button id="shareButton" class="button ghost hidden" type="button">Share</button>
       <button id="preferencesButton" class="icon-button" type="button" aria-label="Open preferences">⚙</button>
-      <button id="menuButton" class="icon-button" type="button" aria-label="Open site navigation">☰</button>
     </div>
   </header>
 
@@ -72,13 +72,13 @@
           <div id="tabTools" class="tab-tools"><label class="search-field"><span>⌕</span><input id="tabSearch" type="search" placeholder="Search this tab"></label></div>
           <section id="tabContent" class="tab-content glass"></section>
         </section>
-      </div>
-      <aside id="notesDrawer" class="notes-drawer glass" aria-hidden="true">
+        <aside id="notesDrawer" class="notes-drawer glass" aria-hidden="true">
         <header><div><p class="eyebrow">Character Notes</p><h2>Notes</h2></div><div class="section-actions"><button id="pinNotes" class="button" type="button">Pin</button><button id="closeNotes" class="icon-button" type="button" aria-label="Close notes">×</button></div></header>
         <label>General Notes<textarea id="drawerGeneralNotes" rows="12" placeholder="Character notes stored with the private character in Google Drive"></textarea></label>
         <div class="section-actions"><button id="saveDrawerNotes" class="button primary" type="button">Save Notes</button><button id="newDrawerNote" class="button" type="button">New Session Note</button></div>
         <div id="drawerSessionNotes" class="notes-list"></div>
-      </aside>
+        </aside>
+      </div>
     </section>
 
     <section id="publicLoginView" class="auth-view hidden"><form id="publicLoginForm" class="auth-card glass"><p class="eyebrow">Shared Character Session</p><h1>Take control for this session</h1><p class="muted">Changes stay in a separate copy until the administrator merges them.</p><label>Your Name<input id="publicEditorName" required maxlength="80"></label><label>Session PIN<input id="publicPin" type="password" required minlength="4" maxlength="32"></label><button class="button primary" type="submit">Open Character</button><p id="publicLoginError" class="error"></p></form></section>
@@ -91,9 +91,10 @@
   <dialog id="settingsDialog" class="modal glass"><form><header><div><p class="eyebrow">Appearance &amp; Accessibility</p><h2>Preferences</h2></div><button class="icon-button" type="button" data-close-dialog>×</button></header><div class="form-grid"><label>Theme<select id="themeControl"><option value="midnight">Midnight Blue</option><option value="vault">Vault Purple</option><option value="crimson">Crimson Night</option><option value="bloodmoon">Blood Moon</option><option value="ember">Ember Dark</option><option value="obsidian">Obsidian</option><option value="oled">OLED Black</option><option value="forest">Deep Forest</option><option value="teal">Abyssal Teal</option><option value="frost">Frost Light</option><option value="parchment">Parchment Light</option><option value="rose">Rose Quartz</option><option value="sage">Sage Light</option><option value="slate">Slate Light</option><option value="contrast-dark">High Contrast Dark</option><option value="contrast-light">High Contrast Light</option><option value="system">System Default</option></select></label><label>Accent Color<input id="accentControl" placeholder="crimson or #9f263d"></label><label>Main Color<input id="mainControl" placeholder="obsidian or #10131b"></label><label>UI Scale<select id="scaleControl"><option value=".85">85%</option><option value="1">100%</option><option value="1.15">115%</option><option value="1.3">130%</option><option value="1.5">150%</option></select></label><label class="range-label"><span>Panel Opacity <output id="opacityValue">78%</output></span><input id="opacityControl" type="range" min="5" max="100" value="78"><small>Transparent ↔ Solid</small></label><label class="range-label"><span>Blur Strength <output id="blurValue">22px</output></span><input id="blurControl" type="range" min="0" max="40" value="22"></label><label class="check"><input id="frostControl" type="checkbox" checked> Frosted Glass</label><label class="check"><input id="transparencyControl" type="checkbox"> Reduce Transparency</label><label class="check"><input id="roundedControl" type="checkbox" checked> Rounded Corners</label><div class="glass-preview glass"><strong>Live glass preview</strong><span>Changes update while you adjust them.</span></div></div><footer><button id="logoutButton" class="button danger" type="button">Sign Out</button><button id="resetSettings" class="button" type="button">Reset</button><button id="applySettings" class="button primary" type="submit">Save &amp; Apply</button></footer></form></dialog>
   <dialog id="shareDialog" class="modal wide glass"><form><header><div><p class="eyebrow">Public Character Control</p><h2>Share &amp; Merge</h2></div><button class="icon-button" type="button" data-close-dialog>×</button></header><p class="muted">Create an isolated public copy. It never changes the private character until you approve a merge.</p><label>New Session PIN<input id="newSharePin" type="password" minlength="4" maxlength="32"></label><button id="createShareButton" class="button primary" type="button">Enable Public Session</button><div id="newShareResult"></div><div id="shareSessionList" class="cards"></div></form></dialog>
   <dialog id="mergeDialog" class="modal wide glass"><form><header><div><p class="eyebrow">Public Session Changes</p><h2>Review &amp; Merge</h2></div><button class="icon-button" type="button" data-close-dialog>×</button></header><div class="merge-toolbar"><label>Change Type<select id="mergeCategory"></select></label><label class="check"><input id="selectMergeCategory" type="checkbox"> Select All Shown</label></div><div id="mergeConflictBox"></div><div id="mergeEventList"></div><footer><span id="mergeSelectionCount" class="muted">0 selected</span><button id="mergeSelectedButton" class="button primary" type="button">Merge Selected</button></footer><details><summary>Merge History</summary><div id="mergeHistory"></div></details></form></dialog>
+  <dialog id="confirmDialog" class="modal confirm-modal glass"><form method="dialog"><header><div><p class="eyebrow">Please Confirm</p><h2 id="confirmTitle">Confirm action</h2></div><button id="confirmClose" class="icon-button" type="button" aria-label="Close">×</button></header><p id="confirmMessage" class="confirm-message"></p><footer><button id="confirmCancel" class="button" type="button">Cancel</button><button id="confirmAccept" class="button danger" type="button">Confirm</button></footer></form></dialog>
 
   <input id="characterFile" type="file" accept="application/json,.json" hidden>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <script src="config.js"></script><script src="engine.js?v=20261109-6"></script><script src="app.js?v=20261109-6"></script>
+  <script src="config.js"></script><script src="engine.js?v=20261110-1"></script><script src="app.js?v=20261110-1"></script>
 </body>
 </html>

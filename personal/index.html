@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="robots" content="noindex">
   <title>Personal | Hemanth Velan</title>
+  <link rel="stylesheet" href="../assets/workspace-nav.css">
   <script>
     if(sessionStorage.getItem('personalSpaceAuth')==='1'){
       document.documentElement.classList.add('personal-authorized');
@@ -307,6 +308,6 @@
   const route=parseHash();
   navigate(route.view,false);
   if(route.view==='college')showAssignment(route.assignment,false);
-})();</script>
+})();</script><script src="../assets/workspace-nav.js"></script>
 </body>
 </html>

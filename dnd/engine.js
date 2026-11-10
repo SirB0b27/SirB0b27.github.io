@@ -55,12 +55,15 @@
   const bonus = item => Number(item.magic_bonus ?? item.enhancement_bonus ?? (String(item.name || '').match(/(?:^|\s)\+([0-9]+)(?:\s|$)/)?.[1] || 0));
   const kind = item => String(item.type || (ARMOR[baseName(item.name)] ? 'armor' : baseName(item.name) === 'Shield' ? 'shield' : WEAPONS[baseName(item.name)] ? 'weapon' : 'gear')).toLowerCase();
   const itemActive = item => !(item.requires_attunement && !item.attuned) && (['armor','shield','weapon'].includes(kind(item)) ? !!item.equipped : !!(item.active || item.attuned || item.equipped));
+  const featureActive = (character, pattern) => (character.feature_records || []).some(row => pattern.test(row.name || '') && row.active === true);
+  const hybridActive = character => featureActive(character, /^hybrid transformation$/i);
+  const legacyVirtualItem = item => /^(hybrid unarmed strike|resilient hide)$/i.test(baseName(item?.name));
 
   function effects(character) {
     const total = {ac:0,saving_throws:0,ability_checks:0,initiative:0,speed:0,max_hp:0,attack:0,damage:0,sources:[]};
     const features = (character.feature_records || []).filter(row => row.active || (row.recharge === 'passive' && row.effects && Object.keys(row.effects).length));
     [...(character.inventory || []), ...(character.active_spells || []), ...features].forEach(item => {
-      if ((character.inventory || []).includes(item) && !itemActive(item)) return;
+      if ((character.inventory || []).includes(item) && (legacyVirtualItem(item) || !itemActive(item))) return;
       let data = item.effects && typeof item.effects === 'object' ? item.effects : {};
       if (/stone of good luck|luckstone/i.test(item.name || '')) data = {...data,saving_throws:1,ability_checks:1};
       Object.keys(total).filter(key => key !== 'sources').forEach(key => {
@@ -68,7 +71,7 @@
         if (value) { total[key] += value; total.sources.push({source:item.name || 'Effect',effect:key,value}); }
       });
     });
-    const hybrid = (character.feature_records || []).some(row => /hybrid transformation/i.test(row.name || '') && row.active);
+    const hybrid = hybridActive(character);
     if (hybrid) {
       total.ac += 1; total.speed += (classes(character).find(row => row.name === 'Blood Hunter')?.level || 0) >= 7 ? 10 : 0;
       total.sources.push({source:'Resilient Hide',effect:'ac',value:1});
@@ -98,30 +101,30 @@
   }
 
   function acBreakdown(character) {
-    const dex = mod(character.ability_scores?.dexterity), active = (character.inventory || []).filter(item => item.equipped && itemActive(item));
+    const dex = mod(character.ability_scores?.dexterity), active = (character.inventory || []).filter(item => item.equipped && itemActive(item) && !legacyVirtualItem(item));
     let rows = [], total;
     if (character.armor_class_override !== undefined && character.armor_class_override !== null && character.armor_class_override !== '') {
-      total = Number(character.armor_class_override); rows.push({name:'Manual AC Override',calculation:String(total),value:total});
+      total = Number(character.armor_class_override); rows.push({name:'Manual AC Override',initial:total,ability:0,magical:0,calculation:String(total),value:total,equipped:true});
     } else {
       const armor = active.find(item => kind(item) === 'armor');
-      if (armor) { const rule = ARMOR[baseName(armor.name)] || [10,0], dexPart = rule[1] === null ? dex : Math.min(dex,rule[1]), value = rule[0] + dexPart + bonus(armor); total = value; rows.push({name:armor.name,calculation:`${rule[0]} ${dexPart >= 0 ? '+' : ''}${dexPart} Dexterity${bonus(armor) ? ` +${bonus(armor)} magic` : ''}`,value}); }
-      else if (character.race === 'Tortle') { total = 17; rows.push({name:'Natural Armor',calculation:'17',value:17}); }
-      else { const extra = character.character_class === 'Monk' ? mod(character.ability_scores?.wisdom) : character.character_class === 'Barbarian' ? mod(character.ability_scores?.constitution) : 0; total = 10 + dex + extra; rows.push({name:'Unarmored',calculation:`10 ${dex >= 0 ? '+' : ''}${dex} Dexterity${extra ? ` ${extra >= 0 ? '+' : ''}${extra}` : ''}`,value:total}); }
+      if (armor) { const rule = ARMOR[baseName(armor.name)] || [10,0], dexPart = rule[1] === null ? dex : Math.min(dex,rule[1]), magic = bonus(armor), value = rule[0] + dexPart + magic; total = value; rows.push({id:armor.id,name:armor.name,initial:rule[0],ability:dexPart,magical:magic,calculation:`${rule[0]} ${dexPart >= 0 ? '+' : ''}${dexPart} Dexterity${magic ? ` +${magic} magic` : ''}`,value,equipped:true}); }
+      else if (character.race === 'Tortle') { total = 17; rows.push({name:'Natural Armor',initial:17,ability:0,magical:0,calculation:'17',value:17,equipped:true}); }
+      else { const extra = character.character_class === 'Monk' ? mod(character.ability_scores?.wisdom) : character.character_class === 'Barbarian' ? mod(character.ability_scores?.constitution) : 0; total = 10 + dex + extra; rows.push({name:'Unarmored',initial:10,ability:dex+extra,magical:0,calculation:`10 ${dex >= 0 ? '+' : ''}${dex} Dexterity${extra ? ` ${extra >= 0 ? '+' : ''}${extra}` : ''}`,value:total,equipped:true}); }
       const shield = active.find(item => kind(item) === 'shield');
-      if (shield) { const value = 2 + bonus(shield); total += value; rows.push({name:shield.name,calculation:`+2 shield${bonus(shield) ? ` +${bonus(shield)} magic` : ''}`,value}); }
-      active.filter(item => !['armor','shield'].includes(kind(item))).forEach(item => { const value = Number(item.ac_bonus || 0); if (value) { total += value; rows.push({name:item.name,calculation:`${value >= 0 ? '+' : ''}${value} item bonus`,value}); } });
-      effects(character).sources.filter(row => row.effect === 'ac').forEach(row => { total += row.value; rows.push({name:row.source,calculation:`${row.value >= 0 ? '+' : ''}${row.value} effect`,value:row.value}); });
+      if (shield) { const magic=bonus(shield),value = 2 + magic; total += value; rows.push({id:shield.id,name:shield.name,initial:2,ability:0,magical:magic,calculation:`+2 shield${magic ? ` +${magic} magic` : ''}`,value,equipped:true}); }
+      active.filter(item => !['armor','shield'].includes(kind(item))).forEach(item => { const value = Number(item.ac_bonus || 0); if (value) { total += value; rows.push({id:item.id,name:item.name,initial:0,ability:0,magical:value,calculation:`${value >= 0 ? '+' : ''}${value} item bonus`,value,equipped:true}); } });
+      effects(character).sources.filter(row => row.effect === 'ac').forEach(row => { total += row.value; rows.push({name:row.source,initial:0,ability:0,magical:row.value,calculation:`${row.value >= 0 ? '+' : ''}${row.value} effect`,value:row.value,equipped:true}); });
     }
-    rows.push({name:'Total Armor Class',calculation:'Final total',value:total,summary:true}); return rows;
+    rows.push({name:'Total Armor Class',initial:'',ability:'',magical:'',calculation:'Final total',value:total,summary:true,equipped:true}); return rows;
   }
 
   function recalc(character) {
     const rows = classes(character), level = character.level, proficiency = prof(level), scores = character.ability_scores ||= {}, mods = Object.fromEntries(ABILITIES.map(a => [a,mod(scores[a])]));
-    const active = effects(character), saveProfs = new Set(character.saving_throw_proficiencies || []), skillProfs = new Set(character.skill_proficiencies || []);
+    const active = effects(character), saveProfs = new Set(character.saving_throw_proficiencies || []), skillProfs = new Set(character.skill_proficiencies || []), expertise = new Set(character.skill_expertise || []);
     const saves = Object.fromEntries(ABILITIES.map(a => [a,mods[a] + (saveProfs.has(a) ? proficiency : 0) + active.saving_throws]));
-    const skills = Object.fromEntries(Object.entries(SKILLS).map(([skill,a]) => [skill,mods[a] + (skillProfs.has(skill) ? proficiency : 0) + active.ability_checks]));
+    const skills = Object.fromEntries(Object.entries(SKILLS).map(([skill,a]) => [skill,mods[a] + (expertise.has(skill) ? proficiency * 2 : skillProfs.has(skill) ? proficiency : 0) + active.ability_checks]));
     const firstCaster = rows.find(row => CLASSES[row.name]?.spell || (row.name === 'Fighter' && row.subclass === 'Eldritch Knight') || (row.name === 'Rogue' && row.subclass === 'Arcane Trickster'));
-    const derived = {modifiers:mods,proficiency_bonus:proficiency,saving_throws:saves,skills,initiative:mods.dexterity + active.initiative,passive_perception:10 + skills.Perception,armor_class:acBreakdown(character).at(-1).value,effect_sources:active.sources,speed_bonus:active.speed};
+    const derived = {modifiers:mods,proficiency_bonus:proficiency,saving_throws:saves,skills,initiative:mods.dexterity + active.initiative,passive_perception:10 + skills.Perception,armor_class:acBreakdown(character).at(-1).value,effect_sources:active.sources,speed_bonus:active.speed,hybrid_active:hybridActive(character)};
     if (firstCaster) { const ability = character.spellcasting_ability_override || CLASSES[firstCaster.name]?.spell || 'intelligence'; derived.spellcasting_ability = ability; derived.spell_save_dc = 8 + proficiency + mods[ability]; derived.spell_attack_bonus = proficiency + mods[ability]; }
     character.derived = derived;
     if (rows.length > 1) character.spell_slots_max = spellSlots(rows);
@@ -129,17 +132,19 @@
     character.updated_at = new Date().toISOString(); return character;
   }
 
-  function attacks(character) {
+  function weaponRows(character) {
     recalc(character); const global = effects(character);
-    const attacks = (character.inventory || []).filter(item => item.equipped && kind(item) === 'weapon').map(item => {
+    const rows = (character.inventory || []).filter(item => kind(item) === 'weapon' && !legacyVirtualItem(item)).map(item => {
       const data = WEAPONS[baseName(item.name)] || [item.damage || '—',item.damage_type || 'weapon',String(item.ability || 'strength').toLowerCase(),item.range || '5 ft'];
       const ability = String(item.ability || data[2]).toLowerCase(), abilityMod = mod(character.ability_scores?.[ability]), magic = bonus(item);
-      return {name:item.name,attack_bonus:prof(character.level) + abilityMod + magic + global.attack + Number(item.attack_bonus_extra || 0),damage:`${data[0]}${abilityMod + magic + global.damage + Number(item.damage_bonus_extra || 0) >= 0 ? '+' : ''}${abilityMod + magic + global.damage + Number(item.damage_bonus_extra || 0)} ${data[1]}`,range:data[3]};
+      const damageBonus=abilityMod + magic + global.damage + Number(item.damage_bonus_extra || 0),riteDie=item.crimson_rite ? (classes(character).find(row=>row.name==='Blood Hunter')?.level||0)>=11?'1d8':(classes(character).find(row=>row.name==='Blood Hunter')?.level||0)>=5?'1d6':'1d4' : '';
+      return {id:item.id,name:item.name,equipped:!!item.equipped,crimson_rite:!!item.crimson_rite,attack_bonus:prof(character.level) + abilityMod + magic + global.attack + Number(item.attack_bonus_extra || 0),damage_roll:`${data[0]}${riteDie?` + ${riteDie}`:''}${damageBonus >= 0 ? ' +' : ' '}${damageBonus}`,damage_type:item.damage_type||data[1],properties:item.properties||item.notes||data[3],range:item.range||data[3],virtual:false};
     });
-    const hybrid = (character.feature_records || []).some(row => /hybrid transformation/i.test(row.name || '') && row.active);
-    if (hybrid) { const bloodLevel=classes(character).find(row=>row.name==='Blood Hunter')?.level||0,dex=mod(character.ability_scores?.dexterity),str=mod(character.ability_scores?.strength),ability=Math.max(dex,str),die=bloodLevel>=11?'1d8':'1d6',rite=(character.feature_records||[]).some(row=>/crimson rite/i.test(row.name||'')&&row.active)?` + ${bloodLevel>=11?'1d8':bloodLevel>=5?'1d6':'1d4'} rite`:'';attacks.unshift({name:'Hybrid Unarmed Strike',attack_bonus:prof(character.level)+ability+global.attack,damage:`${die}${ability>=0?'+':''}${ability} slashing${rite}`,range:'5 ft'}); }
-    return attacks;
+    if (hybridActive(character)) { const bloodLevel=classes(character).find(row=>row.name==='Blood Hunter')?.level||0,dex=mod(character.ability_scores?.dexterity),str=mod(character.ability_scores?.strength),ability=Math.max(dex,str),die=bloodLevel>=11?'1d8':'1d6',attackBonus=bloodLevel>=11?2:0,feral=bloodLevel>=3?1:0,riteDie=character.hybrid_crimson_rite?(bloodLevel>=11?'1d8':bloodLevel>=5?'1d6':'1d4'):'';rows.unshift({id:'hybrid-unarmed',name:'Hybrid Unarmed Strike',equipped:true,crimson_rite:!!character.hybrid_crimson_rite,attack_bonus:prof(character.level)+ability+attackBonus+global.attack,damage_roll:`${die}${riteDie?` + ${riteDie}`:''}${ability+feral>=0?' +':''}${ability+feral}`,damage_type:'bludgeoning/slashing',properties:'Magical while transformed; uses Dexterity or Strength.',range:'5 ft',virtual:true}); }
+    return rows;
   }
+
+  function attacks(character) { return weaponRows(character).filter(row => row.equipped).map(row => ({...row,damage:`${row.damage_roll} ${row.damage_type}`})); }
 
   function shortRest(character) { (character.feature_records || []).forEach(r => { if (r.recharge === 'short') r.uses_used = 0; }); return recalc(character); }
   function longRest(character) { character.current_hp = character.max_hp; character.temporary_hp = 0; character.death_save_successes = 0; character.death_save_failures = 0; character.hit_dice_used = Math.max(0,Number(character.hit_dice_used || 0) - Math.max(1,Math.floor(character.level / 2))); Object.keys(character.spell_slots_used || {}).forEach(key => character.spell_slots_used[key] = 0); (character.feature_records || []).forEach(r => { if (['short','long'].includes(r.recharge)) r.uses_used = 0; }); return recalc(character); }
@@ -167,5 +172,5 @@
     return {hpGain,dieRoll,classLevel:entry.level,totalLevel:character.level,features:info.features,subclass:entry.subclass};
   }
 
-  window.DndEngine = {ABILITIES,SKILLS,CLASSES,FEATURES,clone,uid,mod,prof,classes,effects,recalc,attacks,acBreakdown,shortRest,longRest,takeDamage,heal,levelInfo,applyLevelUp,spellSlots,kind,itemActive};
+  window.DndEngine = {ABILITIES,SKILLS,CLASSES,FEATURES,clone,uid,mod,prof,classes,effects,recalc,attacks,weaponRows,acBreakdown,shortRest,longRest,takeDamage,heal,levelInfo,applyLevelUp,spellSlots,kind,itemActive,hybridActive};
 })();
