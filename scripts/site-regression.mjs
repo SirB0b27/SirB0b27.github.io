@@ -14,6 +14,7 @@ const dnd = read("dnd/index.html");
 const dndConfig = read("dnd/config.js");
 const dndApp = read("dnd/app.js");
 const dndEngine = read("dnd/engine.js");
+const dndStyles = read("dnd/styles.css");
 
 if (!index.includes('href="dnd/"') || !index.includes("D&amp;D Character Vault")) {
   fail("Workspace homepage is missing the D&D Character Vault entry.");
@@ -29,6 +30,22 @@ if (!dndConfig.includes("https://dnd-character-vault-api.hemanth2355.workers.dev
 }
 for (const action of ["login", "listCharacters", "getCharacter", "referenceData", "createPublicSession", "publicSave", "mergePublicChanges"]) {
   if (!dndApp.includes(action)) fail(`D&D frontend action missing: ${action}`);
+}
+if (!dndApp.includes("JSON.stringify({...payload,action,token:state.token})")) fail("API action must override descriptive payload fields.");
+if (dndApp.includes("confirm(" ) || dndApp.includes("alert(")) fail("D&D UI must use themed in-app confirmations, not browser dialogs.");
+if (!dnd.includes('id="confirmDialog"') || !dndApp.includes("askConfirm(")) fail("D&D in-app confirmation dialog is missing.");
+if (dndApp.includes("if(e.target===dialog)dialog.close()")) fail("D&D data-entry dialogs must not close when their backdrop is clicked.");
+for (const marker of ["commitLive", "data-weapon-equipped", "data-weapon-rite", "hybrid_crimson_rite", "changeAction"]) {
+  if (!dndApp.includes(marker)) fail(`D&D live interaction marker missing: ${marker}`);
+}
+for (const marker of ["weaponRows", "hybridActive", "skill_expertise", "legacyVirtualItem"]) {
+  if (!dndEngine.includes(marker)) fail(`D&D reactive calculation marker missing: ${marker}`);
+}
+for (const theme of ["crimson", "bloodmoon", "obsidian", "oled", "contrast-dark", "contrast-light"]) {
+  if (!dnd.includes(`value="${theme}"`) || !dndStyles.includes(`data-theme=${theme}`)) fail(`D&D theme is incomplete: ${theme}`);
+}
+for (const id of ["newCharacter","batchCharacters","openCharacter","downloadCharacter","shareButton","preferencesButton","menuButton"]) {
+  if (!dnd.includes(`id="${id}"`) || !dndApp.includes(`$('${id}')`)) fail(`D&D control is not wired: ${id}`);
 }
 if (/script\.google\.com|DND_BRIDGE_KEY|bridgeKey/.test(dndConfig)) {
   fail("D&D public configuration exposes a backend URL or bridge secret.");
@@ -77,6 +94,11 @@ for (const id of ["projectPaginationTop","projectPaginationBottom","educationPag
 
 if (!personal.includes("Personal Analytics") || !personal.includes("College Projects")) {
   fail("Personal workspace navigation is incomplete.");
+}
+
+for (const path of ["index.html","portfolio/index.html","birthdays/index.html","games/index.html","personal/index.html","admin/index.html"]) {
+  const html=read(path);
+  if (!html.includes("workspace-nav.css") || !html.includes("workspace-nav.js")) fail(`Shared side navigation is missing: ${path}`);
 }
 
 if (!process.exitCode) console.log("Static regression checks passed.");
