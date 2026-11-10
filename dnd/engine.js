@@ -51,10 +51,16 @@
   const uid = () => globalThis.crypto?.randomUUID?.() || `id-${Date.now()}-${Math.random().toString(16).slice(2)}`;
   const mod = score => Math.floor((Number(score || 10) - 10) / 2);
   const prof = level => 2 + Math.floor((Math.max(1, Number(level || 1)) - 1) / 4);
-  const baseName = value => String(value || '').replace(/\s*\+[0-9]+\s*/g, ' ').trim().replace(/^Wooden Shield$/,'Shield').replace(/^Luckstone$/,'Stone of Good Luck');
-  const bonus = item => Number(item.magic_bonus ?? item.enhancement_bonus ?? (String(item.name || '').match(/(?:^|\s)\+([0-9]+)(?:\s|$)/)?.[1] || 0));
+  const baseName = value => {
+    const name = String(value || '').replace(/\s*\+[0-9]+\s*/g, ' ').trim().replace(/^Wooden Shield$/,'Shield').replace(/^Luckstone$/,'Stone of Good Luck');
+    if (/^Dwarven Plate(?: Armor)?$/i.test(name)) return 'Plate';
+    const withoutArmor = name.replace(/ Armor$/i,'');
+    return ARMOR[withoutArmor] ? withoutArmor : name;
+  };
+  const bonus = item => Number(item.magic_bonus || item.enhancement_bonus || (/^Dwarven Plate(?: Armor)?$/i.test(String(item.name || '')) ? 2 : (String(item.name || '').match(/(?:^|\s)\+([0-9]+)(?:\s|$)/)?.[1] || 0)));
   const kind = item => String(item.type || (ARMOR[baseName(item.name)] ? 'armor' : baseName(item.name) === 'Shield' ? 'shield' : WEAPONS[baseName(item.name)] ? 'weapon' : 'gear')).toLowerCase();
-  const itemActive = item => !(item.requires_attunement && !item.attuned) && (['armor','shield','weapon'].includes(kind(item)) ? !!item.equipped : !!(item.active || item.attuned || item.equipped));
+  const grantsArmor = item => Number(item?.ac_bonus || 0) !== 0 || Number(item?.effects?.ac || 0) !== 0;
+  const itemActive = item => !(item.requires_attunement && !item.attuned) && (['armor','shield','weapon'].includes(kind(item)) || grantsArmor(item) ? !!item.equipped : !!(item.active || item.attuned || item.equipped));
   const featureActive = (character, pattern) => (character.feature_records || []).some(row => pattern.test(row.name || '') && row.active === true);
   const hybridActive = character => featureActive(character, /^hybrid transformation$/i);
   const legacyVirtualItem = item => /^(hybrid unarmed strike|resilient hide)$/i.test(baseName(item?.name));
@@ -68,13 +74,13 @@
       if (/stone of good luck|luckstone/i.test(item.name || '')) data = {...data,saving_throws:1,ability_checks:1};
       Object.keys(total).filter(key => key !== 'sources').forEach(key => {
         const value = Number(data[key] || 0);
-        if (value) { total[key] += value; total.sources.push({source:item.name || 'Effect',effect:key,value}); }
+        if (value) { total[key] += value; total.sources.push({id:item.id,source:item.name || 'Effect',effect:key,value}); }
       });
     });
     const hybrid = hybridActive(character);
     if (hybrid) {
       total.ac += 1; total.speed += (classes(character).find(row => row.name === 'Blood Hunter')?.level || 0) >= 7 ? 10 : 0;
-      total.sources.push({source:'Resilient Hide',effect:'ac',value:1});
+      total.sources.push({id:(character.feature_records || []).find(row => /^hybrid transformation$/i.test(row.name || ''))?.id,source:'Resilient Hide',effect:'ac',value:1});
       if (total.speed) total.sources.push({source:"Stalker's Prowess",effect:'speed',value:10});
     }
     return total;
@@ -113,9 +119,32 @@
       const shield = active.find(item => kind(item) === 'shield');
       if (shield) { const magic=bonus(shield),value = 2 + magic; total += value; rows.push({id:shield.id,name:shield.name,initial:2,ability:0,magical:magic,calculation:`+2 shield${magic ? ` +${magic} magic` : ''}`,value,equipped:true}); }
       active.filter(item => !['armor','shield'].includes(kind(item))).forEach(item => { const value = Number(item.ac_bonus || 0); if (value) { total += value; rows.push({id:item.id,name:item.name,initial:0,ability:0,magical:value,calculation:`${value >= 0 ? '+' : ''}${value} item bonus`,value,equipped:true}); } });
-      effects(character).sources.filter(row => row.effect === 'ac').forEach(row => { total += row.value; rows.push({name:row.source,initial:0,ability:0,magical:row.value,calculation:`${row.value >= 0 ? '+' : ''}${row.value} effect`,value:row.value,equipped:true}); });
+      effects(character).sources.filter(row => row.effect === 'ac').forEach(row => { total += row.value; rows.push({id:row.id,name:row.source,initial:0,ability:0,magical:row.value,calculation:`${row.value >= 0 ? '+' : ''}${row.value} effect`,value:row.value,equipped:true,effect:true}); });
     }
     rows.push({name:'Total Armor Class',initial:'',ability:'',magical:'',calculation:'Final total',value:total,summary:true,equipped:true}); return rows;
+  }
+
+  function setEquipped(character, id, equipped) {
+    const item = (character.inventory || []).find(row => row.id === id);
+    if (!item) return recalc(character);
+    if (equipped && ['armor','shield'].includes(kind(item))) {
+      (character.inventory || []).forEach(row => { if (row.id !== id && kind(row) === kind(item)) row.equipped = false; });
+    }
+    item.equipped = !!equipped;
+    return recalc(character);
+  }
+
+  function armorRows(character) {
+    const breakdown = acBreakdown(character), byId = new Map(breakdown.filter(row => row.id).map(row => [row.id,row]));
+    const candidates = (character.inventory || []).filter(item => ['armor','shield'].includes(kind(item)) || grantsArmor(item));
+    const rows = candidates.map(item => {
+      const active = !!item.equipped && itemActive(item), applied = active ? byId.get(item.id) : null;
+      return {id:item.id,name:item.name,equipped:!!item.equipped,active,initial:applied?.initial ?? 0,ability:applied?.ability ?? 0,magical:applied?.magical ?? 0,value:applied?.value ?? 0,requires_attunement:!!item.requires_attunement,attuned:!!item.attuned};
+    });
+    const candidateIds = new Set(candidates.map(item => item.id));
+    breakdown.filter(row => !row.summary && !candidateIds.has(row.id)).forEach(row => rows.push(row));
+    rows.push(breakdown.at(-1));
+    return rows;
   }
 
   function recalc(character) {
@@ -172,5 +201,5 @@
     return {hpGain,dieRoll,classLevel:entry.level,totalLevel:character.level,features:info.features,subclass:entry.subclass};
   }
 
-  window.DndEngine = {ABILITIES,SKILLS,CLASSES,FEATURES,clone,uid,mod,prof,classes,effects,recalc,attacks,weaponRows,acBreakdown,shortRest,longRest,takeDamage,heal,levelInfo,applyLevelUp,spellSlots,kind,itemActive,hybridActive};
+  window.DndEngine = {ABILITIES,SKILLS,CLASSES,FEATURES,clone,uid,mod,prof,classes,effects,recalc,attacks,weaponRows,acBreakdown,armorRows,setEquipped,shortRest,longRest,takeDamage,heal,levelInfo,applyLevelUp,spellSlots,kind,itemActive,hybridActive};
 })();
