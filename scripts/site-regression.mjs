@@ -35,6 +35,12 @@ if (!dndApp.includes("JSON.stringify({...payload,action,token:state.token})")) f
 if (dndApp.includes("confirm(" ) || dndApp.includes("alert(")) fail("D&D UI must use themed in-app confirmations, not browser dialogs.");
 if (!dnd.includes('id="confirmDialog"') || !dndApp.includes("askConfirm(")) fail("D&D in-app confirmation dialog is missing.");
 if (dndApp.includes("if(e.target===dialog)dialog.close()")) fail("D&D data-entry dialogs must not close when their backdrop is clicked.");
+if (!dndApp.includes('class="portrait-initials"') || !dndStyles.includes('.portrait-initials')) fail("D&D character portraits must use initials.");
+if (dndApp.includes('class="portrait-svg')) fail("D&D character portraits must not render generated icons.");
+if (!dndApp.includes("setViewerExpanded") || !dndStyles.includes(".sheet-preview.viewer-expanded{position:fixed")) fail("D&D sheet maximize must use the full viewport.");
+if (!dndStyles.includes(".proficiency-grid{display:grid;grid-template-columns:1fr") || !dndStyles.includes("grid-template-columns:auto minmax(0,1fr) auto")) fail("D&D proficiency rows must keep one skill and modifier on each line.");
+if (!dndApp.includes("data-armor-equipped") || !dndEngine.includes("setEquipped") || !dndEngine.includes("armorRows")) fail("D&D armor inventory must be selectable with live calculations.");
+if (!dndApp.includes("['notes','Notes']") || !dndApp.includes("case'notes':html=renderNotes(c)") || dnd.includes('id="notesDrawer"')) fail("D&D notes must use the full Notes tab instead of a pinned drawer.");
 for (const marker of ["commitLive", "data-weapon-equipped", "data-weapon-rite", "hybrid_crimson_rite", "changeAction"]) {
   if (!dndApp.includes(marker)) fail(`D&D live interaction marker missing: ${marker}`);
 }

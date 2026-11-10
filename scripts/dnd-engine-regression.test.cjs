@@ -28,6 +28,8 @@ function thorin() {
     inventory:[
       {id:'half-plate',name:'Half Plate',type:'armor',equipped:true,attuned:false,effects:{},notes:'Base AC 15 plus Dexterity up to +2.'},
       {id:'shield',name:'Shield',type:'shield',equipped:true,attuned:false,effects:{},notes:'+2 AC.'},
+      {id:'shield-plus-two',name:'Shield +2',type:'shield',equipped:false,attuned:false,effects:{}},
+      {id:'dwarven-plate',name:'Dwarven Plate Armor',type:'armor',equipped:false,attuned:false,effects:{}},
       {id:'ring',name:'Ring of Protection +2',type:'ring',equipped:true,attuned:true,active:true,effects:{ac:2,saving_throws:2}},
       {id:'luckstone',name:'Stone of Good Luck',type:'wondrous item',equipped:false,attuned:true,active:true,effects:{saving_throws:1,ability_checks:1}},
       {id:'rapier',name:'Rapier +1',type:'weapon',equipped:false,attuned:false,effects:{},magic_bonus:1,damage:'1d8',damage_type:'piercing',ability:'Dexterity',range:'5 ft',attack_bonus_extra:0,damage_bonus_extra:4,notes:'Finesse.'},
@@ -71,6 +73,18 @@ test('skill and saving throw checkboxes are live calculation inputs', () => {
   assert.equal(row.derived.saving_throws.dexterity,3);
   row.saving_throw_proficiencies=['dexterity'];E.recalc(row);
   assert.equal(row.derived.saving_throws.dexterity,5);
+});
+
+test('armor inventory can be equipped and unequipped with live AC calculations', () => {
+  const row=thorin();
+  assert.equal(row.derived.armor_class,21);
+  assert.ok(E.armorRows(row).some(item=>item.id==='dwarven-plate'&&!item.equipped),'unequipped inventory armor is available');
+  E.setEquipped(row,'shield',false);assert.equal(row.derived.armor_class,19,'shield can be removed');
+  E.setEquipped(row,'shield-plus-two',true);assert.equal(row.derived.armor_class,23,'magic shield replaces the shield');
+  assert.equal(row.inventory.find(item=>item.id==='shield').equipped,false);
+  E.setEquipped(row,'dwarven-plate',true);assert.equal(row.derived.armor_class,26,'Dwarven Plate uses plate AC plus two magic');
+  assert.equal(row.inventory.find(item=>item.id==='half-plate').equipped,false);
+  E.setEquipped(row,'ring',false);assert.equal(row.derived.armor_class,24,'unequipped protection ring stops applying despite attunement');
 });
 
 test('damage, healing, temporary HP, and rests obey boundaries', () => {

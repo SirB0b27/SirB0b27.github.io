@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark light">
   <title>D&D Character Vault</title>
-  <link rel="stylesheet" href="styles.css?v=20261110-1">
+  <link rel="stylesheet" href="styles.css?v=20261110-2">
 </head>
 <body>
   <div class="ambient one"></div><div class="ambient two"></div>
@@ -29,7 +29,6 @@
     <a class="brand" href="../" aria-label="Return to workspace home"><span class="d20" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M32 4 57 18l-4 31-21 11L11 49 7 18Z"/><path d="m32 4 11 20-11 36-11-36Zm-25 14 14 6h22l14-6M11 49l10-25m32 25L43 24"/><text x="32" y="38">20</text></svg></span><span><strong>D&amp;D Character Vault</strong><small>Build, play, and safely preserve every character</small></span></a>
     <div class="app-actions">
       <button id="globalSearchButton" class="icon-button hidden" type="button" aria-label="Search everything">⌕</button>
-      <button id="notesButton" class="button ghost hidden" type="button">Notes</button>
       <button id="shareButton" class="button ghost hidden" type="button">Share</button>
       <button id="preferencesButton" class="icon-button" type="button" aria-label="Open preferences">⚙</button>
     </div>
@@ -72,12 +71,6 @@
           <div id="tabTools" class="tab-tools"><label class="search-field"><span>⌕</span><input id="tabSearch" type="search" placeholder="Search this tab"></label></div>
           <section id="tabContent" class="tab-content glass"></section>
         </section>
-        <aside id="notesDrawer" class="notes-drawer glass" aria-hidden="true">
-        <header><div><p class="eyebrow">Character Notes</p><h2>Notes</h2></div><div class="section-actions"><button id="pinNotes" class="button" type="button">Pin</button><button id="closeNotes" class="icon-button" type="button" aria-label="Close notes">×</button></div></header>
-        <label>General Notes<textarea id="drawerGeneralNotes" rows="12" placeholder="Character notes stored with the private character in Google Drive"></textarea></label>
-        <div class="section-actions"><button id="saveDrawerNotes" class="button primary" type="button">Save Notes</button><button id="newDrawerNote" class="button" type="button">New Session Note</button></div>
-        <div id="drawerSessionNotes" class="notes-list"></div>
-        </aside>
       </div>
     </section>
 
@@ -95,6 +88,6 @@
 
   <input id="characterFile" type="file" accept="application/json,.json" hidden>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <script src="config.js"></script><script src="engine.js?v=20261110-1"></script><script src="app.js?v=20261110-1"></script>
+  <script src="config.js"></script><script src="engine.js?v=20261110-3"></script><script src="app.js?v=20261110-3"></script>
 </body>
 </html>
