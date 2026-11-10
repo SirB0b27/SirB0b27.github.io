@@ -17,8 +17,31 @@ function character(className = 'Blood Hunter') {
 }
 
 function thorin() {
-  const data=JSON.parse(fs.readFileSync('.openai/drive_readback.json','utf8'));
-  return E.recalc(E.clone(data.characters[0]));
+  const row=character();
+  Object.assign(row,{
+    id:'thorin-fixture',name:'Thorin',race:'Half-Orc',character_class:'Blood Hunter',level:13,
+    classes:[{name:'Blood Hunter',level:12,subclass:'Order of the Lycan'},{name:'Paladin',level:1,subclass:''}],
+    ability_scores:{strength:13,dexterity:16,constitution:18,intelligence:16,wisdom:15,charisma:11},
+    saving_throw_proficiencies:['dexterity','intelligence'],
+    skill_proficiencies:['History','Insight','Intimidation','Investigation','Medicine','Perception','Survival'],
+    movement:{walk:45,swim:0,fly:0,long_jump:10,high_jump:15},speed:45,
+    inventory:[
+      {id:'half-plate',name:'Half Plate',type:'armor',equipped:true,attuned:false,effects:{},notes:'Base AC 15 plus Dexterity up to +2.'},
+      {id:'shield',name:'Shield',type:'shield',equipped:true,attuned:false,effects:{},notes:'+2 AC.'},
+      {id:'ring',name:'Ring of Protection +2',type:'ring',equipped:true,attuned:true,active:true,effects:{ac:2,saving_throws:2}},
+      {id:'luckstone',name:'Stone of Good Luck',type:'wondrous item',equipped:false,attuned:true,active:true,effects:{saving_throws:1,ability_checks:1}},
+      {id:'rapier',name:'Rapier +1',type:'weapon',equipped:false,attuned:false,effects:{},magic_bonus:1,damage:'1d8',damage_type:'piercing',ability:'Dexterity',range:'5 ft',attack_bonus_extra:0,damage_bonus_extra:4,notes:'Finesse.'},
+      {id:'crossbow',name:'Light Crossbow',type:'weapon',equipped:false,attuned:false,effects:{},magic_bonus:0,damage:'1d8',damage_type:'piercing',ability:'Dexterity',range:'80/320 ft',attack_bonus_extra:0,damage_bonus_extra:0,notes:'Ammunition, loading, two-handed.'},
+      {id:'mace',name:'Mace of Disruption',type:'weapon',equipped:false,attuned:false,effects:{},magic_bonus:0,damage:'1d6',damage_type:'bludgeoning',ability:'Strength',range:'5 ft',attack_bonus_extra:0,damage_bonus_extra:0,notes:'Magical.'}
+    ],
+    feature_records:[
+      {id:'hybrid',name:'Hybrid Transformation',source:'Order of the Lycan',active:false,effects:{}},
+      {id:'hide',name:'Resilient Hide',source:'Order of the Lycan',effects:{}},
+      {id:'prowess',name:"Stalker's Prowess",source:'Order of the Lycan',effects:{}},
+      {id:'improved-strikes',name:'Improved Predatory Strikes',source:'Order of the Lycan',effects:{}}
+    ]
+  });
+  return E.recalc(row);
 }
 
 test('Thorin workbook values recalculate from live toggles', () => {
