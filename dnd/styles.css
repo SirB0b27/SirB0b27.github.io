@@ -84,3 +84,11 @@ body.nav-pinned .app-bar,body.nav-pinned main{margin-left:calc(var(--nav-width) 
 @container (max-width:520px){.proficiencies-panel .check-grid,.proficiencies-panel .proficiency-grid{grid-template-columns:1fr}}
 @media(max-width:1120px){.play-combat-split{grid-template-columns:1fr}.combat-chat{position:relative;top:auto;height:680px;min-height:520px}.combat-left .combat-vitals{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:640px){.combat-left .combat-vitals{grid-template-columns:repeat(2,1fr)}.combat-chat{height:72dvh}.proficiencies-panel .check-grid,.proficiencies-panel .proficiency-grid{grid-template-columns:1fr}}
+
+/* Compact limited-use feature cards. */
+.resource-list{grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr));gap:10px}
+.resource-row{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"feature count" "actions actions";align-content:start;gap:8px 12px;padding:12px}
+.resource-row>div:first-child{grid-area:feature;min-width:0}.resource-row>span{grid-area:count;align-self:start;font-weight:850}.resource-row>.button{grid-area:auto;min-height:34px;padding:6px 10px}
+.resource-row>.button:nth-of-type(1){grid-column:1}.resource-row>.button:nth-of-type(2){grid-column:2}
+.resource-row small{margin-top:2px;line-height:1.35}.success-state{color:var(--success)}
+@media(max-width:620px){.resource-list{grid-template-columns:1fr}}
