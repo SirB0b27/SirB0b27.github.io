@@ -105,6 +105,23 @@ test('weapon equipment and Crimson Rite recalculate per weapon', () => {
   rapier.equipped=false;assert.ok(!E.attacks(row).some(x=>x.id===rapier.id));
 });
 
+test('rests follow the short-versus-long hierarchy and clear active rites', () => {
+  const row=thorin(),rapier=row.inventory.find(x=>x.name==='Rapier +1');
+  row.feature_records.push(
+    {id:'short-resource',name:'Short Resource',recharge:'short',max_uses:2,uses_used:2,effects:{}},
+    {id:'long-resource',name:'Long Resource',recharge:'long',max_uses:1,uses_used:1,effects:{}}
+  );
+  rapier.crimson_rite=true;rapier.crimson_rite_name='Rite of the Storm';rapier.crimson_rite_damage='lightning';
+  E.shortRest(row);
+  assert.equal(row.feature_records.find(x=>x.id==='short-resource').uses_used,0);
+  assert.equal(row.feature_records.find(x=>x.id==='long-resource').uses_used,1);
+  assert.equal(rapier.crimson_rite,false);
+  row.feature_records.find(x=>x.id==='short-resource').uses_used=1;
+  E.longRest(row);
+  assert.equal(row.feature_records.find(x=>x.id==='short-resource').uses_used,0);
+  assert.equal(row.feature_records.find(x=>x.id==='long-resource').uses_used,0);
+});
+
 test('clickable stat breakdowns name every contributing source', () => {
   const row=thorin(),hybrid=row.feature_records.find(x=>x.name==='Hybrid Transformation');
   hybrid.active=true;E.recalc(row);

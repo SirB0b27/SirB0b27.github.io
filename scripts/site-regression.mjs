@@ -53,8 +53,12 @@ for (const marker of ["commitLive", "data-weapon-equipped", "data-weapon-rite", 
 for (const marker of ["exportAllSheets", "diceRoll", "damageRoll", "resolveZeroHp", "offerOnHitRider", "note_campaigns", "Add Magic Effect"]) {
   if (!dndApp.includes(marker)) fail(`D&D interactive workspace marker missing: ${marker}`);
 }
-if (!dndApp.includes("case'roll20':html=await renderReference('srd_rules')") || !srdRules.some(row=>row.name==='Multiclassing')) fail("Local searchable SRD rules are not wired into Rules Reference.");
+if (dndApp.includes("['roll20','Rules Reference']") || !srdRules.some(row=>row.name==='Multiclassing')) fail("SRD rules must remain available to the rules engine without a visible Rules Reference tab.");
 if (!dndApp.includes("dnd-character-sheets.zip") || dndApp.includes("$('exportAll').onclick=()=>download('dnd-character-vault.json'")) fail("Export All must create a ZIP of character sheets.");
+for (const marker of ["renderCombatChatOnly", "combat_history", "Action ${combat.action_used?'0/1':'1/1'}", "Add Enemy Damage", "ac_min", "actor-player", "All Spells"]) {
+  if (!dndApp.includes(marker) && !dndStyles.includes(marker)) fail(`D&D seamless combat marker missing: ${marker}`);
+}
+if (dndApp.includes("['roll20','Rules Reference']")) fail("Rules Reference must stay internal instead of appearing as a character tab.");
 if (!dndStyles.includes(".library-preview{overflow-y:auto") || !dndStyles.includes(".notebook{")) fail("D&D independent preview scrolling or notebook layout is missing.");
 for (const marker of ["weaponRows", "hybridActive", "skill_expertise", "legacyVirtualItem"]) {
   if (!dndEngine.includes(marker)) fail(`D&D reactive calculation marker missing: ${marker}`);
