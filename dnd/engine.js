@@ -64,6 +64,11 @@
   const featureActive = (character, pattern) => (character.feature_records || []).some(row => pattern.test(row.name || '') && row.active === true);
   const hybridActive = character => featureActive(character, /^hybrid transformation$/i);
   const legacyVirtualItem = item => /^(hybrid unarmed strike|resilient hide)$/i.test(baseName(item?.name));
+  const baseWalkingSpeed = character => {
+    const recorded=Number(character.movement?.walk??character.speed??30);
+    if (/half[- ]orc/i.test(character.race||'') && recorded>30 && (character.feature_records||[]).some(row=>/stalker'?s prowess|dark augmentation/i.test(row.name||''))) return 30;
+    return recorded;
+  };
 
   function effects(character) {
     const total = {ac:0,saving_throws:0,ability_checks:0,initiative:0,speed:0,max_hp:0,attack:0,damage:0,sources:[]};
@@ -77,11 +82,14 @@
         if (value) { total[key] += value; total.sources.push({id:item.id,source:item.name || 'Effect',effect:key,value}); }
       });
     });
+    const bloodLevel=classes(character).find(row=>row.name==='Blood Hunter')?.level||0;
+    if(bloodLevel>=10&&!total.sources.some(row=>row.effect==='speed'&&/dark augmentation/i.test(row.source||''))){total.speed+=5;total.sources.push({source:'Dark Augmentation',effect:'speed',value:5});}
     const hybrid = hybridActive(character);
     if (hybrid) {
-      total.ac += 1; total.speed += (classes(character).find(row => row.name === 'Blood Hunter')?.level || 0) >= 7 ? 10 : 0;
+      const hasStalkerSpeed=total.sources.some(row=>row.effect==='speed'&&/stalker'?s prowess/i.test(row.source||''));
+      total.ac += 1; total.speed += !hasStalkerSpeed && bloodLevel >= 7 ? 10 : 0;
       total.sources.push({id:(character.feature_records || []).find(row => /^hybrid transformation$/i.test(row.name || ''))?.id,source:'Resilient Hide',effect:'ac',value:1});
-      if (total.speed) total.sources.push({source:"Stalker's Prowess",effect:'speed',value:10});
+      if (!hasStalkerSpeed && bloodLevel >= 7) total.sources.push({source:"Stalker's Prowess",effect:'speed',value:10});
     }
     return total;
   }
@@ -163,7 +171,7 @@
 
   function statBreakdown(character, key) {
     recalc(character);
-    const d=character.derived||{}, baseSpeed=Number(character.movement?.walk??character.speed??30), active=effects(character), rows=[];
+    const d=character.derived||{}, baseSpeed=baseWalkingSpeed(character), active=effects(character), rows=[];
     if (key === 'speed') {
       rows.push({name:`${character.race||'Character'} — Base Walking Speed`,value:baseSpeed,kind:'base'});
       active.sources.filter(row=>row.effect==='speed').forEach(row=>rows.push({name:row.source,value:row.value,kind:'effect'}));
@@ -258,5 +266,5 @@
     return {hpGain,dieRoll,classLevel:entry.level,totalLevel:character.level,features:info.features,subclass:entry.subclass};
   }
 
-  window.DndEngine = {ABILITIES,SKILLS,CLASSES,FEATURES,clone,uid,mod,prof,classes,effects,recalc,attacks,weaponRows,acBreakdown,armorRows,setEquipped,shortRest,longRest,takeDamage,heal,levelInfo,applyLevelUp,spellSlots,kind,itemActive,hybridActive,statBreakdown,rollDice,deathSaveResult,applyDeathSave};
+  window.DndEngine = {ABILITIES,SKILLS,CLASSES,FEATURES,clone,uid,mod,prof,classes,effects,recalc,attacks,weaponRows,acBreakdown,armorRows,setEquipped,shortRest,longRest,takeDamage,heal,levelInfo,applyLevelUp,spellSlots,kind,itemActive,hybridActive,baseWalkingSpeed,statBreakdown,rollDice,deathSaveResult,applyDeathSave};
 })();

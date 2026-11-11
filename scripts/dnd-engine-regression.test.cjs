@@ -40,6 +40,7 @@ function thorin() {
       {id:'hybrid',name:'Hybrid Transformation',source:'Order of the Lycan',active:false,effects:{}},
       {id:'hide',name:'Resilient Hide',source:'Order of the Lycan',effects:{}},
       {id:'prowess',name:"Stalker's Prowess",source:'Order of the Lycan',effects:{}},
+      {id:'dark-augmentation',name:'Dark Augmentation',source:'Blood Hunter',recharge:'passive',active:true,effects:{speed:5}},
       {id:'improved-strikes',name:'Improved Predatory Strikes',source:'Order of the Lycan',effects:{}}
     ]
   });
@@ -51,12 +52,12 @@ test('Thorin workbook values recalculate from live toggles', () => {
   const hybrid=row.feature_records.find(x=>x.name==='Hybrid Transformation');
   hybrid.active=false;E.recalc(row);
   assert.equal(row.derived.armor_class,21,'half plate 17 + shield 2 + ring 2');
-  assert.equal(row.derived.speed_bonus,0);
+  assert.equal(row.derived.speed_bonus,5,'Dark Augmentation is always included');
   assert.equal(row.derived.saving_throws.dexterity,11,'DEX 3 + proficiency 5 + luckstone 1 + ring 2');
   assert.equal(row.derived.skills.Perception,8,'WIS 2 + proficiency 5 + luckstone 1');
   hybrid.active=true;E.recalc(row);
   assert.equal(row.derived.armor_class,22,'Resilient Hide adds exactly one AC');
-  assert.equal(row.derived.speed_bonus,10,"Stalker's Prowess adds ten feet");
+  assert.equal(row.derived.speed_bonus,15,"Dark Augmentation and Stalker's Prowess add fifteen feet");
   assert.equal(E.weaponRows(row)[0].name,'Hybrid Unarmed Strike');
   assert.equal(E.weaponRows(row)[0].equipped,true);
   hybrid.active=false;E.recalc(row);
@@ -108,8 +109,8 @@ test('clickable stat breakdowns name every contributing source', () => {
   const row=thorin(),hybrid=row.feature_records.find(x=>x.name==='Hybrid Transformation');
   hybrid.active=true;E.recalc(row);
   const speed=E.statBreakdown(row,'speed');
-  assert.equal(speed.value,55);
-  assert.deepEqual(speed.rows.map(x=>x.name),['Half-Orc — Base Walking Speed',"Stalker's Prowess"]);
+  assert.equal(speed.value,45);
+  assert.deepEqual(speed.rows.map(x=>x.name),['Half-Orc — Base Walking Speed','Dark Augmentation',"Stalker's Prowess"]);
   const armor=E.statBreakdown(row,'armor_class');
   assert.equal(armor.value,22);
   assert.ok(armor.rows.some(x=>x.name==='Half Plate'));
