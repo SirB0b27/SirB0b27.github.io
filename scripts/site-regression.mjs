@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import zlib from "node:zlib";
 
 const read = (path) => fs.readFileSync(path, "utf8");
 const fail = (message) => {
@@ -15,6 +16,7 @@ const dndConfig = read("dnd/config.js");
 const dndApp = read("dnd/app.js");
 const dndEngine = read("dnd/engine.js");
 const dndStyles = read("dnd/styles.css");
+const srdRules = JSON.parse(zlib.gunzipSync(fs.readFileSync("dnd/reference/srd_rules.json.gz")));
 
 if (!index.includes('href="dnd/"') || !index.includes("D&amp;D Character Vault")) {
   fail("Workspace homepage is missing the D&D Character Vault entry.");
@@ -44,6 +46,12 @@ if (!dndApp.includes("['notes','Notes']") || !dndApp.includes("case'notes':html=
 for (const marker of ["commitLive", "data-weapon-equipped", "data-weapon-rite", "hybrid_crimson_rite", "changeAction"]) {
   if (!dndApp.includes(marker)) fail(`D&D live interaction marker missing: ${marker}`);
 }
+for (const marker of ["exportAllSheets", "diceRoll", "damageRoll", "resolveZeroHp", "offerOnHitRider", "note_campaigns", "Add Magic Effect"]) {
+  if (!dndApp.includes(marker)) fail(`D&D interactive workspace marker missing: ${marker}`);
+}
+if (!dndApp.includes("case'roll20':html=await renderReference('srd_rules')") || !srdRules.some(row=>row.name==='Multiclassing')) fail("Local searchable SRD rules are not wired into Rules Reference.");
+if (!dndApp.includes("dnd-character-sheets.zip") || dndApp.includes("$('exportAll').onclick=()=>download('dnd-character-vault.json'")) fail("Export All must create a ZIP of character sheets.");
+if (!dndStyles.includes(".library-preview{overflow-y:auto") || !dndStyles.includes(".notebook{")) fail("D&D independent preview scrolling or notebook layout is missing.");
 for (const marker of ["weaponRows", "hybridActive", "skill_expertise", "legacyVirtualItem"]) {
   if (!dndEngine.includes(marker)) fail(`D&D reactive calculation marker missing: ${marker}`);
 }
