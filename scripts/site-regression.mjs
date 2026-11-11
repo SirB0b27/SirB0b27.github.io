@@ -33,6 +33,10 @@ if (!dndConfig.includes("https://dnd-character-vault-api.hemanth2355.workers.dev
 for (const action of ["login", "listCharacters", "getCharacter", "referenceData", "createPublicSession", "publicSave", "mergePublicChanges"]) {
   if (!dndApp.includes(action)) fail(`D&D frontend action missing: ${action}`);
 }
+if (!dndApp.includes("apiToken(r,'shareToken','share_token')") || !dndApp.includes("apiToken(r,'publicToken','public_token')")) fail("Public sessions must accept the backend camelCase token contract and legacy snake_case responses.");
+if (dndApp.includes("?share=${r.share_token}")) fail("Public-session links must never be built directly from an unchecked response field.");
+if (!dndApp.includes("validShareToken") || !dndApp.includes("control.disabled=true") || !dndApp.includes("Public session was not enabled.")) fail("Public-session creation must validate tokens, block duplicate submits, and surface failures.");
+if (!dndStyles.includes("repeat(auto-fit,minmax(min(100%,270px),1fr))") || !dndStyles.includes("Compact limited-use feature cards")) fail("Limited-use features must use a compact responsive card grid.");
 if (!dndApp.includes("JSON.stringify({...payload,action,token:state.token})")) fail("API action must override descriptive payload fields.");
 if (dndApp.includes("confirm(" ) || dndApp.includes("alert(")) fail("D&D UI must use themed in-app confirmations, not browser dialogs.");
 if (!dnd.includes('id="confirmDialog"') || !dndApp.includes("askConfirm(")) fail("D&D in-app confirmation dialog is missing.");
