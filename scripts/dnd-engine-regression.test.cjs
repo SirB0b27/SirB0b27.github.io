@@ -104,6 +104,35 @@ test('weapon equipment and Crimson Rite recalculate per weapon', () => {
   rapier.equipped=false;assert.ok(!E.attacks(row).some(x=>x.id===rapier.id));
 });
 
+test('clickable stat breakdowns name every contributing source', () => {
+  const row=thorin(),hybrid=row.feature_records.find(x=>x.name==='Hybrid Transformation');
+  hybrid.active=true;E.recalc(row);
+  const speed=E.statBreakdown(row,'speed');
+  assert.equal(speed.value,55);
+  assert.deepEqual(speed.rows.map(x=>x.name),['Half-Orc — Base Walking Speed',"Stalker's Prowess"]);
+  const armor=E.statBreakdown(row,'armor_class');
+  assert.equal(armor.value,22);
+  assert.ok(armor.rows.some(x=>x.name==='Half Plate'));
+  assert.ok(armor.rows.some(x=>x.name==='Resilient Hide'));
+});
+
+test('death saves follow the campaign house rule and never alter HP', () => {
+  const row=character();row.current_hp=0;
+  let result=E.applyDeathSave(row,20);
+  assert.equal(result.successes,2);assert.equal(row.current_hp,0);assert.equal(row.death_save_successes,2);
+  result=E.applyDeathSave(row,10);
+  assert.equal(result.life_state,'stable');assert.equal(row.current_hp,0);
+  const failed=character();failed.current_hp=0;
+  E.applyDeathSave(failed,1);result=E.applyDeathSave(failed,5);
+  assert.equal(result.life_state,'dead');assert.equal(failed.death_save_failures,3);
+});
+
+test('Paladin 2 multiclass caster level has two first-level slots', () => {
+  const row=character();row.classes=[{name:'Blood Hunter',level:12,subclass:'Order of the Lycan'},{name:'Paladin',level:2,subclass:''}];
+  E.recalc(row);
+  assert.deepEqual(row.spell_slots_max,{'1':2});
+});
+
 test('Blood Hunter Lycan 6 into Paladin 4 remains valid', () => {
   const row=character(),tough={name:'Tough',description:'Hit point maximum increases.',effects:{hp_per_level:2}},alert={name:'Alert',description:'Always on the lookout.',effects:{}};
   for(let next=2;next<=6;next++) E.applyLevelUp(row,{className:'Blood Hunter',hpMode:'average',subclass:next===3?'Order of the Lycan':'',asiType:next===4?'feat':''},next===4?tough:null);

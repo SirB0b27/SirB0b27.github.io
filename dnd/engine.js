@@ -161,6 +161,63 @@
     character.updated_at = new Date().toISOString(); return character;
   }
 
+  function statBreakdown(character, key) {
+    recalc(character);
+    const d=character.derived||{}, baseSpeed=Number(character.movement?.walk??character.speed??30), active=effects(character), rows=[];
+    if (key === 'speed') {
+      rows.push({name:`${character.race||'Character'} — Base Walking Speed`,value:baseSpeed,kind:'base'});
+      active.sources.filter(row=>row.effect==='speed').forEach(row=>rows.push({name:row.source,value:row.value,kind:'effect'}));
+      return {label:'Walking Speed',value:baseSpeed+active.speed,unit:'ft',rows};
+    }
+    if (key === 'armor_class') {
+      const ac=acBreakdown(character).filter(row=>!row.summary).map(row=>({name:row.name,value:row.value,detail:row.calculation,kind:row.effect?'effect':'equipment'}));
+      return {label:'Armor Class',value:d.armor_class,rows:ac};
+    }
+    if (key === 'initiative') {
+      rows.push({name:'Dexterity modifier',value:mod(character.ability_scores?.dexterity),kind:'ability'});
+      active.sources.filter(row=>row.effect==='initiative').forEach(row=>rows.push({name:row.source,value:row.value,kind:'effect'}));
+      return {label:'Initiative',value:d.initiative,rows};
+    }
+    if (key === 'proficiency') return {label:'Proficiency Bonus',value:d.proficiency_bonus,rows:[{name:`Total character level ${character.level}`,value:d.proficiency_bonus,kind:'level'}]};
+    if (key === 'passive_perception') return {label:'Passive Perception',value:d.passive_perception,rows:[{name:'Base',value:10,kind:'base'},{name:'Perception modifier',value:d.skills?.Perception||0,kind:'skill'}]};
+    if (key === 'max_hp') {
+      const bonus=active.sources.filter(row=>row.effect==='max_hp');
+      return {label:'Maximum Hit Points',value:character.max_hp,rows:[{name:'Recorded class and Constitution total',value:Number(character.max_hp||0)-bonus.reduce((sum,row)=>sum+row.value,0),kind:'base'},...bonus.map(row=>({name:row.source,value:row.value,kind:'effect'}))]};
+    }
+    if (key.startsWith('save:')) {
+      const ability=key.slice(5), proficient=(character.saving_throw_proficiencies||[]).includes(ability);
+      return {label:`${ability[0].toUpperCase()+ability.slice(1)} Saving Throw`,value:d.saving_throws?.[ability]||0,rows:[{name:`${ability} modifier`,value:mod(character.ability_scores?.[ability]),kind:'ability'},...(proficient?[{name:'Proficiency bonus',value:d.proficiency_bonus,kind:'proficiency'}]:[]),...active.sources.filter(row=>row.effect==='saving_throws').map(row=>({name:row.source,value:row.value,kind:'effect'}))]};
+    }
+    if (key.startsWith('skill:')) {
+      const skill=key.slice(6), ability=SKILLS[skill], proficient=(character.skill_proficiencies||[]).includes(skill), expert=(character.skill_expertise||[]).includes(skill);
+      return {label:skill,value:d.skills?.[skill]||0,rows:[{name:`${ability} modifier`,value:mod(character.ability_scores?.[ability]),kind:'ability'},...(proficient||expert?[{name:expert?'Expertise':'Proficiency bonus',value:d.proficiency_bonus*(expert?2:1),kind:'proficiency'}]:[]),...active.sources.filter(row=>row.effect==='ability_checks').map(row=>({name:row.source,value:row.value,kind:'effect'}))]};
+    }
+    return {label:key,value:'—',rows:[]};
+  }
+
+  function rollDice(count=1,sides=20) {
+    const rolls=Array.from({length:Math.max(1,Number(count)||1)},()=>1+Math.floor(Math.random()*Math.max(2,Number(sides)||20)));
+    return {rolls,total:rolls.reduce((sum,value)=>sum+value,0)};
+  }
+
+  function deathSaveResult(raw) {
+    const roll=Number(raw||0);
+    if (roll===1) return {successes:0,failures:2,label:'Natural 1 — two failures'};
+    if (roll>=2&&roll<=9) return {successes:0,failures:1,label:'Failure'};
+    if (roll===20) return {successes:2,failures:0,label:'Natural 20 — two successes'};
+    if (roll>=10&&roll<=19) return {successes:1,failures:0,label:'Success'};
+    throw new Error('A death save must be a raw d20 result from 1 to 20.');
+  }
+
+  function applyDeathSave(character, raw) {
+    const result=deathSaveResult(raw);
+    character.death_save_successes=Math.min(3,Number(character.death_save_successes||0)+result.successes);
+    character.death_save_failures=Math.min(3,Number(character.death_save_failures||0)+result.failures);
+    if(character.death_save_successes>=3)character.life_state='stable';
+    if(character.death_save_failures>=3)character.life_state='dead';
+    return {...result,life_state:character.life_state||'unconscious'};
+  }
+
   function weaponRows(character) {
     recalc(character); const global = effects(character);
     const rows = (character.inventory || []).filter(item => kind(item) === 'weapon' && !legacyVirtualItem(item)).map(item => {
@@ -201,5 +258,5 @@
     return {hpGain,dieRoll,classLevel:entry.level,totalLevel:character.level,features:info.features,subclass:entry.subclass};
   }
 
-  window.DndEngine = {ABILITIES,SKILLS,CLASSES,FEATURES,clone,uid,mod,prof,classes,effects,recalc,attacks,weaponRows,acBreakdown,armorRows,setEquipped,shortRest,longRest,takeDamage,heal,levelInfo,applyLevelUp,spellSlots,kind,itemActive,hybridActive};
+  window.DndEngine = {ABILITIES,SKILLS,CLASSES,FEATURES,clone,uid,mod,prof,classes,effects,recalc,attacks,weaponRows,acBreakdown,armorRows,setEquipped,shortRest,longRest,takeDamage,heal,levelInfo,applyLevelUp,spellSlots,kind,itemActive,hybridActive,statBreakdown,rollDice,deathSaveResult,applyDeathSave};
 })();
