@@ -4,6 +4,8 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 
 const source = fs.readFileSync('dnd/app.js', 'utf8');
+const markup = fs.readFileSync('dnd/index.html', 'utf8');
+const styles = fs.readFileSync('dnd/styles.css', 'utf8');
 const helperSource = [
   source.match(/const apiToken = .*?;\n/)?.[0],
   source.match(/function validShareToken\(value\)\{.*?\}\n/)?.[0],
@@ -37,4 +39,28 @@ test('missing and undefined tokens cannot produce a public-session URL', () => {
     assert.equal(Boolean(api.validShareToken(token)), false);
     assert.throws(() => api.shareUrl(token), /did not return a valid public-session link/);
   }
+});
+
+test('public sessions reuse the character workspace with only the allowed tabs', () => {
+  assert.match(markup, /id="publicTabBar"/);
+  assert.match(markup, /id="publicTabContent"/);
+  assert.match(source, /const PUBLIC_TABS = TABS\.filter/);
+  for (const tab of ['combat','equipment','spells','inventory','group-items','features-feats','details']) {
+    assert.match(source, new RegExp(`'${tab}'`));
+  }
+  assert.match(styles, /body\.public-character-open #menuButton/);
+});
+
+test('sharing history is a collapsed five-session list', () => {
+  assert.match(source, /filter\(s=>!s\.enabled\)\.slice\(0,5\)/);
+  assert.match(source, /<details class="past-sessions">/);
+  assert.doesNotMatch(source, /<details class="past-sessions" open/);
+  assert.match(styles, /\.past-session-list\{[^}]*max-height:[^;}]+;overflow:auto/);
+});
+
+test('combat footer owns its grid row and enemies stay compact', () => {
+  assert.match(styles, /\.combat-action-tray\{grid-area:tray/);
+  assert.match(styles, /\.combat-action-tray>\.button\{[^}]*width:auto/);
+  assert.doesNotMatch(source, /enemy_initiative_/);
+  assert.doesNotMatch(source, /field\('Initiative','initiative'/);
 });
