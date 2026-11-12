@@ -98,3 +98,22 @@ body.nav-pinned .app-bar,body.nav-pinned main{margin-left:calc(var(--nav-width) 
 .notebook-card{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center}.notebook-card .kebab{position:relative}.kebab>summary{display:grid;place-items:center;width:34px;height:34px;cursor:pointer;list-style:none;font-size:1.25rem}.kebab>summary::-webkit-details-marker{display:none}.kebab-menu{position:absolute;z-index:20;top:100%;right:0;display:grid;gap:5px;min-width:110px;padding:7px;background:var(--main);border:1px solid var(--line);border-radius:9px;box-shadow:0 12px 30px #0008}.closed-session>summary{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center;cursor:pointer}.closed-session>summary span{color:var(--muted)}
 .portrait>span:not(.portrait-initials),.portrait::before,.portrait::after,.portrait>span::before,.portrait>span::after{display:none!important;content:none!important}.portrait>.portrait-initials{display:block!important}
 @media(max-width:760px){.reference-card,.reference-row>summary{grid-template-columns:1fr}.feature-section>.feature-section-actions{float:none;margin:0 16px 10px}.feature-section>.feature-filters{padding-right:0}.enemy-stats{grid-template-columns:1fr}.closed-session>summary{grid-template-columns:1fr}}
+
+/* Stable combat layout: optional rows never consume the flexible chat track. */
+.combat-chat{grid-template-areas:"head" "enemies" "feed" "tray" "history";grid-template-rows:auto auto minmax(220px,1fr) auto auto;align-content:start}
+.combat-chat-head{grid-area:head}.combat-enemy-strip{grid-area:enemies}.combat-chat-feed{grid-area:feed}.combat-action-tray{grid-area:tray;align-self:stretch}.combat-history{grid-area:history}
+.combat-action-tray>.button{align-self:start;justify-self:start;width:auto;min-width:130px}
+.combat-enemy-strip{grid-template-columns:1fr;max-height:210px}
+.combat-chat .enemy-card{display:grid;grid-template-columns:minmax(120px,1.2fr) minmax(100px,.65fr) minmax(120px,.8fr) minmax(0,1.5fr) auto;align-items:center;gap:12px;padding:8px 10px}
+.enemy-card .enemy-name{min-width:0}.enemy-card .enemy-fact{display:grid;gap:1px}.enemy-card .enemy-fact small{color:var(--muted);font-size:.66rem}.enemy-card .enemy-fact b{font-size:.86rem}.enemy-card .enemy-note{min-width:0;overflow:hidden;color:var(--muted);text-overflow:ellipsis;white-space:nowrap}.enemy-card>.section-actions{justify-self:end;flex-wrap:nowrap}
+
+/* Sharing history stays compact and closed until explicitly opened. */
+.share-active{display:grid;gap:8px}.share-active h3{margin:4px 0}.past-sessions{margin-top:12px;border:1px solid var(--line);border-radius:12px;background:color-mix(in srgb,var(--surface2) 45%,transparent)}
+.past-sessions>summary{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;cursor:pointer}.past-sessions>summary span{color:var(--muted);font-size:.75rem}.past-session-list{display:grid;max-height:285px;overflow:auto;border-top:1px solid var(--line)}
+.share-session-row{display:grid;grid-template-columns:minmax(180px,1fr) auto auto auto;align-items:center;gap:12px;padding:10px 12px;border-bottom:1px solid var(--line)}.share-session-row:last-child{border-bottom:0}.share-session-row>div:first-child{display:grid;gap:2px}.share-session-row>div:first-child span,.share-session-row>span{color:var(--muted);font-size:.75rem}
+
+/* A public link is one isolated character workspace, never the private library. */
+body.public-character-open #menuButton,body.public-character-open #preferencesButton,body.public-character-open #libraryBack,body.public-character-open #globalSearchButton,body.public-character-open #shareButton,body.public-character-open .site-nav{display:none!important}
+.public-view{width:min(1700px,calc(100% - 20px));padding-bottom:28px}.public-view .public-head{margin-bottom:0}.public-view #publicTabBar{position:sticky;top:0;z-index:8}.public-view #publicTabContent{min-height:420px}
+
+@media(max-width:760px){.combat-chat .enemy-card{grid-template-columns:1fr auto}.enemy-card .enemy-fact,.enemy-card .enemy-note{grid-column:1/-1}.enemy-card>.section-actions{grid-column:2;grid-row:1;flex-wrap:wrap}.share-session-row{grid-template-columns:1fr auto}.share-session-row>span{grid-column:1}.share-session-row>.section-actions{grid-column:2;grid-row:1/4}}
