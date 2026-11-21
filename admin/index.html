@@ -53,12 +53,28 @@
 #calendar .calendar-day .workspace-dot{width:10px;height:10px}
 @media(max-width:760px){#calendar .calendar-day{min-height:54px;padding:4px}#calendar .calendar-empty{min-height:54px}.calendar-dots{gap:2px}#calendar .calendar-day .workspace-dot{width:7px;height:7px}}
 .calendar-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}.calendar-heading h2{margin:0!important}.calendar-view-control{display:flex;align-items:center;gap:8px;margin-left:auto}.calendar-view-control label{white-space:nowrap}.calendar-heading #calendarView{width:118px!important}@media(max-width:470px){.calendar-heading{flex-wrap:wrap}.calendar-view-control{margin-left:auto}}
+.legacy-workspace{padding:24px;border:1px solid var(--line);border-radius:14px;background:var(--panel)}
+.legacy-workspace h2{margin:0 0 8px}.legacy-workspace p{color:var(--muted);line-height:1.5}
+.legacy-compare{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:16px}
+.legacy-compare section{min-width:0;padding:18px;border:1px solid var(--line);border-radius:10px;background:var(--panel-2)}
+.legacy-compare h3{margin:0 0 10px}.legacy-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px}
+.legacy-links a{display:inline-block;padding:9px 12px;border:1px solid var(--line);border-radius:8px;color:var(--text);text-decoration:none;background:var(--panel)}
+.legacy-links a:hover,.legacy-links a:focus-visible{border-color:var(--accent);outline-offset:2px}
+.legacy-workspace select{width:100%;max-width:320px;padding:10px;border:1px solid var(--line);border-radius:7px;background:var(--panel-2);color:var(--text)}
+@media(max-width:700px){.legacy-compare{grid-template-columns:1fr}}
 </style>
 </head><body data-workspace="admin"><div class="admin-container"><p><a href="../">← Workspace Home</a></p><div class="page-head"><div><div class="eyebrow">Administration</div><h1>Workspace Access</h1><p>Separate administrator authentication for future access settings, scheduling, audit history and calendar.</p></div></div>
 <section class="admin-auth" id="login"><h2>Admin sign in</h2><form id="loginForm"><label for="email">Admin email</label><input id="email" type="email" autocomplete="username" required><label for="password">Admin password</label><input id="password" type="password" autocomplete="current-password" minlength="16" required><button type="submit" class="primary-btn">Sign in</button></form></section>
 <section hidden id="dashboard">
 <div class="admin-toolbar"><button class="secondary-btn" id="logout" type="button">Sign out</button><button class="secondary-btn" id="refresh" type="button">Refresh</button></div>
 <p class="admin-warning">Policy preview only: rules are recorded in the audit Sheet but do not change live password protection.</p>
+<section class="legacy-workspace" aria-labelledby="legacyTitle"><h2 id="legacyTitle">Legacy Site workspace</h2>
+<p>Compare the current GitHub-hosted pages with the existing Google Apps Script workspaces. Open each version in a separate tab. GitHub history links show earlier source revisions; they are not deployed previews.</p>
+<label for="legacyArea">Site area</label><select id="legacyArea"><option value="portfolio">Portfolio</option><option value="personal">Personal</option><option value="resume">Resume</option><option value="home">Home directory</option></select>
+<div class="legacy-compare">
+<section><h3>GitHub version</h3><p id="legacyGithubDescription"></p><div class="legacy-links" id="legacyGithubLinks"></div></section>
+<section><h3>Google Apps Script version</h3><p id="legacyGoogleDescription"></p><div class="legacy-links" id="legacyGoogleLinks"></div></section>
+</div><p>These links use each page's own sign-in. The Admin sign-in protects this comparison menu, but GitHub-hosted files and GitHub history are public. Changes made within an opened version may affect its live data.</p></section>
 <div id="currentPolicies" class="admin-grid"></div>
 <div class="admin-grid" style="grid-template-columns: minmax(0,1fr) minmax(0,1fr);margin-top:18px">
 <article><h2>New access rule</h2><form id="policyForm">
@@ -77,6 +93,28 @@
 const API='https://github-private-workspaces.hemanth2355.workers.dev/';
 let token=null;
 const $=id=>document.getElementById(id);
+const LEGACY_REPO='https://github.com/SirB0b27/SirB0b27.github.io';
+const LEGACY_APPS='https://script.google.com/macros/s/AKfycbwktRN7wZNTEOQ4Hn_46BTtroswpBwEXjfBQJ05jF07YgSso4dB7Hu6jk_CrP8AFjjZIA/exec';
+const LEGACY_AREAS={
+ portfolio:{path:'portfolio/',source:'portfolio/index.html',preview:'private/portfolio/',history:'43fae68',apps:'Portfolio',description:'The GitHub workspace and its authenticated preview can differ from the Apps Script interface.'},
+ personal:{path:'personal/',source:'personal/index.html',preview:'private/personal/',history:'f27c664',apps:'Personal',description:'The legacy GitHub page uses its own client-side gate; the private preview uses the Worker.'},
+ resume:{path:'resume/',source:'resume/index.html',preview:'private/resume/',history:'1467bce',apps:'Portfolio',description:'The Apps Script Portfolio workspace contains its own Resume view; open it there after signing in.'},
+ home:{path:'',source:'index.html',history:'43fae68',description:'The home directory is hosted on GitHub Pages. Portfolio and Personal cards currently open Apps Script.'}
+};
+function legacyLink(container,label,url){const a=document.createElement('a');a.textContent=label;a.href=url;a.target='_blank';a.rel='noopener noreferrer';container.append(a)}
+function renderLegacyWorkspace(){
+ const area=LEGACY_AREAS[$('legacyArea').value],github=$('legacyGithubLinks'),google=$('legacyGoogleLinks');
+ github.replaceChildren();google.replaceChildren();
+ $('legacyGithubDescription').textContent=area.description;
+ legacyLink(github,'Open current GitHub page','../'+area.path);
+ if(area.preview)legacyLink(github,'Open authenticated GitHub preview','../'+area.preview);
+ legacyLink(github,'View current source',LEGACY_REPO+'/blob/master/'+area.source);
+ legacyLink(github,'View earlier source',LEGACY_REPO+'/blob/'+area.history+'/'+area.source);
+ legacyLink(github,'Browse file history',LEGACY_REPO+'/commits/master/'+area.source);
+ $('legacyGoogleDescription').textContent=area.apps?'Existing Apps Script '+area.apps+' workspace. Sign in there to compare the interface.':'The home directory currently has no matching Apps Script page.';
+ if(area.apps)legacyLink(google,'Open Apps Script '+area.apps,LEGACY_APPS+'?workspace='+encodeURIComponent(area.apps));
+}
+$('legacyArea').addEventListener('change',renderLegacyWorkspace);renderLegacyWorkspace();
 async function api(action,fields={}){
  const response=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},cache:'no-store',body:JSON.stringify({workspace:'Portfolio',action,...fields})});
  if(!response.ok)throw Error('Connection error');
