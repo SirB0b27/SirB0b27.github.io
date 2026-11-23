@@ -75,7 +75,8 @@
 <section><h3>GitHub version</h3><p id="legacyGithubDescription"></p><div class="legacy-links" id="legacyGithubLinks"></div></section>
 <section><h3>Google Apps Script version</h3><p id="legacyGoogleDescription"></p><div class="legacy-links" id="legacyGoogleLinks"></div></section>
 </div><p>These links use each page's own sign-in. The Admin sign-in protects this comparison menu, but GitHub-hosted files and GitHub history are public. Changes made within an opened version may affect its live data.</p></section>
-<div id="currentPolicies" class="admin-grid"></div>
+<p class="admin-warning" id="policyLoadError" hidden role="alert"></p>
+<div id="policyTools"><div id="currentPolicies" class="admin-grid"></div>
 <div class="admin-grid" style="grid-template-columns: minmax(0,1fr) minmax(0,1fr);margin-top:18px">
 <article><h2>New access rule</h2><form id="policyForm">
 <label for="policySpace">Workspace</label><select id="policySpace" required><option>Portfolio</option><option>Personal</option><option>Birthdays</option></select>
@@ -85,7 +86,7 @@
 <label for="policyReason">Reason (optional)</label><input id="policyReason" maxlength="500">
 <button type="submit" class="primary-btn">Record policy</button></form></article>
 <article><div class="calendar-heading"><h2>Schedule calendar</h2><div class="calendar-view-control"><label class="calendar-view-label" for="calendarView">View</label><select id="calendarView" aria-label="Calendar view"><option value="month">Monthly</option><option value="week">Weekly</option><option value="day">Daily</option></select></div></div><div class="admin-toolbar"><button type="button" class="secondary-btn" id="prevMonth">←</button><strong id="monthLabel"></strong><button type="button" class="secondary-btn" id="nextMonth">→</button></div><div class="calendar-legend" aria-label="Workspace colors"><span class="workspace-dot portfolio"></span>Portfolio <span class="workspace-dot personal"></span>Personal <span class="workspace-dot birthdays"></span>Birthdays</div><div id="calendar"></div><section id="calendarDetails" class="calendar-details" hidden aria-live="polite"></section><p class="muted">Dates indicate recorded *preview* rules, not actual public access.</p></article></div>
-<article class="audit-panel"><h2>Change log</h2><div class="table-wrap"><table class="data-table"><thead><tr><th>Time (UTC)</th><th>Workspace</th><th>Action</th><th>Password</th><th>Duration</th><th>Reason</th><th>Manage</th></tr></thead><tbody id="auditRows"></tbody></table></div></article>
+<article class="audit-panel"><h2>Change log</h2><div class="table-wrap"><table class="data-table"><thead><tr><th>Time (UTC)</th><th>Workspace</th><th>Action</th><th>Password</th><th>Duration</th><th>Reason</th><th>Manage</th></tr></thead><tbody id="auditRows"></tbody></table></div></article></div>
 </section>
 <p role="status" aria-live="polite" id="status"></p></div>
 <script>
@@ -124,8 +125,10 @@ async function api(action,fields={}){
 }
 $('loginForm').addEventListener('submit',async e=>{
  e.preventDefault();$('status').textContent='Signing in…';
- try{const result=await api('adminLogin',{email:$('email').value,password:$('password').value});token=result.token;$('password').value='';const status=await api('adminStatus',{token});if(!status?.authenticated)throw Error('Admin session rejected');$('login').hidden=true;$('dashboard').hidden=false;$('status').textContent='';await refreshPolicies();}
- catch(error){token=null;$('status').textContent=error.message}
+ try{const result=await api('adminLogin',{email:$('email').value,password:$('password').value});token=result.token;$('password').value='';const status=await api('adminStatus',{token});if(!status?.authenticated)throw Error('Admin session rejected')}
+ catch(error){token=null;$('status').textContent=error.message;return}
+ $('login').hidden=true;$('dashboard').hidden=false;$('status').textContent='';
+ await loadPolicies();
 });
 $('logout').onclick=async()=>{const old=token;token=null;$('dashboard').hidden=true;$('login').hidden=false;try{if(old)await api('adminLogout',{token:old})}catch(e){}};
 
@@ -230,13 +233,17 @@ async function refreshPolicies(){
  const manage=node('td');if(item.action==='ADD'&&!data.audit.some(x=>x.action==='CANCEL'&&x.ruleId===item.ruleId)){const btn=node('button','Cancel');btn.type='button';btn.className='secondary-btn';btn.onclick=()=>recordAction('adminPolicyCancel',{ruleId:item.ruleId,reason:'Cancelled from admin dashboard'});manage.append(btn)}tr.append(manage);body.append(tr)}
  paintCalendar();
 }
+async function loadPolicies(){
+ try{await refreshPolicies();$('policyLoadError').hidden=true;$('policyTools').hidden=false}
+ catch(error){$('policyTools').hidden=true;$('policyLoadError').hidden=false;$('policyLoadError').textContent='Access policy preview could not load: '+error.message+'. The Legacy Site comparison above is still available.'}
+}
 async function recordAction(action,fields){$('status').textContent='Recording…';try{await api(action,{token,...fields});await refreshPolicies();$('status').textContent='Saved to the change log and calendar. Live protection is unchanged.'}catch(e){$('status').textContent=e.message}}
 $('policyMode').onchange=()=>{$('dateInputs').hidden=$('policyMode').value==='indefinite'};
 $('policyForm').onsubmit=e=>{e.preventDefault();const mode=$('policyMode').value, startDate=$('policyStart').value,endDate=$('policyEnd').value;
  if(mode==='date-range'&&(!startDate||!endDate||startDate>endDate)){$('status').textContent='Select a valid start and end date.';return}
  
  recordAction('adminPolicyAdd',{rule:{workspace:$('policySpace').value,protected:$('policyProtection').value==='true',mode,startDate:mode==='date-range'?startDate:'',endDate:mode==='date-range'?endDate:'',reason:$('policyReason').value}})};
-$('refresh').onclick=async()=>{const b=$('refresh');b.disabled=true;b.textContent='Refreshing…';$('status').textContent='Refreshing from Google Sheets…';try{await refreshPolicies();$('status').textContent='Updated from Google Sheets. Live protection is unchanged.'}catch(e){$('status').textContent='Refresh failed: '+e.message}finally{b.disabled=false;b.textContent='Refresh'}};
+$('refresh').onclick=async()=>{const b=$('refresh');b.disabled=true;b.textContent='Refreshing…';$('status').textContent='Refreshing from Google Sheets…';await loadPolicies();$('status').textContent=$('policyLoadError').hidden?'Updated from Google Sheets. Live protection is unchanged.':'';b.disabled=false;b.textContent='Refresh'};
 $('calendarView').onchange=()=>{calendarView=$('calendarView').value;selectedCalendarDate=null;$('calendarDetails').hidden=true;paintCalendar()};
 function moveCalendar(direction){
  if(calendarView==='month')calendarCursor=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth()+direction,1);
